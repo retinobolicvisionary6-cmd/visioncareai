@@ -16,17 +16,17 @@ pip-wheel-metadata/
 # ===========================
 # PyTorch & ML artifacts
 # ===========================
-*.pth
-*.pt
-*.ckpt
-*.safetensors
-*.onnx
+# *.pth
+# *.pt
+# *.ckpt
+# *.safetensors
+# *.onnx
 
 # ===========================
 # Dataset — never commit raw data
 # ===========================
 data/raw/
-data/processed/
+# data/processed/
 
 # Splits and metadata ARE committed (small CSVs and JSON)
 # Uncomment the line below if you want to exclude them too:
