@@ -21,6 +21,16 @@ app = Flask(
 CORS(app)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32MB max upload
 
+@app.errorhandler(Exception)
+def handle_exception(e):
+    from werkzeug.exceptions import HTTPException
+    import traceback
+    if isinstance(e, HTTPException):
+        return e
+    print(f"Unhandled Exception: {str(e)}")
+    traceback.print_exc()
+    return jsonify({"error": "Internal Server Error: " + str(e)}), 500
+
 SAMPLE_IMAGES = {
     0: str(PROJECT_ROOT / "data" / "processed_384" / "9c893e16c055.jpg"),
     1: str(PROJECT_ROOT / "data" / "processed_384" / "9eaf735cf01f.jpg"),
