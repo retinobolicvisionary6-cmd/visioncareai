@@ -1,0 +1,14 @@
+{
+  "clinical_context": null,
+  "data_quality": {
+    "complete": false,
+    "missing_fields": [],
+    "provided_fields": [],
+    "clinical_context_complete": false,
+    "flags": {}
+  },
+  "validation_passed": false,
+  "validation_errors": [
+    "input: Value error, Clinical context validation failed:\n  \u2022 Age -5.0 is outside plausible range [0, 130] years.\n  \u2022 Age must be non-negative."
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "clinical_context": {
+    "patient_id": "DEMO001",
+    "age": {
+      "value": 58,
+      "unit": "years",
+      "status": "provided"
+    },
+    "bp_systolic": {
+      "value": 148,
+      "unit": "mmHg",
+      "status": "provided"
+    },
+    "bp_diastolic": {
+      "value": 92,
+      "unit": "mmHg",
+      "status": "provided"
+    },
+    "hba1c": {
+      "value": 8.2,
+      "unit": "%",
+      "status": "provided"
+    },
+    "diabetes_duration_years": {
+      "value": 10.0,
+      "unit": "years",
+      "status": "provided"
+    },
+    "clinical_history": {
+      "value": {
+        "known_diabetes": true,
+        "previous_dr_history": false,
+        "other_notes": "Annual DR screening."
+      },
+      "status": "provided"
+    }
+  },
+  "data_quality": {
+    "complete": true,
+    "missing_fields": [],
+    "provided_fields": [
+      "age",
+      "bp_systolic",
+      "bp_diastolic",
+      "hba1c",
+      "diabetes_duration_years",
+      "clinical_history"
+    ],
+    "clinical_context_complete": true,
+    "flags": {
+      "age_available": true,
+      "bp_available": true,
+      "hba1c_available": true,
+      "diabetes_duration_available": true,
+      "clinical_history_available": true
+    }
+  },
+  "validation_passed": true,
+  "validation_errors": []
+}

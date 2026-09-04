@@ -1,0 +1,73 @@
+﻿[
+  {
+    "_description": "1. Clear Moderate DR - Grade 2 with high confidence, low uncertainty",
+    "grade": 2,
+    "probabilities": {
+      "0": 0.03,
+      "1": 0.08,
+      "2": 0.81,
+      "3": 0.08
+    },
+    "gradcam_path": "outputs/gradcam/image_001.jpg"
+  },
+  {
+    "_description": "2. Strongly Concentrated - Near-zero uncertainty",
+    "grade": 2,
+    "probabilities": {
+      "0": 0.001,
+      "1": 0.001,
+      "2": 0.997,
+      "3": 0.001
+    }
+  },
+  {
+    "_description": "3. Ambiguous prediction - Grade 1/2 boundary, medium uncertainty",
+    "grade": 1,
+    "probabilities": {
+      "0": 0.10,
+      "1": 0.15,
+      "2": 0.60,
+      "3": 0.15
+    }
+  },
+  {
+    "_description": "4. Maximum uncertainty - Uniform distribution, high uncertainty, review recommended",
+    "grade": 0,
+    "probabilities": {
+      "0": 0.25,
+      "1": 0.25,
+      "2": 0.25,
+      "3": 0.25
+    }
+  },
+  {
+    "_description": "5. No DR - Clear healthy fundus, low uncertainty",
+    "grade": 0,
+    "probabilities": {
+      "0": 0.92,
+      "1": 0.04,
+      "2": 0.02,
+      "3": 0.02
+    }
+  },
+  {
+    "_description": "6. Severe DR - High confidence severe, low uncertainty",
+    "grade": 3,
+    "probabilities": {
+      "0": 0.01,
+      "1": 0.02,
+      "2": 0.05,
+      "3": 0.92
+    }
+  },
+  {
+    "_description": "7. Mild vs Moderate boundary - Medium uncertainty",
+    "grade": 1,
+    "probabilities": {
+      "0": 0.05,
+      "1": 0.42,
+      "2": 0.45,
+      "3": 0.08
+    }
+  }
+]

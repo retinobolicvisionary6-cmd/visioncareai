@@ -1,0 +1,99 @@
+{
+  "description": "Sample DR model probability distributions for Model Confidence Module testing and demonstration.",
+  "note": "These are synthetic samples only — not real patient data.",
+  "cases": [
+    {
+      "id": "normal_sample",
+      "description": "Normal prediction — Moderate DR with moderate confidence",
+      "input": {
+        "grade": 2,
+        "probabilities": { "0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08 }
+      },
+      "expected_predicted_grade": 2,
+      "expected_confidence": 0.81,
+      "expected_confidence_level": "high"
+    },
+    {
+      "id": "high_confidence",
+      "description": "High confidence — strong Moderate DR prediction",
+      "input": {
+        "grade": 2,
+        "probabilities": { "0": 0.02, "1": 0.03, "2": 0.92, "3": 0.03 }
+      },
+      "expected_predicted_grade": 2,
+      "expected_confidence": 0.92,
+      "expected_confidence_level": "high"
+    },
+    {
+      "id": "medium_confidence",
+      "description": "Medium confidence — Moderate DR with less certainty",
+      "input": {
+        "grade": 2,
+        "probabilities": { "0": 0.10, "1": 0.15, "2": 0.60, "3": 0.15 }
+      },
+      "expected_predicted_grade": 2,
+      "expected_confidence": 0.60,
+      "expected_confidence_level": "medium"
+    },
+    {
+      "id": "low_confidence",
+      "description": "Low confidence — ambiguous prediction near uniform distribution",
+      "input": {
+        "grade": 1,
+        "probabilities": { "0": 0.24, "1": 0.27, "2": 0.25, "3": 0.24 }
+      },
+      "expected_predicted_grade": 1,
+      "expected_confidence": 0.27,
+      "expected_confidence_level": "low"
+    },
+    {
+      "id": "uniform_distribution",
+      "description": "Uniform distribution — completely ambiguous, minimum confidence",
+      "input": {
+        "grade": 0,
+        "probabilities": { "0": 0.25, "1": 0.25, "2": 0.25, "3": 0.25 }
+      },
+      "expected_predicted_grade": 0,
+      "expected_confidence": 0.25,
+      "expected_confidence_level": "low"
+    },
+    {
+      "id": "no_dr_high_confidence",
+      "description": "No DR with high confidence — healthy fundus image",
+      "input": {
+        "grade": 0,
+        "probabilities": { "0": 0.91, "1": 0.04, "2": 0.03, "3": 0.02 }
+      },
+      "expected_predicted_grade": 0,
+      "expected_confidence": 0.91,
+      "expected_confidence_level": "high"
+    },
+    {
+      "id": "invalid_negative_probability",
+      "description": "INVALID — negative probability value (should raise error)",
+      "input": {
+        "grade": 2,
+        "probabilities": { "0": -0.10, "1": 0.30, "2": 0.40, "3": 0.40 }
+      },
+      "expected_error": "InvalidProbabilityError"
+    },
+    {
+      "id": "invalid_sum",
+      "description": "INVALID — probability sum >> 1.0 (should raise error)",
+      "input": {
+        "grade": 2,
+        "probabilities": { "0": 0.40, "1": 0.40, "2": 0.40, "3": 0.10 }
+      },
+      "expected_error": "InvalidProbabilityError"
+    },
+    {
+      "id": "invalid_missing_class",
+      "description": "INVALID — only 3 classes provided (should raise error)",
+      "input": {
+        "grade": 2,
+        "probabilities": { "0": 0.20, "1": 0.30, "2": 0.50 }
+      },
+      "expected_error": "InvalidInputFormatError"
+    }
+  ]
+}

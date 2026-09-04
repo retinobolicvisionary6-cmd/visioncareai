@@ -1,0 +1,58 @@
+{
+  "status": "borderline",
+  "quality_score": 0.7194,
+  "focus_score": 1.0,
+  "illumination_score": 0.6188,
+  "field_of_view_score": 1.0,
+  "retinal_visibility_score": 0.077,
+  "artifact_score": 0.5313,
+  "reason": "Poor retinal structure visibility may affect screening quality.",
+  "action": "enhance_and_recheck",
+  "enhanced": true,
+  "enhanced_image_path": "outputs\\enhanced\\overexposed_fundus_enhanced.jpg",
+  "error": null,
+  "component_details": {
+    "focus": {
+      "focus_score": 1.0,
+      "laplacian_var": 1540.92,
+      "tenengrad_mean": 33.9703,
+      "is_hard_fail": false,
+      "detail": "Image is well focused (Laplacian=1540.9, Tenengrad=33.97)."
+    },
+    "illumination": {
+      "illumination_score": 0.6188,
+      "mean_brightness": 201.69,
+      "std_brightness": 19.7,
+      "clip_ratio": 0.0118,
+      "uniformity_std": 0.86,
+      "is_hard_fail": false,
+      "conditions": [
+        "overexposed",
+        "low_contrast"
+      ],
+      "detail": "Illumination issues detected: overexposed, low contrast. (mean=202, std=19.7, clip=1.18%)"
+    },
+    "field_of_view": {
+      "field_of_view_score": 1.0,
+      "fundus_area_ratio": 0.6291,
+      "disk_fill_ratio": 1.0,
+      "circle_detected": true,
+      "is_hard_fail": false,
+      "detail": "Adequate field of view (fill=100.0%, area_ratio=62.9%)."
+    },
+    "retinal_visibility": {
+      "retinal_visibility_score": 0.077,
+      "edge_density": 0.028473,
+      "detail": "Limited retinal structure visibility (edge density=0.028)."
+    },
+    "artifacts": {
+      "artifact_score": 0.5313,
+      "glare_ratio": 0.0114,
+      "noise_level": 0.503,
+      "artifacts_found": [
+        "severe_noise"
+      ],
+      "detail": "Artifacts detected: severe noise. (glare=0.011, noise=0.503)"
+    }
+  }
+}

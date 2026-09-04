@@ -1,0 +1,52 @@
+﻿[
+  {
+    "_case": "Case 1 — Fully reliable",
+    "description": "High confidence, low uncertainty, in-distribution. Expected: acceptable.",
+    "dr_result": {
+      "grade": 2,
+      "probabilities": {"0": 0.03, "1": 0.04, "2": 0.88, "3": 0.05}
+    },
+    "expected_status": "acceptable",
+    "expected_review_required": false
+  },
+  {
+    "_case": "Case 2 — High uncertainty",
+    "description": "Medium confidence, high uncertainty, in-distribution. Expected: review_required.",
+    "dr_result": {
+      "grade": 1,
+      "probabilities": {"0": 0.26, "1": 0.28, "2": 0.24, "3": 0.22}
+    },
+    "expected_status": "review_required",
+    "expected_review_required": true
+  },
+  {
+    "_case": "Case 3 — Low confidence",
+    "description": "Low confidence, low uncertainty, in-distribution. Expected: review_required.",
+    "dr_result": {
+      "grade": 0,
+      "probabilities": {"0": 0.35, "1": 0.25, "2": 0.20, "3": 0.20}
+    },
+    "expected_status": "review_required",
+    "expected_review_required": true
+  },
+  {
+    "_case": "Case 4 — Caution (medium signals)",
+    "description": "Medium confidence, medium uncertainty, in-distribution. Expected: caution.",
+    "dr_result": {
+      "grade": 2,
+      "probabilities": {"0": 0.15, "1": 0.20, "2": 0.55, "3": 0.10}
+    },
+    "expected_status": "caution",
+    "expected_review_required": false
+  },
+  {
+    "_case": "Case 5 — Multiple failures",
+    "description": "Low confidence, high uncertainty, OOD. Expected: review_required.",
+    "dr_result": {
+      "grade": 0,
+      "probabilities": {"0": 0.27, "1": 0.24, "2": 0.25, "3": 0.24}
+    },
+    "expected_status": "review_required",
+    "expected_review_required": true
+  }
+]

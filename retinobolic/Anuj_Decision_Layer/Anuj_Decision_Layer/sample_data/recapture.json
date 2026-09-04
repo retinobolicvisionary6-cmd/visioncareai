@@ -1,0 +1,43 @@
+{
+  "_comment": "RECAPTURE — Ungradable image (high DR grade should NOT override safety rule)",
+  "quality_result": {
+    "status": "ungradable",
+    "quality_score": 0.21,
+    "focus_score": 0.15,
+    "illumination_score": 0.30,
+    "field_of_view_score": 0.40,
+    "retinal_visibility_score": 0.25,
+    "artifact_score": 0.50,
+    "reason": "Low image sharpness, critically dark image — image is not suitable for reliable screening.",
+    "action": "recapture",
+    "enhanced": false,
+    "enhanced_image_path": null,
+    "error": null
+  },
+  "dr_result": {
+    "grade": 3,
+    "probabilities": {"0": 0.01, "1": 0.02, "2": 0.07, "3": 0.90},
+    "gradcam_path": null
+  },
+  "reliability_result": {
+    "reliability_status": "acceptable",
+    "review_required": false,
+    "reason": "High model confidence, low uncertainty and in-distribution input.",
+    "confidence": 0.90,
+    "confidence_level": "high",
+    "uncertainty": 0.15,
+    "uncertainty_level": "low",
+    "ood": false,
+    "ood_status": "in_distribution",
+    "ood_score": 1.60,
+    "reliability_score": 0.88,
+    "predicted_grade": 3,
+    "predicted_class_name": "Severe / PDR"
+  },
+  "clinical_context": null,
+  "expected_output": {
+    "action": "recapture",
+    "priority": "medium",
+    "_note": "SAFETY RULE: ungradable ALWAYS recaptures regardless of DR grade or reliability"
+  }
+}

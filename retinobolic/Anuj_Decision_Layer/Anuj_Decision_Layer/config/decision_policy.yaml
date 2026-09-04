@@ -1,0 +1,129 @@
+# =============================================================================
+# config/decision_policy.yaml — Final Decision Layer Configuration
+# =============================================================================
+# SIH Problem ID: SIH26038
+# Explainable AI for Diabetic Retinopathy Screening in Rural India
+#
+# IMPORTANT — PROTOTYPE CONFIGURATION
+# ------------------------------------
+# All numeric thresholds in this file are PROTOTYPE ENGINEERING VALUES.
+# They have NOT been clinically validated and MUST NOT be used for
+# operational medical decision-making without independent clinical evaluation.
+#
+# Do NOT change thresholds without explicit clinical guidance.
+# =============================================================================
+
+
+# ---------------------------------------------------------------------------
+# ACTIONS — workflow-oriented labels returned in the decision output
+# ---------------------------------------------------------------------------
+actions:
+  ungradable:          recapture         # Image quality too poor to grade
+  reliability_review:  doctor_review     # Model signal unreliable / OOD
+  referable:           refer             # Reliable prediction above referral threshold
+  default:             routine           # Gradable, reliable, non-referable
+
+
+# ---------------------------------------------------------------------------
+# DR REFERRAL THRESHOLD
+# ---------------------------------------------------------------------------
+# referable_grade_threshold: DR grades >= this value are considered referable.
+#
+# Prototype class mapping (Vinayak DR model, 4 classes):
+#   0 = No DR
+#   1 = Mild DR
+#   2 = Moderate DR       ← default referral threshold
+#   3 = Severe / PDR
+#
+# PROTOTYPE VALUE — requires clinical validation.
+# Do NOT assume this threshold is clinically correct.
+#
+referral:
+  referable_grade_threshold: 2          # Grades 2 and 3 trigger referral
+  urgent_referral_grades: [3]           # Grade 3 escalates priority to "urgent"
+
+
+# ---------------------------------------------------------------------------
+# PRIORITY LABELS — workflow labels, NOT clinical urgency standards
+# ---------------------------------------------------------------------------
+# These are screening-workflow routing labels for the healthcare worker UI.
+# They are NOT validated clinical triage levels.
+#
+priority:
+  recapture:    medium    # Workflow must get a better image
+  doctor_review: high     # Doctor must review before proceeding
+  refer:        high      # Default referral priority
+  refer_urgent: urgent    # Used when dr_grade is in urgent_referral_grades
+  routine:      low       # No action required beyond standard recall
+
+
+# ---------------------------------------------------------------------------
+# RELIABILITY ACCEPTANCE — which reliability statuses block referral
+# ---------------------------------------------------------------------------
+# reliability_statuses_blocking_referral: if the reliability status is one of
+# these values, the engine must NOT refer (falls back to doctor_review instead).
+#
+# "acceptable"     → Referral and routine are permitted
+# "caution"        → Borderline; configured below
+# "review_required"→ Always blocks referral
+#
+reliability:
+  statuses_blocking_referral: [review_required]   # Always block referral
+  caution_allows_referral: true                   # caution → allows referral if grade >= threshold
+  # Set caution_allows_referral: true to permit referral on caution status
+
+
+# ---------------------------------------------------------------------------
+# CLINICAL CONTEXT POLICY
+# ---------------------------------------------------------------------------
+# Controls how (if at all) clinical context signals affect workflow priority.
+#
+# ARCHITECTURE RULE:
+#   Clinical context MUST NOT alter dr_grade or dr_result probabilities.
+#   It may only affect priority escalation or add contextual metadata.
+#
+# For MVP v1.0: clinical context is used as CONTEXT ONLY.
+#   - It does not change the action (recapture / doctor_review / refer / routine)
+#   - It does not escalate priority unless explicitly configured below
+#   - Missing clinical context does NOT block the basic workflow
+#
+clinical_context:
+  enable_escalation: false       # Set true to enable clinical escalation rules
+  require_complete_context: false  # Set true to require complete context for referral
+
+  # Escalation rules (only applied when enable_escalation: true)
+  # These rules are prototype suggestions and require clinical validation.
+  escalation_rules:
+    # Escalate routine → doctor_review if hba1c exceeds this threshold
+    high_hba1c_threshold: 9.0           # % — PROTOTYPE VALUE
+    escalate_on_high_hba1c: false       # disabled by default (not validated)
+
+    # Escalate priority to "urgent" if age exceeds threshold AND grade >= 2
+    age_high_risk_threshold: 70         # years — PROTOTYPE VALUE
+    escalate_on_age_risk: false         # disabled by default (not validated)
+
+    # Escalate if diabetes duration exceeds threshold
+    long_diabetes_duration_threshold: 15  # years — PROTOTYPE VALUE
+    escalate_on_long_duration: false      # disabled by default (not validated)
+
+
+# ---------------------------------------------------------------------------
+# GRADCAM / XAI METADATA
+# ---------------------------------------------------------------------------
+# Controls how the engine handles Grad-CAM / XAI evidence metadata.
+#
+gradcam:
+  require_gradcam_for_referral: false   # Set true to require Grad-CAM for refer action
+  warn_if_missing: true                 # Log a warning if gradcam_path is missing
+
+
+# ---------------------------------------------------------------------------
+# ENGINE METADATA
+# ---------------------------------------------------------------------------
+engine:
+  version: "1.0.0"
+  safety_note: >
+    This engine produces workflow-routing decisions only.
+    It is NOT a diagnostic tool.
+    The doctor retains full clinical responsibility.
+    All decisions must be reviewed by a qualified physician.

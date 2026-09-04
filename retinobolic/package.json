@@ -1,0 +1,21 @@
+{
+  "name": "retinobolic-diagnostic-suite",
+  "version": "1.0.0",
+  "description": "Retinobolic Diagnostic Flask Application wrapper",
+  "main": "web_app.py",
+  "scripts": {
+    "setup": "pip install -r requirements.txt",
+    "start": "start http://127.0.0.1:5000 && python web_app.py",
+    "dev": "python web_app.py"
+  },
+  "keywords": [
+    "flask",
+    "python",
+    "ai",
+    "diagnostic"
+  ],
+  "author": "",
+  "license": "ISC"
+}
+
+

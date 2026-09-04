@@ -1,0 +1,17 @@
+{
+  "_comment": "Reliability Engine — APTOS-calibrated thresholds (SIH26038).",
+  "_warning": "Calibrated on stratified APTOS 2019 validation images. Non-diagnostic safety layer.",
+  "_calibration_summary": {
+    "dataset": "APTOS 2019",
+    "correct_median_confidence": 0.90,
+    "incorrect_median_confidence": 0.63,
+    "correct_median_entropy": 0.29,
+    "incorrect_median_entropy": 0.57,
+    "ood_pass_rate_pct": 100.0
+  },
+  "HIGH_CONFIDENCE_THRESHOLD": 0.85,
+  "LOW_CONFIDENCE_THRESHOLD": 0.55,
+  "LOW_UNCERTAINTY_MAX": 0.30,
+  "HIGH_UNCERTAINTY_MIN": 0.55,
+  "OOD_STRICT_MODE": true
+}

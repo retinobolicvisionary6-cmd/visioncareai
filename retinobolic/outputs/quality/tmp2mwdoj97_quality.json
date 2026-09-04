@@ -1,0 +1,57 @@
+{
+  "status": "ungradable",
+  "quality_score": 0.8756,
+  "focus_score": 1.0,
+  "illumination_score": 0.767,
+  "field_of_view_score": 0.8691,
+  "retinal_visibility_score": 1.0,
+  "artifact_score": 0.6,
+  "reason": "Insufficient retinal field of view \u2014 image is not suitable for reliable screening.",
+  "action": "recapture",
+  "enhanced": false,
+  "enhanced_image_path": null,
+  "error": null,
+  "component_details": {
+    "focus": {
+      "focus_score": 1.0,
+      "laplacian_var": 279.07,
+      "tenengrad_mean": 24.8868,
+      "is_hard_fail": false,
+      "detail": "Image is well focused (Laplacian=279.1, Tenengrad=24.89)."
+    },
+    "illumination": {
+      "illumination_score": 0.767,
+      "mean_brightness": 72.83,
+      "std_brightness": 16.32,
+      "clip_ratio": 0.0,
+      "uniformity_std": 9.19,
+      "is_hard_fail": false,
+      "conditions": [
+        "low_contrast"
+      ],
+      "detail": "Illumination issues detected: low contrast. (mean=73, std=16.3, clip=0.00%)"
+    },
+    "field_of_view": {
+      "field_of_view_score": 0.8691,
+      "fundus_area_ratio": 0.2818,
+      "disk_fill_ratio": 1.0,
+      "circle_detected": true,
+      "is_hard_fail": true,
+      "detail": "Insufficient fundus area visible (fill=100.0%, area_ratio=28.2%). Image is likely heavily cropped or mostly background."
+    },
+    "retinal_visibility": {
+      "retinal_visibility_score": 1.0,
+      "edge_density": 0.275918,
+      "detail": "Retinal structures appear adequately visible (edge density=0.276)."
+    },
+    "artifacts": {
+      "artifact_score": 0.6,
+      "glare_ratio": 0.0,
+      "noise_level": 0.5083,
+      "artifacts_found": [
+        "severe_noise"
+      ],
+      "detail": "Artifacts detected: severe noise. (glare=0.000, noise=0.508)"
+    }
+  }
+}

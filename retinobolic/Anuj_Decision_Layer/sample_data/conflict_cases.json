@@ -1,0 +1,175 @@
+[
+  {
+    "_name": "CONFLICT A: Ungradable + Grade 3 + High Confidence → RECAPTURE",
+    "_rule": "Rule 1 (Image Safety) overrides all other signals",
+    "quality_result": {
+      "status": "ungradable",
+      "quality_score": 0.18,
+      "focus_score": 0.12,
+      "illumination_score": 0.25,
+      "field_of_view_score": 0.35,
+      "retinal_visibility_score": 0.20,
+      "artifact_score": 0.45,
+      "reason": "Low image sharpness — image is not suitable for reliable screening.",
+      "action": "recapture",
+      "enhanced": false,
+      "enhanced_image_path": null,
+      "error": null
+    },
+    "dr_result": {
+      "grade": 3,
+      "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97},
+      "gradcam_path": null
+    },
+    "reliability_result": {
+      "reliability_status": "acceptable",
+      "review_required": false,
+      "reason": "High model confidence, low uncertainty and in-distribution input.",
+      "confidence": 0.97,
+      "confidence_level": "high",
+      "uncertainty": 0.08,
+      "uncertainty_level": "low",
+      "ood": false,
+      "ood_status": "in_distribution",
+      "ood_score": 1.30,
+      "reliability_score": 0.95,
+      "predicted_grade": 3,
+      "predicted_class_name": "Severe / PDR"
+    },
+    "clinical_context": null,
+    "expected_output": {
+      "action": "recapture",
+      "priority": "medium"
+    }
+  },
+  {
+    "_name": "CONFLICT B: Grade 3 + High Confidence + High Uncertainty → DOCTOR_REVIEW",
+    "_rule": "Rule 2 (High Uncertainty) overrides Rule 3 (Referral)",
+    "quality_result": {
+      "status": "good",
+      "quality_score": 0.85,
+      "focus_score": 0.86,
+      "illumination_score": 0.84,
+      "field_of_view_score": 0.87,
+      "retinal_visibility_score": 0.83,
+      "artifact_score": 0.85,
+      "reason": "Image is suitable for screening.",
+      "action": "continue",
+      "enhanced": false,
+      "enhanced_image_path": null,
+      "error": null
+    },
+    "dr_result": {
+      "grade": 3,
+      "probabilities": {"0": 0.10, "1": 0.20, "2": 0.25, "3": 0.45},
+      "gradcam_path": null
+    },
+    "reliability_result": {
+      "reliability_status": "review_required",
+      "review_required": true,
+      "reason": "Prediction has high model uncertainty.",
+      "confidence": 0.45,
+      "confidence_level": "low",
+      "uncertainty": 0.82,
+      "uncertainty_level": "high",
+      "ood": false,
+      "ood_status": "in_distribution",
+      "ood_score": 1.75,
+      "reliability_score": 0.12,
+      "predicted_grade": 3,
+      "predicted_class_name": "Severe / PDR"
+    },
+    "clinical_context": null,
+    "expected_output": {
+      "action": "doctor_review",
+      "priority": "high"
+    }
+  },
+  {
+    "_name": "CONFLICT C: Grade 2 + High Confidence + OOD=True → DOCTOR_REVIEW",
+    "_rule": "Rule 2 (OOD) overrides Rule 3 (Referral) — Case E from spec",
+    "quality_result": {
+      "status": "good",
+      "quality_score": 0.88,
+      "focus_score": 0.89,
+      "illumination_score": 0.87,
+      "field_of_view_score": 0.91,
+      "retinal_visibility_score": 0.85,
+      "artifact_score": 0.88,
+      "reason": "Image is suitable for screening.",
+      "action": "continue",
+      "enhanced": false,
+      "enhanced_image_path": null,
+      "error": null
+    },
+    "dr_result": {
+      "grade": 1,
+      "probabilities": {"0": 0.02, "1": 0.93, "2": 0.03, "3": 0.02},
+      "gradcam_path": null
+    },
+    "reliability_result": {
+      "reliability_status": "review_required",
+      "review_required": true,
+      "reason": "Input appears outside the configured reference distribution.",
+      "confidence": 0.93,
+      "confidence_level": "high",
+      "uncertainty": 0.12,
+      "uncertainty_level": "low",
+      "ood": true,
+      "ood_status": "review_required",
+      "ood_score": 5.80,
+      "reliability_score": 0.0,
+      "predicted_grade": 1,
+      "predicted_class_name": "Mild DR"
+    },
+    "clinical_context": null,
+    "expected_output": {
+      "action": "doctor_review",
+      "priority": "high",
+      "_note": "OOD overrides high confidence — Case E from spec"
+    }
+  },
+  {
+    "_name": "CONFLICT D: Multiple failures (OOD + High Uncertainty + Low Confidence) → DOCTOR_REVIEW",
+    "_rule": "Rule 2 fires on first failure; all signals collected for reason",
+    "quality_result": {
+      "status": "good",
+      "quality_score": 0.82,
+      "focus_score": 0.83,
+      "illumination_score": 0.81,
+      "field_of_view_score": 0.84,
+      "retinal_visibility_score": 0.80,
+      "artifact_score": 0.82,
+      "reason": "Image is suitable for screening.",
+      "action": "continue",
+      "enhanced": false,
+      "enhanced_image_path": null,
+      "error": null
+    },
+    "dr_result": {
+      "grade": 0,
+      "probabilities": {"0": 0.35, "1": 0.30, "2": 0.22, "3": 0.13},
+      "gradcam_path": null
+    },
+    "reliability_result": {
+      "reliability_status": "review_required",
+      "review_required": true,
+      "reason": "Input appears outside the configured reference distribution. Prediction has high model uncertainty. Model confidence is low.",
+      "confidence": 0.35,
+      "confidence_level": "low",
+      "uncertainty": 0.88,
+      "uncertainty_level": "high",
+      "ood": true,
+      "ood_status": "review_required",
+      "ood_score": 6.20,
+      "reliability_score": 0.0,
+      "predicted_grade": 0,
+      "predicted_class_name": "No DR"
+    },
+    "clinical_context": null,
+    "expected_output": {
+      "action": "doctor_review",
+      "priority": "high"
+    }
+  }
+]

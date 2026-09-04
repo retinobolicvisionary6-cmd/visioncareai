@@ -1,0 +1,55 @@
+{
+  "status": "good",
+  "quality_score": 0.9053,
+  "focus_score": 1.0,
+  "illumination_score": 0.8384,
+  "field_of_view_score": 0.9458,
+  "retinal_visibility_score": 1.0,
+  "artifact_score": 0.5654,
+  "reason": "Image is suitable for screening.",
+  "action": "continue",
+  "enhanced": false,
+  "enhanced_image_path": null,
+  "error": null,
+  "component_details": {
+    "focus": {
+      "focus_score": 1.0,
+      "laplacian_var": 794.9,
+      "tenengrad_mean": 52.2158,
+      "is_hard_fail": false,
+      "detail": "Image is well focused (Laplacian=794.9, Tenengrad=52.22)."
+    },
+    "illumination": {
+      "illumination_score": 0.8384,
+      "mean_brightness": 94.64,
+      "std_brightness": 35.3,
+      "clip_ratio": 0.0025,
+      "uniformity_std": 16.12,
+      "is_hard_fail": false,
+      "conditions": [],
+      "detail": "Illumination is good (mean=95, std=35.3, clip=0.25%)."
+    },
+    "field_of_view": {
+      "field_of_view_score": 0.9458,
+      "fundus_area_ratio": 1.2893,
+      "disk_fill_ratio": 0.9535,
+      "circle_detected": true,
+      "is_hard_fail": false,
+      "detail": "Adequate field of view (fill=95.4%, area_ratio=128.9%)."
+    },
+    "retinal_visibility": {
+      "retinal_visibility_score": 1.0,
+      "edge_density": 0.314182,
+      "detail": "Retinal structures appear adequately visible (edge density=0.314)."
+    },
+    "artifacts": {
+      "artifact_score": 0.5654,
+      "glare_ratio": 0.0058,
+      "noise_level": 0.721,
+      "artifacts_found": [
+        "severe_noise"
+      ],
+      "detail": "Artifacts detected: severe noise. (glare=0.006, noise=0.721)"
+    }
+  }
+}

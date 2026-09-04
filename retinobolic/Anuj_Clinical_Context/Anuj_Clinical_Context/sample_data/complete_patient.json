@@ -1,0 +1,13 @@
+﻿{
+  "patient_id": "DEMO001",
+  "age": 58,
+  "bp_systolic": 148,
+  "bp_diastolic": 92,
+  "hba1c": 8.2,
+  "diabetes_duration_years": 10,
+  "clinical_history": {
+    "known_diabetes": true,
+    "previous_dr_history": false,
+    "other_notes": "Patient on metformin. Annual DR screening."
+  }
+}

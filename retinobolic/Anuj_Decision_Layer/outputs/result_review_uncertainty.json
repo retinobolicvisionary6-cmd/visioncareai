@@ -1,0 +1,29 @@
+{
+  "action": "doctor_review",
+  "priority": "high",
+  "reason": "DR prediction cannot be automatically actioned \u2014 doctor review is required. The following issue(s) were detected:\n  \u2022 The DR prediction has high model uncertainty. The model's probability distribution is ambiguous across multiple classes.\n  \u2022 The DR prediction has low model confidence. The model's top-class probability is below the acceptable threshold.",
+  "review_required": true,
+  "dr_grade": 3,
+  "reliability_status": "review_required",
+  "evidence": {
+    "quality_status": "good",
+    "quality_score": 0.85,
+    "confidence": 0.45,
+    "confidence_level": "low",
+    "uncertainty": 0.82,
+    "uncertainty_level": "high",
+    "ood": false,
+    "ood_score": 1.75,
+    "reliability_score": 0.12,
+    "gradcam_path": null,
+    "clinical_context_complete": false,
+    "reliability_signals": [
+      "high uncertainty (0.820)",
+      "low confidence (0.450)"
+    ]
+  },
+  "metadata": {
+    "rule_applied": "RULE_2_RELIABILITY_FAILURE",
+    "engine_version": "1.0.0"
+  }
+}

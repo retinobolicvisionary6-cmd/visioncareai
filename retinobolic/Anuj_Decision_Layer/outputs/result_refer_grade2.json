@@ -1,0 +1,26 @@
+{
+  "action": "refer",
+  "priority": "high",
+  "reason": "Reliable DR prediction (Moderate DR, Grade 2) meets the configured referral threshold (Grade >= 2). Referral for specialist assessment is warranted. Final clinical decision rests with the examining physician.",
+  "review_required": false,
+  "dr_grade": 2,
+  "reliability_status": "acceptable",
+  "evidence": {
+    "quality_status": "good",
+    "quality_score": 0.88,
+    "confidence": 0.88,
+    "confidence_level": "high",
+    "uncertainty": 0.22,
+    "uncertainty_level": "low",
+    "ood": false,
+    "ood_score": 1.55,
+    "reliability_score": 0.84,
+    "gradcam_path": "outputs/gradcam/patient_003.jpg",
+    "clinical_context_complete": true,
+    "reliability_signals": []
+  },
+  "metadata": {
+    "rule_applied": "RULE_3_REFERABLE_DR",
+    "engine_version": "1.0.0"
+  }
+}

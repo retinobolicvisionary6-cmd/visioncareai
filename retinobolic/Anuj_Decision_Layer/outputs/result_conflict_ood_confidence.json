@@ -1,0 +1,28 @@
+{
+  "action": "doctor_review",
+  "priority": "high",
+  "reason": "DR prediction cannot be automatically actioned \u2014 doctor review is required. The following issue(s) were detected:\nThe fundus image appears to be outside the model's known/reference distribution (out-of-distribution). The DR model prediction may not be reliable for this image.",
+  "review_required": true,
+  "dr_grade": 2,
+  "reliability_status": "review_required",
+  "evidence": {
+    "quality_status": "good",
+    "quality_score": 0.88,
+    "confidence": 0.88,
+    "confidence_level": "high",
+    "uncertainty": 0.2,
+    "uncertainty_level": "low",
+    "ood": true,
+    "ood_score": 5.5,
+    "reliability_score": 0.0,
+    "gradcam_path": null,
+    "clinical_context_complete": false,
+    "reliability_signals": [
+      "OOD detected (score=5.500)"
+    ]
+  },
+  "metadata": {
+    "rule_applied": "RULE_2_RELIABILITY_FAILURE",
+    "engine_version": "1.0.0"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "status": "ungradable",
+  "quality_score": 0.4841,
+  "focus_score": 0.0,
+  "illumination_score": 0.7492,
+  "field_of_view_score": 1.0,
+  "retinal_visibility_score": 0.0,
+  "artifact_score": 0.9678,
+  "reason": "Low image sharpness, poor retinal structure visibility \u2014 image is not suitable for reliable screening.",
+  "action": "recapture",
+  "enhanced": false,
+  "enhanced_image_path": null,
+  "error": null,
+  "component_details": {
+    "focus": {
+      "focus_score": 0.0,
+      "laplacian_var": 0.92,
+      "tenengrad_mean": 3.5943,
+      "is_hard_fail": true,
+      "detail": "Image is critically blurred (Laplacian=0.9, Tenengrad=3.59). Retinal structures are not distinguishable."
+    },
+    "illumination": {
+      "illumination_score": 0.7492,
+      "mean_brightness": 94.7,
+      "std_brightness": 8.48,
+      "clip_ratio": 0.0,
+      "uniformity_std": 1.25,
+      "is_hard_fail": false,
+      "conditions": [
+        "low_contrast"
+      ],
+      "detail": "Illumination issues detected: low contrast. (mean=95, std=8.5, clip=0.00%)"
+    },
+    "field_of_view": {
+      "field_of_view_score": 1.0,
+      "fundus_area_ratio": 0.5565,
+      "disk_fill_ratio": 1.0,
+      "circle_detected": false,
+      "is_hard_fail": false,
+      "detail": "Adequate field of view (fill=100.0%, area_ratio=55.6%)."
+    },
+    "retinal_visibility": {
+      "retinal_visibility_score": 0.0,
+      "edge_density": 0.007952,
+      "detail": "Very few retinal structures visible (edge density=0.008). Image may be too blurred or obscured."
+    },
+    "artifacts": {
+      "artifact_score": 0.9678,
+      "glare_ratio": 0.0,
+      "noise_level": 0.0241,
+      "artifacts_found": [],
+      "detail": "No significant artifacts detected (glare=0.000, noise=0.024)."
+    }
+  }
+}

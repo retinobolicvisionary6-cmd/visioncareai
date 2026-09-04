@@ -1,0 +1,71 @@
+{
+  "experiment_id": "20260829_170536_efficientnet_b0_42",
+  "architecture": "efficientnet_b0",
+  "dataset": "APTOS 2019",
+  "num_classes": 5,
+  "epochs_run": 7,
+  "max_epochs": 10,
+  "batch_size": 16,
+  "learning_rate": 5e-05,
+  "weight_decay": 0.0001,
+  "optimizer": "AdamW",
+  "scheduler": "CosineAnnealingLR",
+  "loss": "CrossEntropyLoss",
+  "use_class_weights": true,
+  "use_weighted_sampler": true,
+  "early_stopping_patience": 5,
+  "use_amp": true,
+  "device": "cuda",
+  "random_seed": 42,
+  "augmentation": "HFlip, VFlip, Rotate\u00b115, ColorJitter(b=0.1)",
+  "best_val_loss": 1.107616,
+  "best_val_acc": 0.68306,
+  "checkpoint_path": "C:\\Users\\asus\\Desktop\\html\\c3lite\\retinobolic\\models\\checkpoints\\best_model.pth",
+  "training_history": {
+    "train_loss": [
+      0.414056,
+      0.319665,
+      0.287235,
+      0.261025,
+      0.399243,
+      0.366344,
+      0.356744
+    ],
+    "train_acc": [
+      0.643617,
+      0.690787,
+      0.719063,
+      0.735878,
+      0.66969,
+      0.674602,
+      0.683859
+    ],
+    "val_loss": [
+      1.156423,
+      1.107616,
+      1.172356,
+      1.32107,
+      1.131154,
+      1.208885,
+      1.136155
+    ],
+    "val_acc": [
+      0.686703,
+      0.68306,
+      0.695811,
+      0.712204,
+      0.681239,
+      0.686703,
+      0.701275
+    ],
+    "lr": [
+      4.8800884649231264e-05,
+      4.532091636218621e-05,
+      3.990073868116559e-05,
+      3.307091636218621e-05,
+      2.5500000000000003e-05,
+      1.792908363781379e-05,
+      1.1099261318834412e-05
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+﻿# DR Prediction Uncertainty Engine - Module 2 (SIH26038)
+# Minimal dependencies - no neural network frameworks required
+
+numpy>=1.24.0
+pytest>=7.0.0
+
+# Optional: used only in calibration.py if scipy-based optimization is desired in future
+# scipy>=1.10.0

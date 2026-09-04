@@ -1,0 +1,26 @@
+{
+  "action": "routine",
+  "priority": "low",
+  "reason": "Image is gradable, model reliability is acceptable, and the DR prediction (No DR, Grade 0) does not meet the configured referral threshold. Standard screening follow-up is indicated. This is a screening-workflow classification, not a clinical diagnosis.",
+  "review_required": false,
+  "dr_grade": 0,
+  "reliability_status": "acceptable",
+  "evidence": {
+    "quality_status": "good",
+    "quality_score": 0.91,
+    "confidence": 0.92,
+    "confidence_level": "high",
+    "uncertainty": 0.18,
+    "uncertainty_level": "low",
+    "ood": false,
+    "ood_score": 1.42,
+    "reliability_score": 0.87,
+    "gradcam_path": null,
+    "clinical_context_complete": true,
+    "reliability_signals": []
+  },
+  "metadata": {
+    "rule_applied": "RULE_4_ROUTINE",
+    "engine_version": "1.0.0"
+  }
+}

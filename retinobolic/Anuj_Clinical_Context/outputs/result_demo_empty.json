@@ -1,0 +1,56 @@
+{
+  "clinical_context": {
+    "patient_id": null,
+    "age": {
+      "value": null,
+      "unit": "years",
+      "status": "missing"
+    },
+    "bp_systolic": {
+      "value": null,
+      "unit": "mmHg",
+      "status": "missing"
+    },
+    "bp_diastolic": {
+      "value": null,
+      "unit": "mmHg",
+      "status": "missing"
+    },
+    "hba1c": {
+      "value": null,
+      "unit": "%",
+      "status": "missing"
+    },
+    "diabetes_duration_years": {
+      "value": null,
+      "unit": "years",
+      "status": "missing"
+    },
+    "clinical_history": {
+      "value": null,
+      "status": "missing"
+    }
+  },
+  "data_quality": {
+    "complete": false,
+    "missing_fields": [
+      "age",
+      "bp_systolic",
+      "bp_diastolic",
+      "hba1c",
+      "diabetes_duration_years",
+      "clinical_history"
+    ],
+    "provided_fields": [],
+    "clinical_context_complete": false,
+    "flags": {
+      "age_available": false,
+      "bp_available": false,
+      "hba1c_available": false,
+      "diabetes_duration_available": false,
+      "clinical_history_available": false
+    }
+  },
+  "validation_passed": true,
+  "validation_errors": []
+}

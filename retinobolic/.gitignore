@@ -1,0 +1,92 @@
+# ===========================
+# Python
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+pip-wheel-metadata/
+
+# ===========================
+# PyTorch & ML artifacts
+# ===========================
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+
+# ===========================
+# Dataset — never commit raw data
+# ===========================
+data/raw/
+data/processed/
+
+# Splits and metadata ARE committed (small CSVs and JSON)
+# Uncomment the line below if you want to exclude them too:
+# data/splits/
+# data/metadata/
+
+# ===========================
+# Outputs — large generated files
+# ===========================
+outputs/gradcam/
+outputs/predictions/
+outputs/metrics/
+outputs/confusion_matrix/
+
+# ===========================
+# Experiments (can be large)
+# ===========================
+experiments/
+
+# ===========================
+# Notebooks checkpoints
+# ===========================
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# ===========================
+# Environment
+# ===========================
+.env
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# ===========================
+# IDE
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===========================
+# OS
+# ===========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===========================
+# Logs
+# ===========================
+*.log
+logs/
+
+# ===========================
+# Temporary
+# ===========================
+tmp/
+temp/
+*.tmp

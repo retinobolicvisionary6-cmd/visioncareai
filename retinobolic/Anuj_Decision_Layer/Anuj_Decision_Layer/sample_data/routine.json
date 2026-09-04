@@ -1,0 +1,68 @@
+{
+  "_comment": "ROUTINE — Good quality, reliable, No DR (Grade 0)",
+  "quality_result": {
+    "status": "good",
+    "quality_score": 0.91,
+    "focus_score": 0.93,
+    "illumination_score": 0.89,
+    "field_of_view_score": 0.94,
+    "retinal_visibility_score": 0.88,
+    "artifact_score": 0.92,
+    "reason": "Image is suitable for screening.",
+    "action": "continue",
+    "enhanced": false,
+    "enhanced_image_path": null,
+    "error": null
+  },
+  "dr_result": {
+    "grade": 0,
+    "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01},
+    "gradcam_path": null
+  },
+  "reliability_result": {
+    "reliability_status": "acceptable",
+    "review_required": false,
+    "reason": "High model confidence, low uncertainty and in-distribution input.",
+    "confidence": 0.92,
+    "confidence_level": "high",
+    "uncertainty": 0.18,
+    "uncertainty_level": "low",
+    "ood": false,
+    "ood_status": "in_distribution",
+    "ood_score": 1.42,
+    "reliability_score": 0.87,
+    "predicted_grade": 0,
+    "predicted_class_name": "No DR"
+  },
+  "clinical_context": {
+    "patient_id": "DEMO001",
+    "validation_passed": true,
+    "validation_errors": [],
+    "clinical_context": {
+      "age": {"value": 42, "unit": "years", "status": "provided"},
+      "bp_systolic": {"value": 120, "unit": "mmHg", "status": "provided"},
+      "bp_diastolic": {"value": 80, "unit": "mmHg", "status": "provided"},
+      "hba1c": {"value": 6.2, "unit": "%", "status": "provided"},
+      "diabetes_duration_years": {"value": 3, "unit": "years", "status": "provided"},
+      "clinical_history": {
+        "value": {"known_diabetes": true, "previous_dr_history": false},
+        "status": "provided"
+      }
+    },
+    "data_quality": {
+      "complete": true,
+      "clinical_context_complete": true,
+      "missing_fields": [],
+      "flags": {
+        "has_age": true,
+        "has_bp": true,
+        "has_hba1c": true,
+        "has_duration": true
+      }
+    }
+  },
+  "expected_output": {
+    "action": "routine",
+    "priority": "low"
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "calibration_date": "2026-08-28 14:55:36.004805",
+  "dataset": "APTOS 2019 validation split",
+  "n_images_used": 80,
+  "overall_accuracy_pct": 81.2,
+  "ood_pass_rate_pct": 100.0,
+  "confidence": {
+    "correct_median": 0.9004,
+    "incorrect_median": 0.6319,
+    "HIGH_CONFIDENCE_THRESHOLD": 0.9,
+    "LOW_CONFIDENCE_THRESHOLD": 0.65
+  },
+  "uncertainty": {
+    "correct_median_entropy": 0.2906999886035919,
+    "incorrect_median_entropy": 0.5687000155448914,
+    "LOW_UNCERTAINTY_MAX": 0.7,
+    "HIGH_UNCERTAINTY_MIN": 0.44
+  },
+  "ood": {
+    "threshold": 12.74,
+    "n_checked": 40,
+    "flagged": 0,
+    "passed": 40
+  },
+  "per_image_results": [
+    {
+      "image_id": "233d948e2544.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.6189960837364197,
+        0.23881778120994568,
+        0.05174028128385544,
+        0.0904458537697792
+      ],
+      "max_prob": 0.6189960837364197,
+      "entropy": 0.7281837463378906
+    },
+    {
+      "image_id": "80c67efc8101.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.9785515666007996,
+        0.015263796783983707,
+        0.0031270687468349934,
+        0.003057542024180293
+      ],
+      "max_prob": 0.9785515666007996,
+      "entropy": 0.08713413774967194
+    },
+    {
+      "image_id": "f1979147aad4.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.9942237734794617,
+        0.0033947527408599854,
+        0.0006780433468520641,
+        0.0017033867770805955
+      ],
+      "max_prob": 0.9942237734794617,
+      "entropy": 0.02947930246591568
+    },
+    {
+      "image_id": "77a1f1398fdb.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.9897778630256653,
+        0.007484178524464369,
+        0.0009944455232471228,
+        0.0017435254994779825
+      ],
+      "max_prob": 0.9897778630256653,
+      "entropy": 0.04671015590429306
+    },
+    {
+      "image_id": "d78b7401096f.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.7156039476394653,
+        0.2569926679134369,
+        0.011892782524228096,
+        0.01551059540361166
+      ],
+      "max_prob": 0.7156039476394653,
+      "entropy": 0.509247362613678
+    },
+    {
+      "image_id": "03b373718013.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.992296040058136,
+        0.007167307659983635,
+        0.00021629506954923272,
+        0.00032020677463151515
+      ],
+      "max_prob": 0.992296040058136,
+      "entropy": 0.034242238849401474
+    },
+    {
+      "image_id": "02da652c74b8.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.9673705697059631,
+        0.03179200366139412,
+        0.000428497267421335,
+        0.0004088722344022244
+      ],
+      "max_prob": 0.9673705697059631,
+      "entropy": 0.10693282634019852
+    },
+    {
+      "image_id": "3fe282197c1c.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.8735126852989197,
+        0.07039117813110352,
+        0.037872765213251114,
+        0.01822335086762905
+      ],
+      "max_prob": 0.8735126852989197,
+      "entropy": 0.36203452944755554
+    },
+    {
+      "image_id": "b086c7cd3868.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.9696290493011475,
+        0.023583650588989258,
+        0.0029738249722868204,
+        0.0038133866619318724
+      ],
+      "max_prob": 0.9696290493011475,
+      "entropy": 0.11311940848827362
+    },
+    {
+      "image_id": "9c14ce27cbfc.png",
+      "true_grade": 0,
+      "pred_grade": 0,
+      "correct": true,
+      "probs": [
+        0.9851753115653992,
+        0.0109199034050107,
+        0.001752805314026773,
+        0.002151977503672242
+      ],
+      "max_prob": 0.9851753115653992,
+      "entropy": 0.06375386565923691
+    }
+  ]
+}

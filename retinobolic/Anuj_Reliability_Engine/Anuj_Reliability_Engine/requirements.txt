@@ -1,0 +1,9 @@
+﻿# anuj-reliability — Reliability Engine
+# Module 4: Confidence + Uncertainty + OOD → Reliability
+# SIH Problem ID: SIH26038
+
+# Core dependency (already available in project environment)
+numpy>=1.24.0
+
+# Testing
+pytest>=7.0.0

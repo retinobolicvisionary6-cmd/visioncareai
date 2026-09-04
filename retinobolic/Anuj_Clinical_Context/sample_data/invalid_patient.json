@@ -1,0 +1,8 @@
+﻿{
+  "patient_id": "DEMO_INVALID",
+  "age": -5,
+  "bp_systolic": "abc",
+  "bp_diastolic": 92,
+  "hba1c": 8.2,
+  "diabetes_duration_years": -3
+}

@@ -1,0 +1,26 @@
+{
+  "action": "recapture",
+  "priority": "medium",
+  "reason": "Fundus image is ungradable due to insufficient image quality. A new image must be captured before DR screening can proceed. Quality assessment detail: Insufficient field of view.",
+  "review_required": false,
+  "dr_grade": null,
+  "reliability_status": null,
+  "evidence": {
+    "quality_status": "ungradable",
+    "quality_score": 0.19,
+    "confidence": 0.97,
+    "confidence_level": "high",
+    "uncertainty": 0.08,
+    "uncertainty_level": "low",
+    "ood": false,
+    "ood_score": 1.3,
+    "reliability_score": 0.95,
+    "gradcam_path": null,
+    "clinical_context_complete": false,
+    "reliability_signals": []
+  },
+  "metadata": {
+    "rule_applied": "RULE_1_UNGRADABLE",
+    "engine_version": "1.0.0"
+  }
+}

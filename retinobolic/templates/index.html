@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionCare — AI Clinical Diagnostics & Retinal Screening</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#07111e',
+                            900: '#0f2137',
+                            850: '#142742',
+                            800: '#1c3454',
+                            700: '#25446c',
+                        },
+                        nuvica: {
+                            accent: '#00e676',       /* Vibrant neon mint green from design */
+                            accentHover: '#00c853',
+                            accentLight: '#e8faf0',
+                            sky: '#0284c7',
+                            ice: '#ebf4fa',
+                            iceLight: '#f4f9fd',
+                            cardBlue: '#3b5879',
+                        },
+                        darkGreen: {
+                            premium: '#051b11',      /* Very dark green premium */
+                            card: '#0a2e1d',         /* Dark green for cards */
+                            border: '#114a2f',       /* Dark green for borders */
+                            text: '#f0fdf4',         /* Very light green / white text */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    boxShadow: {
+                        'nuvica': '0 20px 40px -15px rgba(15, 33, 55, 0.08), 0 0 1px 1px rgba(15, 33, 55, 0.04)',
+                        'nuvica-lg': '0 30px 60px -20px rgba(15, 33, 55, 0.12), 0 0 1px 1px rgba(15, 33, 55, 0.06)',
+                        'glow-accent': '0 10px 25px -5px rgba(0, 230, 118, 0.4)',
+                        'card-float': '0 25px 50px -12px rgba(15, 33, 55, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg-hero: radial-gradient(130% 85% at 50% -5%, #c5e0f5 0%, #e5f1fb 32%, #f5f9fd 65%, #ffffff 100%);
+            --navy-primary: #0f2137;
+            --accent-green: #00e676;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f7faff;
+            color: #0f2137;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphic floating cards */
+        .glass-badge {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 20px 35px -10px rgba(15, 33, 55, 0.12), 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        /* Laser Scanner Animation */
+        .scanner-beam {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00e676, #38bdf8, #00e676, transparent);
+            box-shadow: 0 0 20px 4px rgba(0, 230, 118, 0.8);
+            animation: scanUpDown 2.2s ease-in-out infinite alternate;
+        }
+        @keyframes scanUpDown {
+            0% { top: 4%; opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { top: 96%; opacity: 0.2; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-navy-900 dark:text-darkGreen-text dark:text-darkGreen-text antialiased selection:bg-nuvica-accent selection:text-navy-950 flex flex-col justify-between transition-colors duration-300 dark:bg-darkGreen-premium">
+    <!-- Overlay for hero background in light mode -->
+    <div id="lightBgOverlay" class="fixed inset-0 z-[-1] pointer-events-none transition-opacity duration-300 dark:opacity-0" style="background: var(--bg-hero);"></div>
+
+    <div>
+        <!-- TOP NAVIGATION BAR -->
+        <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+            <nav class="flex items-center justify-between">
+                
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 group cursor-pointer">
+                    <div class="w-10 h-10 rounded-2xl bg-navy-900 text-nuvica-accent flex items-center justify-center font-black text-xl shadow-md group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl font-extrabold tracking-tight text-navy-900 dark:text-darkGreen-text">VisionCare</span>
+                            <span class="px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded-md bg-sky-100 text-sky-800 border border-sky-200">SIH26038</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 dark:text-gray-400 font-semibold tracking-wide">AI Clinical Screening Suite</p>
+                    </div>
+                </div>
+
+                <!-- Right Status & Controls -->
+                <div class="flex items-center space-x-3">
+                    <div class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/80 dark:bg-emerald-50 border border-slate-200 dark:border-emerald-200 text-xs font-semibold text-slate-700 dark:text-emerald-900 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>EfficientNet-B0 Ensemble</span>
+                    </div>
+
+                    <button onclick="toggleTheme()" class="px-4 py-2 text-xs font-bold text-slate-700 dark:text-gray-200 hover:text-navy-900 dark:text-darkGreen-text bg-white hover:bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl transition-all shadow-sm flex items-center space-x-2 dark:bg-darkGreen-card dark:text-darkGreen-text dark:border-darkGreen-border dark:hover:bg-darkGreen-border dark:hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                        <span>Theme</span>
+                    </button>
+
+                    <button onclick="resetAll()" class="px-4 py-2 text-xs font-bold text-slate-700 dark:text-gray-200 hover:text-navy-900 dark:text-darkGreen-text bg-white hover:bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl transition-all shadow-sm flex items-center space-x-2 dark:bg-darkGreen-card dark:text-darkGreen-text dark:border-darkGreen-border dark:hover:bg-darkGreen-border dark:hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>Reset Workspace</span>
+                    </button>
+
+                    <button id="btnSignOut" class="hidden px-4 py-2 text-xs font-bold text-rose-600 hover:text-white bg-white hover:bg-rose-500 border border-slate-200 rounded-xl transition-all shadow-sm flex items-center space-x-2 dark:bg-darkGreen-card dark:border-darkGreen-border dark:hover:bg-rose-600 dark:hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+
+            </nav>
+        </header>
+
+        <!-- LOGIN/AUTH MODAL (Visible by Default, Hidden when Auth'd) -->
+        <div id="authOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-navy-900/60 backdrop-blur-sm transition-opacity duration-300">
+            <div class="bg-white dark:bg-darkGreen-card border border-slate-200 dark:border-darkGreen-border rounded-3xl p-8 max-w-md w-full shadow-nuvica-lg m-4 transform transition-all relative overflow-hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-black text-navy-900 dark:text-darkGreen-text">VisionCare Access</h2>
+                    <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Sign in to access the clinical diagnostic suite.</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- Google Sign In -->
+                    <button id="btnGoogleSignIn" class="w-full flex items-center justify-center space-x-3 px-4 py-3 border border-slate-200 dark:border-darkGreen-border rounded-xl bg-white dark:bg-darkGreen-premium hover:bg-slate-50 dark:hover:bg-darkGreen-border text-sm font-bold text-navy-900 dark:text-darkGreen-text transition-all shadow-sm">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </button>
+
+                    <div class="relative flex items-center py-2">
+                        <div class="flex-grow border-t border-slate-200 dark:border-darkGreen-border"></div>
+                        <span class="flex-shrink-0 mx-4 text-xs font-medium text-slate-400">OR EMAIL</span>
+                        <div class="flex-grow border-t border-slate-200 dark:border-darkGreen-border"></div>
+                    </div>
+
+                    <form id="authForm" class="space-y-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-gray-300 mb-1">Email Address</label>
+                            <input type="email" id="authEmail" required class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text text-sm focus:outline-none focus:border-navy-900 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-gray-300 mb-1">Password</label>
+                            <input type="password" id="authPassword" required minlength="6" class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text text-sm focus:outline-none focus:border-navy-900 transition-colors">
+                        </div>
+                        <button type="submit" id="btnEmailAuth" class="w-full py-3 rounded-xl font-black text-sm uppercase tracking-wider text-navy-950 bg-nuvica-accent hover:bg-nuvica-accentHover shadow-glow-accent transition-all">
+                            Sign In / Sign Up
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- WE OFFER PRO DNA & RETINAL AI DIAGNOSTICS SECTION -->
+        <main id="app-content" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+            
+            <!-- Section Header -->
+            <div class="space-y-2">
+                <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold tracking-wide uppercase shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>REAL-TIME MULTI-LAYER AI SCREENING</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-navy-900 dark:text-darkGreen-text uppercase">
+                    WE OFFER PRO DNA & RETINAL AI DIAGNOSTICS
+                </h1>
+                <p class="text-sm sm:text-base text-slate-600 dark:text-gray-300 max-w-3xl leading-relaxed">
+                    High-precision clinical screening powered by 5-Class ICDR Deep Ensemble, Bayesian Epistemic Uncertainty (MCDO), Out-of-Distribution Safety Guardrails, and Grad-CAM Explainable AI.
+                </p>
+            </div>
+
+            <!-- WORKSPACE GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- LEFT COLUMN: Patient Input & Clinical Context (5 Cols) -->
+                <div class="lg:col-span-5 space-y-6">
+
+                    <!-- 1. Retinal Fundus Input Card -->
+                    <div class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-4">
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-6 h-6 rounded-lg bg-navy-900 text-nuvica-accent flex items-center justify-center text-xs font-bold">1</div>
+                                <h3 class="text-sm font-extrabold text-navy-900 dark:text-darkGreen-text tracking-tight uppercase">Retinal Fundus Scan</h3>
+                            </div>
+                            <span id="fileBadge" class="text-[11px] font-mono text-slate-500 dark:text-gray-400 font-semibold truncate max-w-[170px]">No scan chosen</span>
+                        </div>
+
+                        <!-- Drag & Drop Zone -->
+                        <div id="dropzone" class="relative group cursor-pointer border-2 border-dashed border-slate-200 hover:border-nuvica-accent rounded-2xl p-5 transition-all duration-300 bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70 hover:bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border text-center overflow-hidden min-h-[220px] flex flex-col items-center justify-center">
+                            <input type="file" id="fileInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20">
+
+                            <!-- Placeholder State -->
+                            <div id="uploadPlaceholder" class="space-y-3">
+                                <div class="w-14 h-14 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center mx-auto text-sky-600 group-hover:scale-110 transition-transform shadow-sm">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-navy-900 dark:text-darkGreen-text">Drag & drop patient fundus scan</p>
+                                    <p class="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">High-resolution PNG, JPG, JPEG, TIFF</p>
+                                </div>
+                                <span class="inline-block px-3.5 py-1.5 text-xs font-bold text-navy-900 dark:text-emerald-900 bg-white dark:bg-emerald-50 border border-slate-200 dark:border-emerald-200 rounded-full shadow-sm group-hover:border-navy-900 transition-colors">
+                                    Browse Local Scan
+                                </span>
+                            </div>
+
+                            <!-- Image Preview State -->
+                            <div id="previewContainer" class="hidden relative w-full h-full min-h-[200px] flex items-center justify-center">
+                                <img id="imagePreview" src="" alt="Fundus Preview" class="max-h-[220px] rounded-xl object-contain shadow-md">
+                                
+                                <!-- Scanner Animation Overlay -->
+                                <div id="scanEffect" class="hidden absolute inset-0 overflow-hidden pointer-events-none rounded-xl">
+                                    <div class="scanner-beam"></div>
+                                </div>
+
+                                <button onclick="clearImage(event)" class="absolute top-2 right-2 p-1.5 bg-navy-950/80 hover:bg-rose-600 text-white rounded-full transition-colors z-30 shadow-md" title="Remove image">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <!-- Preset Quick Test Bench Cases -->
+                        <div class="space-y-2 pt-1">
+                            <label class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 flex items-center justify-between">
+                                <span>⚡ Verified Preset Case Bench</span>
+                            </label>
+                            <div class="grid grid-cols-5 gap-1.5">
+                                <button onclick="loadSample(0)" class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-emerald-50 border border-slate-200 hover:border-emerald-400 transition-all">
+                                    <span class="block text-[10px] font-extrabold text-emerald-600">G-0</span>
+                                    <span class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Normal</span>
+                                </button>
+                                <button onclick="loadSample(1)" class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-sky-50 border border-slate-200 hover:border-sky-400 transition-all">
+                                    <span class="block text-[10px] font-extrabold text-sky-600">G-1</span>
+                                    <span class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Mild</span>
+                                </button>
+                                <button onclick="loadSample(2)" class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-amber-50 border border-slate-200 hover:border-amber-400 transition-all">
+                                    <span class="block text-[10px] font-extrabold text-amber-600">G-2</span>
+                                    <span class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Moderate</span>
+                                </button>
+                                <button onclick="loadSample(3)" class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-rose-50 border border-slate-200 hover:border-rose-400 transition-all">
+                                    <span class="block text-[10px] font-extrabold text-rose-600">G-3</span>
+                                    <span class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Severe</span>
+                                </button>
+                                <button onclick="loadSample(4)" class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-purple-50 border border-slate-200 hover:border-purple-400 transition-all">
+                                    <span class="block text-[10px] font-extrabold text-purple-600">G-4</span>
+                                    <span class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">PDR</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 2. Patient Clinical Context (Optional EHR) -->
+                    <div class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="w-6 h-6 rounded-lg bg-navy-900 text-nuvica-accent flex items-center justify-center text-xs font-bold">2</div>
+                                <h3 class="text-sm font-extrabold text-navy-900 dark:text-darkGreen-text tracking-tight uppercase">Patient Clinical Context</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 font-semibold">Multimodal EHR</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">Patient Age</label>
+                                <input type="number" id="ageInput" placeholder="e.g. 58" class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">HbA1c Level (%)</label>
+                                <input type="number" step="0.1" id="hba1cInput" placeholder="e.g. 7.8" class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">Systolic BP (mmHg)</label>
+                                <input type="number" id="bpSysInput" placeholder="e.g. 135" class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">Diastolic BP (mmHg)</label>
+                                <input type="number" id="bpDiaInput" placeholder="e.g. 88" class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">Diabetes Duration (Years)</label>
+                                <input type="number" id="durationInput" placeholder="e.g. 12" class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button id="analyzeBtn" onclick="runAnalysis()" class="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider text-navy-950 bg-nuvica-accent hover:bg-nuvica-accentHover shadow-glow-accent transition-all transform active:scale-[0.99] flex items-center justify-center space-x-2">
+                        <svg id="btnIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span id="btnText">RUN REAL-TIME DIAGNOSIS</span>
+                    </button>
+
+                </div>
+
+                <!-- RIGHT COLUMN: Real-Time AI Diagnostic Dashboard (7 Cols) -->
+                <div class="lg:col-span-7 space-y-6">
+
+                    <!-- Welcome Placeholder State -->
+                    <div id="resultsPlaceholder" class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-10 text-center space-y-4 shadow-nuvica border border-slate-100">
+                        <div class="w-16 h-16 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center mx-auto text-sky-600 shadow-sm">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <div class="max-w-md mx-auto">
+                            <h3 class="text-lg font-extrabold text-navy-900 dark:text-darkGreen-text">Awaiting Retinal Fundus Scan</h3>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1.5 leading-relaxed">
+                                Upload a retinal fundus scan on the left panel or click any preset sample case (G-0 to G-4) to execute the end-to-end multi-layer AI screening pipeline in real time.
+                            </p>
+                        </div>
+                        <div class="pt-3 flex flex-wrap justify-center gap-2 text-[11px] font-mono font-bold text-slate-500 dark:text-emerald-900">
+                            <span class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">Quality Gate</span>
+                            <span class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">5-Class DR Inference</span>
+                            <span class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">MCDO Epistemic</span>
+                            <span class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">Shannon Entropy</span>
+                            <span class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">Grad-CAM XAI</span>
+                        </div>
+                    </div>
+
+                    <!-- Active Results Dashboard (Hidden until diagnosis is performed) -->
+                    <div id="resultsDashboard" class="hidden space-y-6">
+
+                        <!-- 1. Main Action Referral Banner -->
+                        <div id="actionBanner" class="rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border transition-all duration-300">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="space-y-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span id="priorityBadge" class="px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full tracking-wider">PRIORITY: URGENT</span>
+                                        <span id="ruleBadge" class="text-[10px] font-mono text-slate-500 dark:text-gray-400 font-bold">RULE_3_REFERRAL</span>
+                                    </div>
+                                    <h2 id="actionTitle" class="text-2xl sm:text-3xl font-black tracking-tight text-navy-900 dark:text-darkGreen-text">REFERRAL REQUIRED</h2>
+                                    <p id="actionSubtitle" class="text-xs text-slate-600 dark:text-gray-300 font-semibold">Specialist ophthalmology intervention recommended.</p>
+                                </div>
+                                
+                                <div class="sm:text-right sm:border-l sm:border-slate-200 sm:pl-6">
+                                    <p class="text-[10px] uppercase font-mono font-bold tracking-wider text-slate-400">Assessed DR Severity</p>
+                                    <p id="gradeTitle" class="text-xl sm:text-2xl font-black text-rose-600">Grade 3 — Severe NPDR</p>
+                                </div>
+                            </div>
+
+                            <!-- Clinical Reasoning Quote -->
+                            <div class="mt-4 pt-4 border-t border-slate-200/60">
+                                <p class="text-[11px] font-mono uppercase font-bold tracking-wider text-slate-500 dark:text-gray-400 mb-1">Clinical Evidence & Decision Rationale:</p>
+                                <p id="decisionReason" class="text-xs text-slate-700 dark:text-gray-200 leading-relaxed font-medium bg-white/70 p-3 rounded-xl border border-slate-200/60"></p>
+                            </div>
+                        </div>
+
+                        <!-- 2. Multi-Layer Clinical Screening Summary Table -->
+                        <div class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <h3 class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-darkGreen-text flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
+                                    <span>Fundus Quality & AI Safety Audit</span>
+                                </h3>
+                                <span class="text-[10px] font-mono font-bold text-slate-400">VisionCare AI Engine</span>
+                            </div>
+
+                            <div class="overflow-hidden rounded-2xl border border-slate-100 text-xs">
+                                <table class="w-full text-left divide-y divide-slate-100">
+                                <tbody class="divide-y divide-slate-100 font-medium">
+                                    <tr class="bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70">
+                                        <td class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px] w-1/3">Referral Action</td>
+                                        <td id="summaryReferralAction" class="py-2.5 px-4 text-emerald-600 font-bold">
+                                            🟢 ROUTINE ANNUAL SCREENING
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px]">Image Quality Gate</td>
+                                        <td id="summaryQualityGate" class="py-2.5 px-4 text-slate-800">
+                                            Clear macular focus <span id="summaryQualityBadge" class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">GOOD (79%)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70">
+                                        <td class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px]">OOD Fake Detector</td>
+                                        <td id="summaryOOD" class="py-2.5 px-4 text-slate-800">
+                                            Real clinical fundus verified <span id="summaryOodBadge" class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">IN-DISTRIBUTION</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px]">Shannon Entropy</td>
+                                        <td id="summaryUncertainty" class="py-2.5 px-4 text-slate-800">
+                                            Standard clinical uncertainty <span id="summaryEntropyBadge" class="text-[10px] font-mono text-sky-700 ml-1.5 px-2 py-0.5 bg-sky-50 rounded-full font-bold">MEDIUM (0.68)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70">
+                                        <td class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px]">Epistemic (MCDO)</td>
+                                        <td id="summaryMCDO" class="py-2.5 px-4 text-slate-800">
+                                            10 Bayesian Monte Carlo passes <span id="summaryMcdoBadge" class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">HIGH STABILITY (0.003)</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 3. 5-Class Probability Spectrum -->
+                        <div class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-darkGreen-text flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
+                                    <span>5-Class ICDR Probability Spectrum</span>
+                                </h3>
+                                <span class="text-[10px] font-mono font-bold text-slate-400">Softmax Confidence</span>
+                            </div>
+
+                            <div class="space-y-2.5 pt-1" id="probabilityBars">
+                                <!-- Injected by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- 4. Safety Guardrail Cards (4 Metrics) -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <!-- Quality -->
+                            <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-4 shadow-sm border border-slate-100 space-y-1">
+                                <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">Quality Gate</span>
+                                <div class="flex items-baseline space-x-1.5">
+                                    <span id="cardQualityScore" class="text-base font-black text-navy-900 dark:text-darkGreen-text">92%</span>
+                                    <span id="cardQualityStatus" class="text-[10px] font-bold text-emerald-600">GOOD</span>
+                                </div>
+                                <p id="cardQualityDetail" class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Clear macular focus</p>
+                            </div>
+
+                            <!-- Confidence -->
+                            <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-4 shadow-sm border border-slate-100 space-y-1">
+                                <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">Confidence</span>
+                                <div class="flex items-baseline space-x-1.5">
+                                    <span id="cardConfidence" class="text-base font-black text-navy-900 dark:text-darkGreen-text">88%</span>
+                                    <span id="cardConfidenceLevel" class="text-[10px] font-bold text-emerald-600">HIGH</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Top class margin</p>
+                            </div>
+
+                            <!-- Bayesian MCDO -->
+                            <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-4 shadow-sm border border-slate-100 space-y-1">
+                                <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">MCDO Epistemic</span>
+                                <div class="flex items-baseline space-x-1.5">
+                                    <span id="cardMcdoVar" class="text-base font-black text-emerald-600">0.003</span>
+                                    <span id="cardMcdoLevel" class="text-[10px] font-bold text-emerald-600">STABLE</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">10-Pass Bayesian Var</p>
+                            </div>
+
+                            <!-- OOD Fake Check -->
+                            <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-4 shadow-sm border border-slate-100 space-y-1">
+                                <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">OOD Detector</span>
+                                <div class="flex items-baseline space-x-1.5">
+                                    <span id="cardOod" class="text-base font-black text-emerald-600">NO</span>
+                                    <span class="text-[10px] font-bold text-slate-400">IN-DIST</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Real fundus verified</p>
+                            </div>
+                        </div>
+
+                        <!-- 5. Explainable AI (Grad-CAM Visualizer) -->
+                        <div class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div>
+                                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-darkGreen-text flex items-center space-x-2">
+                                        <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
+                                        <span>Explainable AI (Grad-CAM Localization)</span>
+                                    </h3>
+                                    <p class="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">Visual verification of microaneurysms, hemorrhages, and exudates</p>
+                                </div>
+
+                                <!-- Image View Selector Tabs -->
+                                <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-[11px] font-bold">
+                                    <button onclick="setGradCamView('overlay')" id="tabOverlay" class="px-3 py-1.5 rounded-lg bg-navy-900 text-white transition-all">Overlay</button>
+                                    <button onclick="setGradCamView('heatmap')" id="tabHeatmap" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-gray-300 hover:text-navy-900 dark:text-darkGreen-text transition-all">Heatmap</button>
+                                    <button onclick="setGradCamView('original')" id="tabOriginal" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-gray-300 hover:text-navy-900 dark:text-darkGreen-text transition-all">Retina</button>
+                                </div>
+                            </div>
+
+                            <!-- Grad-CAM Image Display -->
+                            <div class="relative bg-slate-900 rounded-2xl overflow-hidden flex items-center justify-center min-h-[300px] max-h-[420px] p-2 border border-slate-200">
+                                <img id="gradcamDisplay" src="" alt="Grad-CAM Visualization" class="max-h-[400px] w-auto object-contain rounded-xl shadow-lg transition-opacity duration-200">
+                                
+                                <div id="gradcamBadge" class="absolute bottom-4 left-4 bg-navy-950/80 backdrop-blur-md px-3.5 py-1 rounded-full border border-white/20 text-[11px] font-mono text-white font-semibold">
+                                    View: Diagnostic Lesion Overlay
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Footer -->
+                        <div class="flex items-center justify-between pt-2">
+                            <p class="text-[11px] text-slate-400 italic">VisionCare Automated Screening Engine — Final clinical confirmation by licensed ophthalmologist required.</p>
+                            <button onclick="window.print()" class="px-4 py-2 bg-navy-900 hover:bg-navy-950 text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                <span>Print Diagnostic Slip</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy-950 text-white py-8 border-t border-navy-900 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                
+                <div class="flex items-center space-x-3">
+                    <div class="w-7 h-7 rounded-lg bg-nuvica-accent text-navy-950 flex items-center justify-center font-black text-sm">
+                        +
+                    </div>
+                    <span class="text-lg font-extrabold tracking-tight">VisionCare</span>
+                    <span class="text-xs text-slate-400 pl-2">| High-Precision AI Clinical Diagnostics</span>
+                </div>
+
+                <div class="text-xs text-slate-400 font-medium">
+                    &copy; 2026 VisionCare Healthcare Systems. All rights reserved.
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 hidden bg-navy-950 text-white px-5 py-3.5 rounded-2xl shadow-2xl z-50 text-xs flex items-center space-x-3 border border-white/10">
+        <span class="w-2.5 h-2.5 rounded-full bg-nuvica-accent animate-ping"></span>
+        <span id="toastMsg" class="font-bold">Notification message</span>
+    </div>
+
+    <!-- JAVASCRIPT CLIENT LOGIC -->
+    <script>
+        let currentImages = {};
+        let activeSampleGrade = null;
+        let selectedFile = null;
+
+        const CLASS_LABELS = {
+            0: { name: "No DR (Healthy)", color: "#10b981", tag: "Grade 0" },
+            1: { name: "Mild NPDR", color: "#0ea5e9", tag: "Grade 1" },
+            2: { name: "Moderate NPDR", color: "#f59e0b", tag: "Grade 2" },
+            3: { name: "Severe NPDR", color: "#f43f5e", tag: "Grade 3" },
+            4: { name: "Proliferative DR (PDR)", color: "#a855f7", tag: "Grade 4" }
+        };
+
+        const fileInput = document.getElementById('fileInput');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileBadge = document.getElementById('fileBadge');
+        const dropzone = document.getElementById('dropzone');
+
+        function handleFileSelect(file) {
+            if (!file) return;
+            selectedFile = file;
+            activeSampleGrade = null;
+            clearActiveSampleButtons();
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                imagePreview.src = evt.target.result;
+                uploadPlaceholder.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+                fileBadge.textContent = 'Upload: ' + file.name;
+                fileBadge.classList.add('text-sky-600');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('border-nuvica-accent', 'bg-emerald-50/40');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('border-nuvica-accent', 'bg-emerald-50/40');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            if (dt && dt.files && dt.files.length > 0) {
+                handleFileSelect(dt.files[0]);
+            }
+        });
+
+        function clearImage(e) {
+            if (e) e.stopPropagation();
+            fileInput.value = "";
+            selectedFile = null;
+            activeSampleGrade = null;
+            imagePreview.src = "";
+            uploadPlaceholder.classList.remove('hidden');
+            previewContainer.classList.add('hidden');
+            fileBadge.textContent = "No scan chosen";
+            fileBadge.classList.remove('text-sky-600');
+            clearActiveSampleButtons();
+        }
+
+        function clearActiveSampleButtons() {
+            document.querySelectorAll('.sample-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-navy-900', 'bg-white', 'shadow-sm');
+            });
+        }
+
+        async function loadSample(grade) {
+            clearImage();
+            activeSampleGrade = grade;
+            clearActiveSampleButtons();
+
+            const buttons = document.querySelectorAll('.sample-btn');
+            if (buttons[grade]) {
+                buttons[grade].classList.add('ring-2', 'ring-navy-900', 'bg-white', 'shadow-sm');
+            }
+
+            try {
+                showToast(`Loading verified sample case Grade ${grade}...`);
+                const res = await fetch(`/api/sample/${grade}`);
+                const data = await res.json();
+                if (data.image_b64) {
+                    imagePreview.src = data.image_b64;
+                    uploadPlaceholder.classList.add('hidden');
+                    previewContainer.classList.remove('hidden');
+                    fileBadge.textContent = `Preset: ${CLASS_LABELS[grade].tag}`;
+                    fileBadge.classList.add('text-sky-600');
+                    
+                    // Auto-trigger analysis for instantaneous diagnosis
+                    runAnalysis();
+                }
+            } catch (err) {
+                showToast("Failed to load sample: " + err.message);
+            }
+        }
+
+        async function runAnalysis() {
+            if (!selectedFile && activeSampleGrade === null) {
+                showToast("Please upload a fundus image or click a sample case!");
+                return;
+            }
+
+            const btn = document.getElementById('analyzeBtn');
+            const btnText = document.getElementById('btnText');
+            const scanEffect = document.getElementById('scanEffect');
+
+            btn.disabled = true;
+            btnText.textContent = "SCREENING THROUGH AI PIPELINE...";
+            btn.classList.add('opacity-80');
+            scanEffect.classList.remove('hidden');
+
+            const formData = new FormData();
+            if (selectedFile) {
+                formData.append('image', selectedFile);
+            } else if (activeSampleGrade !== null) {
+                formData.append('sample_grade', activeSampleGrade);
+            }
+
+            const age = document.getElementById('ageInput').value;
+            const hba1c = document.getElementById('hba1cInput').value;
+            const bpSys = document.getElementById('bpSysInput').value;
+            const bpDia = document.getElementById('bpDiaInput').value;
+            const duration = document.getElementById('durationInput').value;
+
+            if (age) formData.append('age', age);
+            if (hba1c) formData.append('hba1c', hba1c);
+            if (bpSys) formData.append('bp_systolic', bpSys);
+            if (bpDia) formData.append('bp_diastolic', bpDia);
+            if (duration) formData.append('diabetes_duration', duration);
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    try {
+                        const data = JSON.parse(text);
+                        throw new Error(data.error || `Server returned ${response.status}`);
+                    } catch (e) {
+                        if (e.message.includes('Server returned') || text === "") {
+                            throw e;
+                        }
+                        // Handle HTML error pages (like Render 502/504)
+                        let errMsg = "Platform error: ";
+                        if (response.status === 504) errMsg += "Gateway Timeout (Server took too long).";
+                        else if (response.status === 502) errMsg += "Bad Gateway (Server is down or booting).";
+                        else errMsg += `HTTP ${response.status}`;
+                        throw new Error(errMsg);
+                    }
+                }
+
+                const data = await response.json();
+
+                currentImages = data.images;
+                renderResults(data.pipeline);
+                showToast("Diagnosis completed successfully!");
+
+                // Save to Firestore
+                if (window.saveDiagnosisToFirestore) {
+                    window.saveDiagnosisToFirestore({
+                        age, hba1c, bpSys, bpDia, duration
+                    }, data.pipeline);
+                }
+
+            } catch (err) {
+                alert("Screening Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = "RUN REAL-TIME DIAGNOSIS";
+                btn.classList.remove('opacity-80');
+                scanEffect.classList.add('hidden');
+            }
+        }
+
+        function renderResults(pipeline) {
+            document.getElementById('resultsPlaceholder').classList.add('hidden');
+            const dash = document.getElementById('resultsDashboard');
+            dash.classList.remove('hidden');
+
+            const quality = pipeline.quality || {};
+            const drResult = pipeline.dr_result || {};
+            const reliability = pipeline.reliability || {};
+            const decision = pipeline.final_decision || {};
+
+            const action = (decision.action || "ROUTINE").toUpperCase();
+            const priority = (decision.priority || "LOW").toUpperCase();
+            const actionBanner = document.getElementById('actionBanner');
+            const actionTitle = document.getElementById('actionTitle');
+            const actionSubtitle = document.getElementById('actionSubtitle');
+            const priorityBadge = document.getElementById('priorityBadge');
+            const ruleBadge = document.getElementById('ruleBadge');
+            const gradeTitle = document.getElementById('gradeTitle');
+            const decisionReason = document.getElementById('decisionReason');
+
+            ruleBadge.textContent = (decision.metadata && decision.metadata.rule_applied) || "DECISION_ENGINE_V1";
+            decisionReason.textContent = decision.reason || "Diagnosis completed based on clinical safety thresholds.";
+
+            if (action === "REFER" || action === "REFERRAL") {
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-rose-200 bg-gradient-to-br from-rose-50/90 via-white to-rose-50/40";
+                actionTitle.textContent = "SPECIALIST REFERRAL REQUIRED";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-rose-600";
+                actionSubtitle.textContent = "High risk of progressive vision loss detected. Urgent ophthalmology triage recommended.";
+                priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-rose-600 text-white shadow-sm";
+                priorityBadge.textContent = `PRIORITY: ${priority}`;
+            } else if (action === "DOCTOR_REVIEW") {
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-amber-200 bg-gradient-to-br from-amber-50/90 via-white to-amber-50/40";
+                actionTitle.textContent = "HUMAN DOCTOR REVIEW REQUIRED";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-amber-700";
+                actionSubtitle.textContent = "Safety Engine intercepted high uncertainty / out-of-distribution artifact. Automated triage bypassed.";
+                priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-amber-500 text-white";
+                priorityBadge.textContent = `PRIORITY: ${priority}`;
+            } else if (action === "RECAPTURE") {
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-yellow-300 bg-yellow-50/80";
+                actionTitle.textContent = "RECAPTURE FUNDUS IMAGE";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-yellow-800";
+                actionSubtitle.textContent = "Image quality inadequate for reliable clinical grading.";
+                priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-yellow-500 text-white";
+                priorityBadge.textContent = `STATUS: UNGRADABLE`;
+            } else {
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-emerald-200 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/40";
+                actionTitle.textContent = "ROUTINE ANNUAL SCREENING";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-emerald-600";
+                actionSubtitle.textContent = "No referable DR detected. Continue standard annual screening schedule.";
+                priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-emerald-600 text-white shadow-sm";
+                priorityBadge.textContent = `PRIORITY: LOW`;
+            }
+
+            const predGrade = (drResult.grade !== undefined) ? drResult.grade : (decision.dr_grade !== undefined ? decision.dr_grade : 0);
+            const classInfo = CLASS_LABELS[predGrade] || { name: "Unknown", tag: "Grade N/A" };
+            gradeTitle.textContent = `${classInfo.tag} — ${classInfo.name}`;
+            gradeTitle.style.color = classInfo.color;
+
+            // 5-Class Probability Bars
+            const probsContainer = document.getElementById('probabilityBars');
+            probsContainer.innerHTML = "";
+            const probs = drResult.probabilities || { "0": 0.2, "1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2 };
+
+            for (let g = 0; g <= 4; g++) {
+                const pVal = probs[String(g)] !== undefined ? probs[String(g)] : 0;
+                const pct = (pVal * 100).toFixed(1);
+                const isWinner = (g === predGrade);
+                const info = CLASS_LABELS[g];
+
+                const barWrapper = document.createElement('div');
+                barWrapper.className = `p-2.5 rounded-xl transition-all ${isWinner ? 'bg-slate-100/90 border border-slate-200 shadow-sm' : 'opacity-70'}`;
+                barWrapper.innerHTML = `
+                    <div class="flex items-center justify-between text-xs mb-1.5">
+                        <span class="font-bold ${isWinner ? 'text-navy-900 dark:text-darkGreen-text' : 'text-slate-600 dark:text-gray-300'} flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${info.color}"></span>
+                            <span>${info.tag}: ${info.name}</span>
+                            ${isWinner ? '<span class="text-[10px] font-mono font-extrabold text-navy-900 dark:text-darkGreen-text bg-white px-2 py-0.5 rounded-full shadow-xs border border-slate-200">PREDICTED</span>' : ''}
+                        </span>
+                        <span class="font-mono text-xs font-black ${isWinner ? 'text-navy-900 dark:text-darkGreen-text' : 'text-slate-500 dark:text-gray-400'}">${pct}%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-700" style="width: ${pct}%; background-color: ${info.color}"></div>
+                    </div>
+                `;
+                probsContainer.appendChild(barWrapper);
+            }
+
+            // Safety Guardrail Cards
+            const qScore = quality.quality_score !== undefined ? Math.round(quality.quality_score * 100) : 90;
+            document.getElementById('cardQualityScore').textContent = `${qScore}%`;
+            const qStatus = (quality.status || "GOOD").toUpperCase();
+            document.getElementById('cardQualityStatus').textContent = qStatus;
+            document.getElementById('cardQualityStatus').className = qStatus === "GOOD" ? "text-[10px] font-bold text-emerald-600" : "text-[10px] font-bold text-amber-600";
+            document.getElementById('cardQualityDetail').textContent = quality.reason || "Gradable retina focus";
+
+            const conf = reliability.confidence !== undefined ? Math.round(reliability.confidence * 100) : 80;
+            document.getElementById('cardConfidence').textContent = `${conf}%`;
+            const confLevel = (reliability.confidence_level || "HIGH").toUpperCase();
+            document.getElementById('cardConfidenceLevel').textContent = confLevel;
+
+            const entropy = reliability.uncertainty !== undefined ? reliability.uncertainty.toFixed(2) : "0.25";
+            const entropyLevel = (reliability.uncertainty_level || "LOW").toUpperCase();
+
+            const isOod = reliability.ood === true;
+            document.getElementById('cardOod').textContent = isOod ? "YES" : "NO";
+            document.getElementById('cardOod').className = isOod ? "text-base font-black text-rose-600" : "text-base font-black text-emerald-600";
+
+            // Multi-Layer Screening Summary Table
+            const summaryAction = document.getElementById('summaryReferralAction');
+            if (action === "REFER" || action === "REFERRAL") {
+                summaryAction.innerHTML = `<span class="text-rose-600 font-black">🔴 SPECIALIST REFERRAL REQUIRED (${priority})</span>`;
+            } else if (action === "DOCTOR_REVIEW") {
+                summaryAction.innerHTML = `<span class="text-amber-600 font-black">🟡 HUMAN DOCTOR REVIEW REQUIRED</span>`;
+            } else if (action === "RECAPTURE") {
+                summaryAction.innerHTML = `<span class="text-yellow-600 font-black">⚠️ RECAPTURE FUNDUS IMAGE</span>`;
+            } else {
+                summaryAction.innerHTML = `<span class="text-emerald-600 font-black">🟢 ROUTINE ANNUAL SCREENING</span>`;
+            }
+
+            const qualityBadgeClass = qStatus === "GOOD" ? "text-emerald-700 bg-emerald-50" : "text-amber-700 bg-amber-50";
+            document.getElementById('summaryQualityGate').innerHTML = `
+                ${quality.reason || "Clear macular focus, well-illuminated retina"} 
+                <span class="text-[10px] font-mono ml-1.5 px-2 py-0.5 rounded-full font-bold ${qualityBadgeClass}">${qStatus} (${qScore}%)</span>
+            `;
+
+            if (isOod) {
+                document.getElementById('summaryOOD').innerHTML = `
+                    Non-retinal artifact detected 
+                    <span class="text-[10px] font-mono text-rose-700 ml-1.5 px-2 py-0.5 bg-rose-50 rounded-full font-bold">OOD REJECTED</span>
+                `;
+            } else {
+                document.getElementById('summaryOOD').innerHTML = `
+                    Real clinical fundus scan verified 
+                    <span class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">IN-DISTRIBUTION</span>
+                `;
+            }
+
+            const entropyBadgeClass = (entropyLevel === "LOW" || entropyLevel === "MEDIUM") ? "text-sky-700 bg-sky-50" : "text-amber-700 bg-amber-50";
+            document.getElementById('summaryUncertainty').innerHTML = `
+                Standard clinical Shannon entropy 
+                <span class="text-[10px] font-mono ml-1.5 px-2 py-0.5 rounded-full font-bold ${entropyBadgeClass}">${entropyLevel} (${entropy})</span>
+            `;
+
+            const mcdo = drResult.mcdo || { epistemic_variance: 0.0032, epistemic_level: "LOW", num_samples: 10 };
+            const mcdoVar = mcdo.epistemic_variance !== undefined ? mcdo.epistemic_variance.toFixed(4) : "0.0030";
+            const mcdoLevel = (mcdo.epistemic_level || "LOW").toUpperCase();
+            const mcdoBadgeClass = mcdoLevel === "LOW" ? "text-emerald-700 bg-emerald-50" : (mcdoLevel === "MEDIUM" ? "text-sky-700 bg-sky-50" : "text-amber-700 bg-amber-50");
+            
+            document.getElementById('summaryMCDO').innerHTML = `
+                ${mcdo.num_samples || 10} Bayesian Monte Carlo Dropout passes 
+                <span class="text-[10px] font-mono ml-1.5 px-2 py-0.5 rounded-full font-bold ${mcdoBadgeClass}">${mcdoLevel === "LOW" ? "HIGH STABILITY" : mcdoLevel} (${mcdoVar})</span>
+            `;
+
+            document.getElementById('cardMcdoVar').textContent = mcdoVar;
+            document.getElementById('cardMcdoLevel').textContent = mcdoLevel === "LOW" ? "STABLE" : mcdoLevel;
+            document.getElementById('cardMcdoVar').className = mcdoLevel === "LOW" ? "text-base font-black text-emerald-600" : (mcdoLevel === "MEDIUM" ? "text-base font-black text-sky-600" : "text-base font-black text-amber-600");
+
+            // Grad-CAM Initial View
+            setGradCamView('overlay');
+        }
+
+        function setGradCamView(view) {
+            const display = document.getElementById('gradcamDisplay');
+            const badge = document.getElementById('gradcamBadge');
+            const tabOverlay = document.getElementById('tabOverlay');
+            const tabHeatmap = document.getElementById('tabHeatmap');
+            const tabOriginal = document.getElementById('tabOriginal');
+
+            [tabOverlay, tabHeatmap, tabOriginal].forEach(t => {
+                t.className = "px-3 py-1.5 rounded-lg text-slate-600 dark:text-gray-300 hover:text-navy-900 dark:text-darkGreen-text transition-all font-bold";
+            });
+
+            if (view === 'heatmap' && currentImages.gradcam_heatmap) {
+                display.src = currentImages.gradcam_heatmap;
+                badge.textContent = "View: Raw Attention Heatmap (Thermal)";
+                tabHeatmap.className = "px-3 py-1.5 rounded-lg bg-navy-900 text-white transition-all font-bold";
+            } else if (view === 'original' && (currentImages.gradcam_original || currentImages.input)) {
+                display.src = currentImages.gradcam_original || currentImages.input;
+                badge.textContent = "View: Preprocessed Fundus Retina";
+                tabOriginal.className = "px-3 py-1.5 rounded-lg bg-navy-900 text-white transition-all font-bold";
+            } else {
+                display.src = currentImages.gradcam_overlay || currentImages.input;
+                badge.textContent = "View: Diagnostic Lesion Overlay";
+                tabOverlay.className = "px-3 py-1.5 rounded-lg bg-navy-900 text-white transition-all font-bold";
+            }
+        }
+
+        function resetAll() {
+            clearImage();
+            document.getElementById('ageInput').value = "";
+            document.getElementById('hba1cInput').value = "";
+            document.getElementById('bpSysInput').value = "";
+            document.getElementById('bpDiaInput').value = "";
+            document.getElementById('durationInput').value = "";
+            document.getElementById('resultsDashboard').classList.add('hidden');
+            document.getElementById('resultsPlaceholder').classList.remove('hidden');
+            showToast("Interface reset to default state.");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // --- Theme Toggle Logic ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize Theme
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else if (savedTheme === null && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                // optional: auto dark mode if OS prefers it
+                // document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+    <!-- Firebase Authentication Module -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyClFGmEeARqbVF9zWoILyj3jMVFqEBJSJk",
+            authDomain: "visioncare-97069.firebaseapp.com",
+            projectId: "visioncare-97069",
+            storageBucket: "visioncare-97069.firebasestorage.app",
+            messagingSenderId: "166119206940",
+            appId: "1:166119206940:web:77f20e1f7146f77a31efd9",
+            measurementId: "G-3N0CV77DCN"
+        };
+
+        let app, auth, googleProvider, db;
+        
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            googleProvider = new GoogleAuthProvider();
+            db = getFirestore(app);
+        } catch(e) {
+            console.error("Firebase Initialization Error. Please update firebaseConfig.", e);
+        }
+
+        // Expose global function to save diagnosis
+        window.saveDiagnosisToFirestore = async function(clinicalData, pipelineData) {
+            if (!auth || !auth.currentUser || !db) return;
+            
+            try {
+                const docRef = await addDoc(collection(db, "diagnoses"), {
+                    userId: auth.currentUser.uid,
+                    userEmail: auth.currentUser.email,
+                    timestamp: new Date().toISOString(),
+                    clinical_data: clinicalData,
+                    ai_results: {
+                        predicted_grade: pipelineData.dr_result?.predicted_grade ?? null,
+                        confidence: pipelineData.reliability?.confidence ?? null,
+                        shannon_entropy: pipelineData.reliability?.uncertainty ?? null,
+                        epistemic_variance: pipelineData.dr_result?.mcdo?.epistemic_variance ?? null
+                    },
+                    clinical_decision: {
+                        action: pipelineData.final_decision?.action ?? "UNKNOWN",
+                        priority: pipelineData.final_decision?.priority ?? "LOW",
+                        reason: pipelineData.final_decision?.reason ?? ""
+                    }
+                });
+                console.log("Diagnosis saved securely with ID: ", docRef.id);
+            } catch (e) {
+                console.error("Error saving diagnosis to Firestore: ", e);
+            }
+        };
+
+        // DOM Elements
+        const authOverlay = document.getElementById('authOverlay');
+        const appContent = document.getElementById('app-content');
+        const btnSignOut = document.getElementById('btnSignOut');
+        const btnGoogleSignIn = document.getElementById('btnGoogleSignIn');
+        const authForm = document.getElementById('authForm');
+        const authEmail = document.getElementById('authEmail');
+        const authPassword = document.getElementById('authPassword');
+
+        // Auth State Observer
+        if (auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // User is signed in
+                    authOverlay.classList.add('hidden');
+                    appContent.classList.remove('hidden');
+                    btnSignOut.classList.remove('hidden');
+                    showToast("Welcome to VisionCare, " + (user.displayName || user.email));
+                } else {
+                    // User is signed out
+                    authOverlay.classList.remove('hidden');
+                    appContent.classList.add('hidden');
+                    btnSignOut.classList.add('hidden');
+                }
+            });
+        }
+
+        // Google Sign In
+        if (btnGoogleSignIn) {
+            btnGoogleSignIn.addEventListener('click', () => {
+                if (!auth) return showToast("Firebase not configured!");
+                signInWithPopup(auth, googleProvider)
+                    .catch((error) => {
+                        console.error(error);
+                        showToast("Google Auth Error: " + error.message);
+                    });
+            });
+        }
+
+        // Email/Password Sign In / Sign Up
+        if (authForm) {
+            authForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!auth) return showToast("Firebase not configured!");
+                const email = authEmail.value.trim();
+                const password = authPassword.value;
+
+                if (!email || !password) return showToast("Please enter email and password.");
+
+                // Attempt to sign in first
+                signInWithEmailAndPassword(auth, email, password)
+                    .catch((error) => {
+                        // If user doesn't exist, try to sign them up
+                        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                            createUserWithEmailAndPassword(auth, email, password)
+                                .then(() => showToast("Account created successfully!"))
+                                .catch(err => showToast("Sign Up Error: " + err.message));
+                        } else {
+                            showToast("Sign In Error: " + error.message);
+                        }
+                    });
+            });
+        }
+
+        // Sign Out
+        if (btnSignOut) {
+            btnSignOut.addEventListener('click', () => {
+                if (auth) {
+                    signOut(auth).then(() => {
+                        showToast("Signed out successfully.");
+                    }).catch((error) => {
+                        showToast("Sign Out Error: " + error.message);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

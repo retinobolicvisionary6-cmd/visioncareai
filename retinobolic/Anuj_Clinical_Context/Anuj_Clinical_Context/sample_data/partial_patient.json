@@ -1,0 +1,12 @@
+﻿{
+  "patient_id": "DEMO002",
+  "age": 45,
+  "bp_systolic": 130,
+  "bp_diastolic": 85,
+  "hba1c": null,
+  "diabetes_duration_years": null,
+  "clinical_history": {
+    "known_diabetes": true,
+    "previous_dr_history": null
+  }
+}
