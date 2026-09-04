@@ -39,3 +39,6 @@ pyyaml>=6.0
 colorama>=0.4.6
 scikit-image>=0.21.0
 scipy>=1.10.0
+
+# Cross-Origin Resource Sharing
+Flask-Cors>=4.0.0

@@ -5,6 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file
+from flask_cors import CORS
 
 # Add project root to sys path
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -17,6 +18,7 @@ app = Flask(
     template_folder=str(PROJECT_ROOT / "templates"),
     static_folder=str(PROJECT_ROOT / "static")
 )
+CORS(app)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32MB max upload
 
 SAMPLE_IMAGES = {
