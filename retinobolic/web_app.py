@@ -17,6 +17,15 @@ torch.set_num_threads(1)
 
 from Integration.pipeline.screening_pipeline import run_pipeline
 
+# Pre-warm model in memory during server boot to eliminate cold-request delay
+try:
+    from src.inference import load_inference_model
+    print("[Startup] Pre-warming PyTorch model into memory...")
+    load_inference_model()
+    print("[Startup] Model pre-warmed successfully!")
+except Exception as e:
+    print(f"[Startup] Warning: Model pre-warming deferred: {e}")
+
 app = Flask(
     __name__,
     template_folder=str(PROJECT_ROOT / "templates"),
