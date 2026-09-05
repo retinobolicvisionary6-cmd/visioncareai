@@ -464,78 +464,211 @@
             </div>
         </div>
 
-        <!-- HOME PAGE (HERO SECTION) - MATCHING USER WIREFRAME -->
-        <section id="home-section" class="flex-1 flex flex-col justify-center items-center max-w-4xl mx-auto px-4 sm:px-6 w-full space-y-2.5 sm:space-y-3.5 py-1 sm:py-2 my-auto transition-all duration-300">
+        <!-- HOME PAGE (HERO SECTION) - PREMIUM MEDICAL AI COMMAND CENTER -->
+        <section id="home-section" class="flex-1 flex flex-col justify-center items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-2 sm:py-4 my-auto transition-all duration-300">
             
-            <!-- 1. PROJECT TITLE BOX (Matching Wireframe) -->
-            <div class="w-full bg-white/95 dark:bg-darkGreen-card/95 backdrop-blur-xl border border-slate-200/80 dark:border-darkGreen-border rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-nuvica relative overflow-hidden text-center group hover:border-cyan-500/40 transition-all">
-                <div class="absolute -top-16 -right-16 w-44 h-44 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -bottom-16 -left-16 w-44 h-44 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
                 
-                <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-800/60 text-cyan-800 dark:text-cyan-300 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1.5 shadow-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
-                    <span>AI-Powered Clinical Screening Suite</span>
+                <!-- LEFT COLUMN: Brand Mission, Headline, Description, & Direct CTA (7 Cols) -->
+                <div class="lg:col-span-7 flex flex-col justify-center space-y-3 sm:space-y-3.5">
+                    
+                    <!-- 1. Innovation & Compliance Status Pill -->
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/90 dark:bg-[#091b12]/90 border border-slate-200/90 dark:border-emerald-500/30 text-navy-900 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md self-start shadow-sm">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span class="font-mono text-cyan-600 dark:text-cyan-400">SIH26038</span>
+                        <span class="text-slate-300 dark:text-slate-600">|</span>
+                        <span>Clinical AI Screening Suite</span>
+                        <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-mono font-bold">ICDR STANDARDS</span>
+                    </div>
+
+                    <!-- 2. Commanding Hero Title -->
+                    <div>
+                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight uppercase leading-[1.08] font-sans">
+                            <span class="text-navy-950 dark:text-white">Clinical Precision in</span><br/>
+                            <span class="bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-sm">Retinal AI Screening</span>
+                        </h1>
+                        <p class="text-xs sm:text-sm font-bold text-slate-500 dark:text-emerald-400/90 mt-1 font-mono tracking-wide">
+                            Diabetic Retinopathy Diagnostic & Real-Time Epistemic Risk Assessment
+                        </p>
+                    </div>
+
+                    <!-- 3. High-Trust Clinical Description -->
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium max-w-xl">
+                        VisionCare AI delivers sub-4-second clinical fundus analysis powered by deep convolutional ensembles, Bayesian epistemic uncertainty guardrails, and explainable Grad-CAM visual heatmaps to detect early microvascular lesions and safeguard patient vision.
+                    </p>
+
+                    <!-- 4. Action CTA & Specs Row -->
+                    <div class="flex flex-wrap items-center gap-3 pt-1">
+                        <!-- Primary Glowing CTA Button -->
+                        <button id="btnNavigateDashboard" onclick="navigateToDashboard()"
+                            class="group relative inline-flex items-center justify-center space-x-2.5 px-6 sm:px-8 py-3 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider text-black bg-gradient-to-r from-nuvica-accent via-emerald-400 to-cyan-400 hover:from-emerald-400 hover:to-nuvica-accent shadow-glow-accent hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer">
+                            <span>Navigate to Dashboard</span>
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
+
+                        <!-- Quick Feature Metric Pill -->
+                        <div class="inline-flex items-center space-x-2 px-3.5 py-2.5 rounded-xl bg-slate-100/90 dark:bg-darkGreen-card/90 border border-slate-200/80 dark:border-darkGreen-border text-xs font-semibold text-slate-700 dark:text-emerald-300 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span>
+                            <span class="font-mono text-[11px]">&lt; 4.0s Inference</span>
+                        </div>
+                    </div>
+
+                    <!-- 5. Interactive 3-Metric Feature Grid -->
+                    <div class="grid grid-cols-3 gap-2 sm:gap-2.5 pt-1 max-w-lg">
+                        <div class="p-2.5 rounded-2xl bg-white/80 dark:bg-[#071a10]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-cyan-500/40 transition-all shadow-sm group">
+                            <div class="flex items-center space-x-1.5 mb-1">
+                                <svg class="w-3.5 h-3.5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 font-mono">Speed</span>
+                            </div>
+                            <div class="text-sm sm:text-base font-black text-navy-950 dark:text-white font-mono">&lt; 4.0s</div>
+                            <div class="text-[10px] text-slate-500 dark:text-gray-400 font-medium truncate">Deep Ensemble</div>
+                        </div>
+
+                        <div class="p-2.5 rounded-2xl bg-white/80 dark:bg-[#071a10]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-emerald-500/40 transition-all shadow-sm group">
+                            <div class="flex items-center space-x-1.5 mb-1">
+                                <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 font-mono">Staging</span>
+                            </div>
+                            <div class="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 font-mono">5 Grades</div>
+                            <div class="text-[10px] text-slate-500 dark:text-gray-400 font-medium truncate">ICDR Standard</div>
+                        </div>
+
+                        <div class="p-2.5 rounded-2xl bg-white/80 dark:bg-[#071a10]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-amber-500/40 transition-all shadow-sm group">
+                            <div class="flex items-center space-x-1.5 mb-1">
+                                <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 font-mono">Explainable</span>
+                            </div>
+                            <div class="text-sm sm:text-base font-black text-amber-500 dark:text-yellow-400 font-mono">Grad-CAM</div>
+                            <div class="text-[10px] text-slate-500 dark:text-gray-400 font-medium truncate">Lesion Heatmaps</div>
+                        </div>
+                    </div>
+
                 </div>
-                
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-navy-900 dark:text-white uppercase font-sans">
-                    VisionCare AI
-                </h1>
-                <p class="text-xs sm:text-sm md:text-base font-bold text-slate-600 dark:text-emerald-400 mt-0.5 font-mono">
-                    Diabetic Retinopathy Diagnostic & Screening System
-                </p>
-                <div class="mt-2 flex flex-wrap items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-mono text-slate-500 dark:text-gray-400">
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">EfficientNet-B0</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">ICDR 5-Grade Standard</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">Bayesian Epistemic MCDO</span>
-                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">Grad-CAM Explainability</span>
+
+                <!-- RIGHT COLUMN: Live Medical AI Retinal Scanner HUD (5 Cols) -->
+                <div class="lg:col-span-5 w-full">
+                    <div class="bg-white/95 dark:bg-[#06140d]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-emerald-500/30 rounded-3xl p-3.5 sm:p-4 shadow-2xl relative overflow-hidden group hover:border-cyan-500/50 transition-all">
+                        
+                        <!-- Ambient Glow Lights -->
+                        <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                        <!-- Card HUD Top Bar -->
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-darkGreen-border">
+                            <div class="flex items-center space-x-2">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                <span class="text-[11px] font-mono font-bold tracking-wider uppercase text-navy-950 dark:text-white">AI TELEMETRY HUD</span>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold">ACTIVE SCANNER</span>
+                        </div>
+
+                        <!-- Retinal Fundus Scanner Display -->
+                        <div class="relative my-2.5 rounded-2xl overflow-hidden bg-gradient-to-b from-slate-950 via-[#031109] to-slate-950 border border-slate-800/80 aspect-[16/9] flex items-center justify-center select-none shadow-inner">
+                            
+                            <!-- Authentic Retinal Fundus Anatomy SVG -->
+                            <svg class="w-full h-full object-contain p-1" viewBox="0 0 400 225" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <radialGradient id="fundusGlow" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#fdba74" stop-opacity="0.30"/>
+                                        <stop offset="60%" stop-color="#ea580c" stop-opacity="0.15"/>
+                                        <stop offset="100%" stop-color="#020617" stop-opacity="0.95"/>
+                                    </radialGradient>
+                                    <radialGradient id="opticCup" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#fef08a" stop-opacity="0.95"/>
+                                        <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.75"/>
+                                        <stop offset="100%" stop-color="#ea580c" stop-opacity="0"/>
+                                    </radialGradient>
+                                    <linearGradient id="vesselGradCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#38bdf8"/>
+                                        <stop offset="100%" stop-color="#06b6d4"/>
+                                    </linearGradient>
+                                    <linearGradient id="vesselGradRose" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#fb7185"/>
+                                        <stop offset="100%" stop-color="#e11d48"/>
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Fundus Boundary Disc -->
+                                <circle cx="200" cy="112" r="94" fill="url(#fundusGlow)" stroke="#334155" stroke-width="1.2" stroke-dasharray="3 3"/>
+                                
+                                <!-- Optic Disc (Nasal side) -->
+                                <circle cx="155" cy="118" r="15" fill="url(#opticCup)"/>
+                                <circle cx="155" cy="118" r="6" fill="#ffffff" fill-opacity="0.85"/>
+
+                                <!-- Fovea / Macula (Temporal side) -->
+                                <circle cx="235" cy="110" r="16" fill="#7c2d12" fill-opacity="0.35"/>
+                                <circle cx="235" cy="110" r="3.5" fill="#431407" fill-opacity="0.6"/>
+                                <circle cx="235" cy="110" r="9" stroke="#00e676" stroke-width="0.75" stroke-dasharray="2 2"/>
+
+                                <!-- Vascular Artery & Vein Branches -->
+                                <path d="M 155 118 Q 170 65 240 55" stroke="url(#vesselGradCyan)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                                <path d="M 190 75 Q 220 50 260 48" stroke="url(#vesselGradCyan)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                                <path d="M 155 118 Q 160 55 210 45" stroke="url(#vesselGradRose)" stroke-width="2" stroke-linecap="round" fill="none"/>
+                                
+                                <path d="M 155 118 Q 175 165 245 170" stroke="url(#vesselGradCyan)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                                <path d="M 195 155 Q 230 180 270 178" stroke="url(#vesselGradCyan)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                                <path d="M 155 118 Q 165 175 215 180" stroke="url(#vesselGradRose)" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+                                <path d="M 155 118 Q 125 105 112 110" stroke="url(#vesselGradRose)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                                <path d="M 155 118 Q 130 135 115 130" stroke="url(#vesselGradCyan)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+                                <path d="M 175 90 Q 210 100 225 106" stroke="url(#vesselGradCyan)" stroke-width="0.9" stroke-linecap="round" fill="none"/>
+                                <path d="M 175 145 Q 210 125 225 115" stroke="url(#vesselGradCyan)" stroke-width="0.9" stroke-linecap="round" fill="none"/>
+
+                                <!-- HUD Annotations -->
+                                <g font-family="JetBrains Mono, monospace" font-size="8" fill="#38bdf8" font-weight="bold">
+                                    <text x="14" y="22">[FOV: 45° MACULA-CENTERED]</text>
+                                    <text x="270" y="22">[SCAN: 60 FPS ACTIVE]</text>
+                                    <text x="14" y="214">[OOD GATE: VERIFIED PASS]</text>
+                                    <text x="280" y="214">[UNCERTAINTY: 0.12 LOW]</text>
+                                </g>
+                            </svg>
+
+                            <!-- Live Laser Scanner Beam -->
+                            <div class="scanner-beam"></div>
+
+                            <!-- Diagnostic Result Overlay Pill -->
+                            <div class="absolute bottom-2 left-2.5 px-2 py-1 rounded-lg bg-slate-950/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-300 flex items-center space-x-1.5 shadow-lg">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span>FOVEA AVASCULAR ZONE: NORMAL</span>
+                            </div>
+                        </div>
+
+                        <!-- Telemetry Staging & Status Bar -->
+                        <div class="space-y-1.5 pt-0.5">
+                            <div class="flex items-center justify-between text-[10px] font-mono font-bold">
+                                <span class="text-slate-600 dark:text-gray-300">ICDR PREDICTION</span>
+                                <span class="text-emerald-600 dark:text-emerald-400">GRADE 0 · NO DR DETECTED (98.4%)</span>
+                            </div>
+                            <!-- 5-Stage Spectrum Bar -->
+                            <div class="grid grid-cols-5 gap-1 h-1.5 rounded-full overflow-hidden bg-slate-100 dark:bg-darkGreen-premium">
+                                <div class="bg-emerald-500 rounded-full shadow-sm" title="Grade 0: Normal"></div>
+                                <div class="bg-slate-200 dark:bg-slate-800 rounded-full" title="Grade 1: Mild"></div>
+                                <div class="bg-slate-200 dark:bg-slate-800 rounded-full" title="Grade 2: Moderate"></div>
+                                <div class="bg-slate-200 dark:bg-slate-800 rounded-full" title="Grade 3: Severe"></div>
+                                <div class="bg-slate-200 dark:bg-slate-800 rounded-full" title="Grade 4: PDR"></div>
+                            </div>
+
+                            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-gray-400 pt-0.5">
+                                <span class="flex items-center space-x-1">
+                                    <svg class="w-3 h-3 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <span>Bayesian MCDO: High Stability</span>
+                                </span>
+                                <span>Variance: 0.0032</span>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
 
-            <!-- 2. PROJECT DESCRIPTION IN SIMPLE ENGLISH BOX (Matching Wireframe) -->
-            <div class="w-full bg-white/95 dark:bg-darkGreen-card/95 backdrop-blur-xl border border-slate-200/80 dark:border-darkGreen-border rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-nuvica text-center space-y-2 relative overflow-hidden group hover:border-emerald-500/40 transition-all">
-                
-                <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-sm">
-                    <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Project Description</span>
-                </div>
-
-                <p class="text-xs sm:text-sm md:text-base text-navy-900 dark:text-white max-w-2xl mx-auto leading-snug font-semibold">
-                    VisionCare AI is an intelligent medical screening system that detects and grades Diabetic Retinopathy from retinal fundus images in under 4 seconds.
-                </p>
-
-                <p class="text-[11px] sm:text-xs text-slate-600 dark:text-gray-300 max-w-xl mx-auto leading-normal">
-                    Combining deep learning and visual heatmaps, it helps clinicians detect early microvascular damage, assess patient risk, and prevent avoidable vision loss.
-                </p>
-
-                <!-- 3 Quick Clean Highlights -->
-                <div class="flex flex-wrap items-center justify-center gap-2 pt-0.5">
-                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-[10px] sm:text-[11px] font-semibold text-slate-700 dark:text-emerald-300">
-                        <svg class="w-3 h-3 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        <span>4-Sec AI Scan</span>
-                    </span>
-                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-[10px] sm:text-[11px] font-semibold text-slate-700 dark:text-emerald-300">
-                        <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>5 Severity Grades</span>
-                    </span>
-                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-[10px] sm:text-[11px] font-semibold text-slate-700 dark:text-emerald-300">
-                        <svg class="w-3 h-3 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        <span>Visual Heatmaps</span>
-                    </span>
-                </div>
-            </div>
-
-            <!-- 3. NAVIGATE TO DASHBOARD BUTTON (Matching Wireframe) -->
-            <div class="text-center pt-1 sm:pt-1.5">
-                <button id="btnNavigateDashboard" onclick="navigateToDashboard()"
-                    class="group relative inline-flex items-center justify-center space-x-2.5 px-6 sm:px-9 py-2.5 sm:py-3.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider text-black bg-gradient-to-r from-nuvica-accent via-emerald-400 to-cyan-400 hover:from-emerald-400 hover:to-nuvica-accent shadow-glow-accent hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer">
-                    <span>Navigate to Dashboard</span>
-                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                </button>
-                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-gray-400 mt-1 font-medium">Click to open real-time retinal upload, AI diagnostics, and clinical reporting suite</p>
             </div>
 
         </section>
