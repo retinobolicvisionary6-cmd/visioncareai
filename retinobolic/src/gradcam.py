@@ -94,18 +94,49 @@ class GradCAM:
         Returns:
             2D float32 numpy array (spatial_h, spatial_w) normalized to [0, 1].
         """
-        # Enable grad for backward pass (even during eval)
-        input_tensor = input_tensor.requires_grad_(True)
+        # Ultra-memory-efficient Grad-CAM for EfficientNet / modular backbones
+        # Bypasses recording autograd across all 16 backbone blocks, preventing ~200MB memory spike
+        if hasattr(self.model, "backbone") and hasattr(self.model.backbone, "features") and hasattr(self.model.backbone, "classifier"):
+            with torch.no_grad():
+                features = self.model.backbone.features(input_tensor)
+            
+            features_var = features.detach().requires_grad_(True)
+            pooled = self.model.backbone.avgpool(features_var)
+            pooled = torch.flatten(pooled, 1)
+            output = self.model.backbone.classifier(pooled)
+            
+            if target_class is None:
+                target_class = int(output.argmax(dim=1).item())
+                
+            self.model.zero_grad(set_to_none=True)
+            class_score = output[0, target_class]
+            class_score.backward()
+            
+            weights = features_var.grad.mean(dim=[2, 3], keepdim=True)
+            activations = features_var.detach()
+            weighted_activations = (weights * activations).sum(dim=1, keepdim=True)
+            heatmap = weighted_activations.squeeze().cpu().numpy()
+            
+            del features, features_var, pooled, output, class_score, weights, activations, weighted_activations
+            self.model.zero_grad(set_to_none=True)
+            import gc
+            gc.collect()
+            
+            heatmap = np.maximum(heatmap, 0)
+            max_val = heatmap.max()
+            if max_val > 0:
+                heatmap /= max_val
+            return heatmap.astype(np.float32)
 
-        # Forward pass
+        # General Fallback for arbitrary PyTorch modules
+        input_tensor = input_tensor.requires_grad_(True)
         self.model.eval()
         output = self.model(input_tensor)
 
         if target_class is None:
             target_class = int(output.argmax(dim=1).item())
 
-        # Backward pass for target class only
-        self.model.zero_grad()
+        self.model.zero_grad(set_to_none=True)
         class_score = output[0, target_class]
         class_score.backward()
 
@@ -115,17 +146,15 @@ class GradCAM:
                 "Ensure target_layer is correct for this architecture."
             )
 
-        # Global average pooling of gradients → channel importance weights
-        weights = self._gradients.mean(dim=[2, 3], keepdim=True)  # [1, C, 1, 1]
-
-        # Weighted sum of activation maps
-        weighted_activations = (weights * self._activations).sum(dim=1, keepdim=True)  # [1, 1, h, w]
+        weights = self._gradients.mean(dim=[2, 3], keepdim=True)
+        weighted_activations = (weights * self._activations).sum(dim=1, keepdim=True)
         heatmap = weighted_activations.squeeze().cpu().numpy()
 
-        # ReLU (only positive contributions)
-        heatmap = np.maximum(heatmap, 0)
+        self.model.zero_grad(set_to_none=True)
+        import gc
+        gc.collect()
 
-        # Normalize to [0, 1]
+        heatmap = np.maximum(heatmap, 0)
         max_val = heatmap.max()
         if max_val > 0:
             heatmap /= max_val
@@ -212,6 +241,14 @@ def generate_gradcam_overlay(
     _save(cropped_rgb,  "_original.jpg")
     _save(heatmap_rgb,  "_heatmap.jpg")
     overlay_path = _save(overlay_rgb, "_overlay.jpg")
+
+    # Clean up large OpenCV image arrays from memory
+    try:
+        del img_bgr, img_rgb, cropped_rgb, heatmap_resized, heatmap_uint8, heatmap_color, heatmap_rgb, overlay_rgb
+        import gc
+        gc.collect()
+    except Exception:
+        pass
 
     log.info(
         "Grad-CAM saved: original / heatmap / overlay for '%s' → class %d",
