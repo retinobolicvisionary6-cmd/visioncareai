@@ -1454,7 +1454,10 @@
         }
 
         function renderResults(pipeline) {
-            latestPipelineData = pipeline;
+            window.latestPipelineData = pipeline;
+            try {
+                sessionStorage.setItem('visioncare_has_diagnosis', 'true');
+            } catch (e) {}
             const reportReadyBadge = document.getElementById('reportReadyBadge');
             const btnSeeReport = document.getElementById('btnSeeReport');
             const btnSeeReportText = document.getElementById('btnSeeReportText');
@@ -1656,7 +1659,10 @@
             document.getElementById('bpSysInput').value = "";
             document.getElementById('bpDiaInput').value = "";
             document.getElementById('durationInput').value = "";
-            latestPipelineData = null;
+            window.latestPipelineData = null;
+            try {
+                sessionStorage.removeItem('visioncare_has_diagnosis');
+            } catch (e) {}
             const reportReadyBadge = document.getElementById('reportReadyBadge');
             const btnSeeReport = document.getElementById('btnSeeReport');
             const btnSeeReportText = document.getElementById('btnSeeReportText');
@@ -2513,7 +2519,6 @@
         const btnSeeReport = document.getElementById('btnSeeReport');
         const btnSeeReportText = document.getElementById('btnSeeReportText');
         const reportReadyBadge = document.getElementById('reportReadyBadge');
-        let latestPipelineData = null;
 
         const btnProfileToggle = document.getElementById('btnProfileToggle');
         const profileDropdown = document.getElementById('profileDropdown');
@@ -2534,7 +2539,12 @@
         }
 
         function navigateToReport() {
-            if (!latestPipelineData) {
+            // Check global pipeline data, session storage, or active report badge in DOM
+            const hasReport = window.latestPipelineData || 
+                sessionStorage.getItem('visioncare_has_diagnosis') === 'true' ||
+                (reportReadyBadge && !reportReadyBadge.classList.contains('hidden'));
+
+            if (!hasReport) {
                 showToast("Please run diagnosis on a retinal scan first!", "error");
                 return;
             }
@@ -2609,7 +2619,7 @@
                         if (homeSection) homeSection.classList.add('hidden');
                         if (reportSection) reportSection.classList.add('hidden');
                         if (appContent) appContent.classList.remove('hidden');
-                    } else if (activeView === 'report' && latestPipelineData) {
+                    } else if (activeView === 'report' && (window.latestPipelineData || sessionStorage.getItem('visioncare_has_diagnosis') === 'true')) {
                         document.documentElement.classList.add('view-report');
                         document.documentElement.classList.remove('view-home', 'view-dashboard');
                         if (homeSection) homeSection.classList.add('hidden');
