@@ -123,7 +123,66 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        /* Prevent Flash of Login Page on Reload/Refresh */
+        html.user-authenticated #authOverlay {
+            display: none !important;
+        }
+        html.user-authenticated.view-dashboard #home-section {
+            display: none !important;
+        }
+        html.user-authenticated.view-dashboard #app-content {
+            display: block !important;
+        }
+        html.user-authenticated.view-home #home-section {
+            display: block !important;
+        }
+        html.user-authenticated.view-home #app-content {
+            display: none !important;
+        }
     </style>
+
+    <!-- Synchronous Auth State Pre-Check (Runs before DOM paint to prevent flash) -->
+    <script>
+        (function () {
+            try {
+                const sessionAuth = sessionStorage.getItem('visioncare_logged_in') === 'true';
+                const localAuth = localStorage.getItem('visioncare_logged_in') === 'true';
+                let hasUser = sessionAuth || localAuth;
+
+                if (!hasUser) {
+                    for (let i = 0; i < sessionStorage.length; i++) {
+                        const key = sessionStorage.key(i) || '';
+                        if (key.startsWith('firebase:authUser:')) {
+                            hasUser = true;
+                            break;
+                        }
+                    }
+                    if (!hasUser) {
+                        for (let i = 0; i < localStorage.length; i++) {
+                            const key = localStorage.key(i) || '';
+                            if (key.startsWith('firebase:authUser:')) {
+                                hasUser = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (hasUser) {
+                    document.documentElement.classList.add('user-authenticated');
+                    const activeView = sessionStorage.getItem('visioncare_active_view') || 'home';
+                    if (activeView === 'dashboard') {
+                        document.documentElement.classList.add('view-dashboard');
+                    } else {
+                        document.documentElement.classList.add('view-home');
+                    }
+                }
+            } catch (e) {
+                console.warn('Pre-auth check error:', e);
+            }
+        })();
+    </script>
 </head>
 
 <body
@@ -2324,6 +2383,8 @@
         const profileDropdownEmail = document.getElementById('profileDropdownEmail');
 
         function navigateToDashboard() {
+            document.documentElement.classList.add('view-dashboard');
+            document.documentElement.classList.remove('view-home');
             if (homeSection) homeSection.classList.add('hidden');
             if (appContent) {
                 appContent.classList.remove('hidden');
@@ -2333,6 +2394,8 @@
         }
 
         function navigateToHome() {
+            document.documentElement.classList.add('view-home');
+            document.documentElement.classList.remove('view-dashboard');
             if (appContent) appContent.classList.add('hidden');
             if (homeSection) {
                 homeSection.classList.remove('hidden');
@@ -2368,15 +2431,28 @@
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     // User is signed in
+                    document.documentElement.classList.add('user-authenticated');
+                    sessionStorage.setItem('visioncare_logged_in', 'true');
+                    const stayLoggedIn = authStayLoggedIn ? authStayLoggedIn.checked : true;
+                    if (stayLoggedIn) {
+                        localStorage.setItem('visioncare_logged_in', 'true');
+                    } else {
+                        localStorage.removeItem('visioncare_logged_in');
+                    }
+
                     authOverlay.classList.add('hidden');
                     stopLiveAnimation(); // Free up CPU/GPU cycles for retinal processing
 
                     // Default to Home section or preserve previous view in this session
                     const activeView = sessionStorage.getItem('visioncare_active_view') || 'home';
                     if (activeView === 'dashboard') {
+                        document.documentElement.classList.add('view-dashboard');
+                        document.documentElement.classList.remove('view-home');
                         if (homeSection) homeSection.classList.add('hidden');
                         if (appContent) appContent.classList.remove('hidden');
                     } else {
+                        document.documentElement.classList.add('view-home');
+                        document.documentElement.classList.remove('view-dashboard');
                         if (homeSection) homeSection.classList.remove('hidden');
                         if (appContent) appContent.classList.add('hidden');
                     }
@@ -2391,6 +2467,9 @@
                     showToast("Welcome to VisionCare, " + displayName, "success");
                 } else {
                     // User is signed out
+                    document.documentElement.classList.remove('user-authenticated', 'view-dashboard', 'view-home');
+                    sessionStorage.removeItem('visioncare_logged_in');
+                    localStorage.removeItem('visioncare_logged_in');
                     authOverlay.classList.remove('hidden');
                     if (homeSection) homeSection.classList.add('hidden');
                     if (appContent) appContent.classList.add('hidden');
@@ -2491,6 +2570,9 @@
             btnSignOut.addEventListener('click', () => {
                 if (auth) {
                     signOut(auth).then(() => {
+                        document.documentElement.classList.remove('user-authenticated', 'view-dashboard', 'view-home');
+                        sessionStorage.removeItem('visioncare_logged_in');
+                        localStorage.removeItem('visioncare_logged_in');
                         sessionStorage.setItem('visioncare_active_view', 'home');
                         closeProfileDropdown();
                         showToast("Signed out successfully.", "info");
