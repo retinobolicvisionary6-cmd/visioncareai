@@ -23,5 +23,10 @@ EXPOSE 7860
 # Set Python path to recognize custom imports
 ENV PYTHONPATH="/app"
 
+# Optimize PyTorch for Render Free Tier (512MB RAM Limit)
+ENV OMP_NUM_THREADS=1
+ENV MKL_NUM_THREADS=1
+ENV OPENBLAS_NUM_THREADS=1
+
 # Command to run the application (running web_app.py from within retinobolic dir)
 CMD ["python", "retinobolic/web_app.py"]
