@@ -235,7 +235,7 @@ def generate_gradcam_overlay(
 
     def _save(img_rgb: np.ndarray, suffix: str) -> Path:
         out_path = output_dir / f"{stem}{suffix}"
-        cv2.imwrite(str(out_path), cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR))
+        cv2.imwrite(str(out_path), cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR), [int(cv2.IMWRITE_JPEG_QUALITY), 80])
         return out_path
 
     _save(cropped_rgb,  "_original.jpg")

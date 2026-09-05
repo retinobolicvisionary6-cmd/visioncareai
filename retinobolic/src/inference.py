@@ -225,11 +225,17 @@ def predict(
     # Step 2: Preprocess image
     input_tensor = preprocess_single_image(image_path).to(DEVICE)
 
-    # Step 3: Bayesian Monte Carlo Dropout (MCDO, N=4 samples for fast inference)
+    # Step 3: Fast Bayesian Monte Carlo Dropout with torch.inference_mode()
+    # Combines 1 deterministic primary pass with 2 stochastic passes for sub-second epistemic uncertainty
+    model.eval()
+    with torch.inference_mode():
+        primary_logits = model(input_tensor).squeeze(0).cpu().numpy()
+        primary_probs = _calibrate_logits_to_probs(primary_logits)
+
     enable_mc_dropout(model)
-    mc_probs_list = []
-    with torch.no_grad():
-        for _ in range(4):
+    mc_probs_list = [primary_probs]
+    with torch.inference_mode():
+        for _ in range(2):
             sample_logits = model(input_tensor).squeeze(0).cpu().numpy()
             sample_probs = _calibrate_logits_to_probs(sample_logits)
             mc_probs_list.append(sample_probs)
@@ -237,7 +243,7 @@ def predict(
     # Reset model to deterministic eval mode
     model.eval()
 
-    mc_probs_arr = np.array(mc_probs_list)  # Shape: [4, 5]
+    mc_probs_arr = np.array(mc_probs_list)  # Shape: [3, 5]
     probs = np.mean(mc_probs_arr, axis=0)   # Bayesian Posterior Mean
     epistemic_var = float(np.sum(np.var(mc_probs_arr, axis=0)))
     epistemic_level = "LOW" if epistemic_var < 0.008 else ("MEDIUM" if epistemic_var < 0.025 else "HIGH")
@@ -281,7 +287,7 @@ def predict(
         "probabilities": prob_dict,
         "gradcam_path": gradcam_path,
         "mcdo": {
-            "num_samples": 4,
+            "num_samples": 3,
             "epistemic_variance": round(epistemic_var, 6),
             "epistemic_level": epistemic_level,
         }

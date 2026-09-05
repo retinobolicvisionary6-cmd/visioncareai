@@ -140,9 +140,7 @@ def analyze():
             target_grade=target_grade
         )
 
-        # Encode input and gradcam images for instantaneous UI rendering
-        input_b64 = img_to_base64(image_path)
-        
+        # Encode Grad-CAM outputs (already resized to 384x384 for ultra-fast payload delivery)
         gradcam_overlay_b64 = ""
         gradcam_heatmap_b64 = ""
         gradcam_orig_b64 = ""
@@ -160,6 +158,9 @@ def analyze():
                 gradcam_heatmap_b64 = img_to_base64(str(heatmap_p))
             if orig_p.exists():
                 gradcam_orig_b64 = img_to_base64(str(orig_p))
+
+        # Use preprocessed 384x384 thumbnail instead of massive multi-MB raw file
+        input_b64 = gradcam_orig_b64 or img_to_base64(image_path)
 
         response_payload = {
             "success": True,
