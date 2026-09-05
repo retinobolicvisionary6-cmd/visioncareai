@@ -1581,7 +1581,7 @@
             });
         }
 
-        // Live Retinal Neural Constellation Canvas Background
+        // Live Medical Retinal Fundus & Scanning Laser Ophthalmoscope (OCT/SLO) Simulation
         let animFrameId = null;
         function initLiveCanvas() {
             const canvas = document.getElementById('authLiveCanvas');
@@ -1590,107 +1590,540 @@
             if (!ctx) return;
 
             let width, height;
-            function resize() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
+            let dpr = window.devicePixelRatio || 1;
 
-            // Particle nodes
-            const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 14000), 85);
-            const particles = [];
-            const colors = [
-                'rgba(6, 182, 212, ',   // cyan
-                'rgba(16, 185, 129, ',  // emerald
-                'rgba(56, 189, 248, ',  // sky
-                'rgba(99, 102, 241, '   // indigo
-            ];
+            // Retinal Fundus Geometry
+            let fundus = {
+                cx: 0,
+                cy: 0,
+                radius: 0,
+                discX: 0,
+                discY: 0,
+                discRadius: 0,
+                foveaX: 0,
+                foveaY: 0,
+                foveaRadius: 0
+            };
 
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.7,
-                    vy: (Math.random() - 0.5) * 0.7,
-                    radius: Math.random() * 2 + 1.2,
-                    baseAlpha: Math.random() * 0.5 + 0.3,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    phase: Math.random() * Math.PI * 2
-                });
-            }
+            // Vascular Tree Collection
+            let vessels = [];
+            let scanProgress = 0; // OCT scanline position
+            let laserAngle = 0;
 
-            let mouse = { x: null, y: null, maxDist: 150 };
+            // Interactive Eye Tracking & Mouse Reticle
+            let mouse = { x: null, y: null, targetX: 0, targetY: 0, smoothX: 0, smoothY: 0, active: false };
+
             window.addEventListener('mousemove', (e) => {
                 mouse.x = e.clientX;
                 mouse.y = e.clientY;
+                mouse.active = true;
             });
             window.addEventListener('mouseleave', () => {
-                mouse.x = null;
-                mouse.y = null;
+                mouse.active = false;
             });
 
-            let time = 0;
-            function render() {
-                time += 0.015;
-                ctx.clearRect(0, 0, width, height);
+            // Procedural Retinal Vessel Generator using Parametric Splines
+            function generateRetinalVascularTree() {
+                vessels = [];
 
-                // Update & draw particles
-                for (let i = 0; i < particles.length; i++) {
-                    const p = particles[i];
-                    p.x += p.vx;
-                    p.y += p.vy;
+                // Helper to create a curved vessel with branching
+                function createVessel(startPt, controlPt1, controlPt2, endPt, caliber, type, depth = 0) {
+                    const steps = 30;
+                    const points = [];
+                    for (let t = 0; t <= 1; t += 1 / steps) {
+                        // Cubic Bezier interpolation
+                        const invT = 1 - t;
+                        const x = invT * invT * invT * startPt.x +
+                            3 * invT * invT * t * controlPt1.x +
+                            3 * invT * t * t * controlPt2.x +
+                            t * t * t * endPt.x;
+                        const y = invT * invT * invT * startPt.y +
+                            3 * invT * invT * t * controlPt1.y +
+                            3 * invT * t * t * controlPt2.y +
+                            t * t * t * endPt.y;
+                        points.push({ x, y });
+                    }
 
-                    // Bounce off walls
-                    if (p.x < 0 || p.x > width) p.vx *= -1;
-                    if (p.y < 0 || p.y > height) p.vy *= -1;
+                    // Blood Flow Pulses along this vessel
+                    const pulseCount = Math.max(1, Math.floor(caliber * 1.5));
+                    const pulses = [];
+                    for (let p = 0; p < pulseCount; p++) {
+                        pulses.push({
+                            progress: (p / pulseCount) + Math.random() * 0.2,
+                            speed: 0.003 + Math.random() * 0.004,
+                            size: caliber * 0.9
+                        });
+                    }
 
-                    // Gentle breathing alpha
-                    const alpha = p.baseAlpha + Math.sin(time + p.phase) * 0.2;
+                    const vesselObj = {
+                        points,
+                        caliber,
+                        type, // 'artery', 'vein', 'capillary'
+                        pulses,
+                        children: []
+                    };
 
-                    // Draw node
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color + Math.max(0.1, alpha) + ')';
-                    ctx.shadowColor = p.color + '0.8)';
-                    ctx.shadowBlur = 8;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
+                    // Generate daughter branches (bifurcation)
+                    if (depth < 2 && caliber > 1.2) {
+                        const branchCount = Math.floor(Math.random() * 2) + 2;
+                        for (let b = 0; b < branchCount; b++) {
+                            const branchT = 0.35 + (b * 0.28) + (Math.random() * 0.1 - 0.05);
+                            const ptIdx = Math.floor(branchT * (points.length - 1));
+                            const bStart = points[ptIdx];
+                            const prevPt = points[Math.max(0, ptIdx - 2)];
 
-                    // Mouse interaction
-                    if (mouse.x !== null && mouse.y !== null) {
-                        const mdx = p.x - mouse.x;
-                        const mdy = p.y - mouse.y;
-                        const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-                        if (mDist < mouse.maxDist) {
-                            const mAlpha = (1 - mDist / mouse.maxDist) * 0.45;
-                            ctx.beginPath();
-                            ctx.moveTo(p.x, p.y);
-                            ctx.lineTo(mouse.x, mouse.y);
-                            ctx.strokeStyle = `rgba(6, 182, 212, ${mAlpha})`;
-                            ctx.lineWidth = 1;
-                            ctx.stroke();
+                            // Tangent vector
+                            const dx = bStart.x - prevPt.x;
+                            const dy = bStart.y - prevPt.y;
+                            const mag = Math.sqrt(dx * dx + dy * dy) || 1;
+                            const udx = dx / mag;
+                            const udy = dy / mag;
+
+                            // Fork angle (diverge left or right)
+                            const side = (b % 2 === 0) ? 1 : -1;
+                            const angle = side * (0.55 + Math.random() * 0.35);
+                            const cosA = Math.cos(angle);
+                            const sinA = Math.sin(angle);
+                            const dirX = udx * cosA - udy * sinA;
+                            const dirY = udx * sinA + udy * cosA;
+
+                            const branchLen = fundus.radius * (0.22 / (depth + 1)) * (0.8 + Math.random() * 0.4);
+                            const cp1 = {
+                                x: bStart.x + dirX * branchLen * 0.4 + (Math.random() - 0.5) * 15,
+                                y: bStart.y + dirY * branchLen * 0.4 + (Math.random() - 0.5) * 15
+                            };
+                            const cp2 = {
+                                x: bStart.x + dirX * branchLen * 0.75 + (Math.random() - 0.5) * 20,
+                                y: bStart.y + dirY * branchLen * 0.75 + (Math.random() - 0.5) * 20
+                            };
+                            const bEnd = {
+                                x: bStart.x + dirX * branchLen + (Math.random() - 0.5) * 25,
+                                y: bStart.y + dirY * branchLen + (Math.random() - 0.5) * 25
+                            };
+
+                            const childVessel = createVessel(bStart, cp1, cp2, bEnd, caliber * 0.65, type, depth + 1);
+                            vesselObj.children.push(childVessel);
                         }
                     }
 
-                    // Interconnections
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const p2 = particles[j];
-                        const dx = p.x - p2.x;
-                        const dy = p.y - p2.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
+                    return vesselObj;
+                }
 
-                        if (dist < 115) {
-                            const lineAlpha = (1 - dist / 115) * 0.22;
-                            ctx.beginPath();
-                            ctx.moveTo(p.x, p.y);
-                            ctx.lineTo(p2.x, p2.y);
-                            ctx.strokeStyle = `rgba(6, 182, 212, ${lineAlpha})`;
-                            ctx.lineWidth = 0.75;
-                            ctx.stroke();
+                const R = fundus.radius;
+                const dX = fundus.discX;
+                const dY = fundus.discY;
+                const fX = fundus.foveaX;
+                const fY = fundus.foveaY;
+
+                // 1. Superior Temporal Artery (Arches up & around macula)
+                vessels.push(createVessel(
+                    { x: dX, y: dY },
+                    { x: dX + R * 0.08, y: dY - R * 0.38 },
+                    { x: fX - R * 0.05, y: fY - R * 0.42 },
+                    { x: fX + R * 0.38, y: fY - R * 0.32 },
+                    3.8, 'artery'
+                ));
+
+                // 2. Superior Temporal Vein (Runs parallel with larger lumen)
+                vessels.push(createVessel(
+                    { x: dX + 6, y: dY - 4 },
+                    { x: dX + R * 0.12, y: dY - R * 0.42 },
+                    { x: fX - R * 0.02, y: fY - R * 0.46 },
+                    { x: fX + R * 0.42, y: fY - R * 0.35 },
+                    4.4, 'vein'
+                ));
+
+                // 3. Inferior Temporal Artery (Arches down & under macula)
+                vessels.push(createVessel(
+                    { x: dX, y: dY },
+                    { x: dX + R * 0.08, y: dY + R * 0.38 },
+                    { x: fX - R * 0.05, y: fY + R * 0.42 },
+                    { x: fX + R * 0.38, y: fY + R * 0.32 },
+                    3.8, 'artery'
+                ));
+
+                // 4. Inferior Temporal Vein
+                vessels.push(createVessel(
+                    { x: dX + 6, y: dY + 4 },
+                    { x: dX + R * 0.12, y: dY + R * 0.42 },
+                    { x: fX - R * 0.02, y: fY + R * 0.46 },
+                    { x: fX + R * 0.42, y: fY + R * 0.35 },
+                    4.4, 'vein'
+                ));
+
+                // 5. Superior Nasal Vessels (Heading toward nasal quadrant)
+                vessels.push(createVessel(
+                    { x: dX, y: dY },
+                    { x: dX - R * 0.22, y: dY - R * 0.25 },
+                    { x: dX - R * 0.38, y: dY - R * 0.38 },
+                    { x: dX - R * 0.52, y: dY - R * 0.48 },
+                    3.2, 'artery'
+                ));
+                vessels.push(createVessel(
+                    { x: dX - 5, y: dY - 3 },
+                    { x: dX - R * 0.26, y: dY - R * 0.28 },
+                    { x: dX - R * 0.42, y: dY - R * 0.42 },
+                    { x: dX - R * 0.58, y: dY - R * 0.52 },
+                    3.6, 'vein'
+                ));
+
+                // 6. Inferior Nasal Vessels
+                vessels.push(createVessel(
+                    { x: dX, y: dY },
+                    { x: dX - R * 0.22, y: dY + R * 0.25 },
+                    { x: dX - R * 0.38, y: dY + R * 0.38 },
+                    { x: dX - R * 0.52, y: dY + R * 0.48 },
+                    3.2, 'artery'
+                ));
+                vessels.push(createVessel(
+                    { x: dX - 5, y: dY + 3 },
+                    { x: dX - R * 0.26, y: dY + R * 0.28 },
+                    { x: dX - R * 0.42, y: dY + R * 0.42 },
+                    { x: dX - R * 0.58, y: dY + R * 0.52 },
+                    3.6, 'vein'
+                ));
+
+                // 7. Macular Arterioles (Fine vessels reaching toward Foveal Avascular Zone)
+                vessels.push(createVessel(
+                    { x: dX + R * 0.05, y: dY - R * 0.04 },
+                    { x: dX + R * 0.15, y: dY - R * 0.08 },
+                    { x: fX - R * 0.08, y: fY - R * 0.06 },
+                    { x: fX - R * 0.04, y: fY - R * 0.02 },
+                    1.6, 'artery'
+                ));
+                vessels.push(createVessel(
+                    { x: dX + R * 0.05, y: dY + R * 0.04 },
+                    { x: dX + R * 0.15, y: dY + R * 0.08 },
+                    { x: fX - R * 0.08, y: fY + R * 0.06 },
+                    { x: fX - R * 0.04, y: fY + R * 0.02 },
+                    1.6, 'artery'
+                ));
+            }
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+
+                fundus.cx = width * 0.5;
+                fundus.cy = height * 0.5;
+                fundus.radius = Math.max(width, height) * 0.55;
+
+                // Optic disc offset nasally (slightly left-center)
+                fundus.discX = fundus.cx - fundus.radius * 0.26;
+                fundus.discY = fundus.cy + fundus.radius * 0.04;
+                fundus.discRadius = fundus.radius * 0.075;
+
+                // Fovea / Macula offset temporally (right of disc)
+                fundus.foveaX = fundus.discX + fundus.radius * 0.32;
+                fundus.foveaY = fundus.discY - fundus.radius * 0.02;
+                fundus.foveaRadius = fundus.radius * 0.12;
+
+                mouse.targetX = fundus.cx;
+                mouse.targetY = fundus.cy;
+                mouse.smoothX = fundus.cx;
+                mouse.smoothY = fundus.cy;
+
+                generateRetinalVascularTree();
+            }
+
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Recursive vessel renderer
+            function drawVesselTree(vessel, laserDistX, time, cardiacPulse) {
+                const pts = vessel.points;
+                if (pts.length < 2) return;
+
+                ctx.beginPath();
+                ctx.moveTo(pts[0].x, pts[0].y);
+                for (let i = 1; i < pts.length; i++) {
+                    ctx.lineTo(pts[i].x, pts[i].y);
+                }
+
+                // Check proximity to laser scan line for fluorescein / OCT-A glow effect
+                const midPt = pts[Math.floor(pts.length / 2)];
+                const distToLaser = Math.abs(midPt.x - scanProgress);
+                const laserBoost = Math.max(0, 1 - distToLaser / 120);
+
+                // Vessel coloration:
+                // Artery = bioluminescent cyan/sky; Vein = rich ruby/magenta
+                if (vessel.type === 'artery') {
+                    const r = Math.floor(6 + laserBoost * 50);
+                    const g = Math.floor(182 + laserBoost * 70);
+                    const b = Math.floor(212 + laserBoost * 43);
+                    const alpha = Math.min(0.85, 0.45 + laserBoost * 0.4 + cardiacPulse * 0.1);
+                    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    ctx.shadowColor = `rgba(6, 182, 212, ${0.4 + laserBoost * 0.6})`;
+                } else {
+                    const r = Math.floor(225 + laserBoost * 30);
+                    const g = Math.floor(29 + laserBoost * 140);
+                    const b = Math.floor(72 + laserBoost * 120);
+                    const alpha = Math.min(0.85, 0.4 + laserBoost * 0.45);
+                    ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    ctx.shadowColor = `rgba(225, 29, 72, ${0.35 + laserBoost * 0.5})`;
+                }
+
+                ctx.lineWidth = Math.max(0.75, vessel.caliber * (1 + cardiacPulse * 0.08));
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.shadowBlur = laserBoost > 0.3 ? 12 : 5;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                // Animate Blood Flow Erythrocytes / Signal Particles
+                for (let p of vessel.pulses) {
+                    p.progress += p.speed;
+                    if (p.progress > 1) p.progress = 0;
+
+                    const idx = Math.floor(p.progress * (pts.length - 1));
+                    const pulsePt = pts[idx];
+                    if (pulsePt) {
+                        ctx.beginPath();
+                        ctx.arc(pulsePt.x, pulsePt.y, Math.max(1, p.size * 0.8), 0, Math.PI * 2);
+                        if (vessel.type === 'artery') {
+                            ctx.fillStyle = `rgba(56, 189, 248, ${0.75 + laserBoost * 0.25})`;
+                        } else {
+                            ctx.fillStyle = `rgba(251, 113, 133, ${0.75 + laserBoost * 0.25})`;
                         }
+                        ctx.fill();
                     }
                 }
+
+                // Render daughter vessels
+                for (let child of vessel.children) {
+                    drawVesselTree(child, laserDistX, time, cardiacPulse);
+                }
+            }
+
+            let time = 0;
+
+            function render() {
+                time += 0.016;
+
+                // Cardiac Ocular Pulse Simulation (~66 BPM)
+                const cardiacPulse = Math.pow(Math.sin(time * 3.5), 4) * 0.35;
+
+                // Smooth Parallax Eye Gaze
+                if (mouse.active && mouse.x !== null) {
+                    mouse.targetX = mouse.x;
+                    mouse.targetY = mouse.y;
+                } else {
+                    mouse.targetX = fundus.cx + Math.sin(time * 0.4) * 50;
+                    mouse.targetY = fundus.cy + Math.cos(time * 0.3) * 30;
+                }
+                mouse.smoothX += (mouse.targetX - mouse.smoothX) * 0.04;
+                mouse.smoothY += (mouse.targetY - mouse.smoothY) * 0.04;
+
+                const gazeOffsetX = (mouse.smoothX - fundus.cx) * 0.035;
+                const gazeOffsetY = (mouse.smoothY - fundus.cy) * 0.035;
+
+                // 1. Deep Medical Vignette Backdrop
+                ctx.fillStyle = '#050811';
+                ctx.fillRect(0, 0, width, height);
+
+                ctx.save();
+                ctx.translate(gazeOffsetX, gazeOffsetY);
+
+                // 2. Fundus Choroidal & Retinal Glow
+                const fundusGrad = ctx.createRadialGradient(
+                    fundus.cx, fundus.cy, fundus.radius * 0.1,
+                    fundus.cx, fundus.cy, fundus.radius
+                );
+                fundusGrad.addColorStop(0, 'rgba(15, 23, 42, 0.95)');
+                fundusGrad.addColorStop(0.35, 'rgba(10, 18, 30, 0.9)');
+                fundusGrad.addColorStop(0.65, 'rgba(13, 12, 28, 0.85)'); // subtle warm choroid undertone
+                fundusGrad.addColorStop(1, 'rgba(5, 8, 17, 1)');
+
+                ctx.fillStyle = fundusGrad;
+                ctx.beginPath();
+                ctx.arc(fundus.cx, fundus.cy, fundus.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 3. Optic Nerve Disc & Physiological Cup
+                const discGrad = ctx.createRadialGradient(
+                    fundus.discX, fundus.discY, fundus.discRadius * 0.2,
+                    fundus.discX, fundus.discY, fundus.discRadius
+                );
+                discGrad.addColorStop(0, 'rgba(251, 191, 36, 0.35)'); // cup
+                discGrad.addColorStop(0.45, 'rgba(245, 158, 11, 0.22)');
+                discGrad.addColorStop(0.85, 'rgba(6, 182, 212, 0.18)'); // neuroretinal rim
+                discGrad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+
+                ctx.fillStyle = discGrad;
+                ctx.beginPath();
+                ctx.arc(fundus.discX, fundus.discY, fundus.discRadius * (1.1 + cardiacPulse * 0.08), 0, Math.PI * 2);
+                ctx.fill();
+
+                // Disc boundary ring
+                ctx.strokeStyle = 'rgba(251, 191, 36, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([3, 4]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 4. Macula & Foveal Avascular Zone (FAZ)
+                const maculaGrad = ctx.createRadialGradient(
+                    fundus.foveaX, fundus.foveaY, 4,
+                    fundus.foveaX, fundus.foveaY, fundus.foveaRadius
+                );
+                maculaGrad.addColorStop(0, 'rgba(2, 6, 23, 0.8)'); // FAZ center
+                maculaGrad.addColorStop(0.4, 'rgba(180, 83, 9, 0.08)'); // luteal xanthophyll pigment
+                maculaGrad.addColorStop(0.8, 'rgba(16, 185, 129, 0.04)');
+                maculaGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+                ctx.fillStyle = maculaGrad;
+                ctx.beginPath();
+                ctx.arc(fundus.foveaX, fundus.foveaY, fundus.foveaRadius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Fovea Centralis pinpoint
+                ctx.beginPath();
+                ctx.arc(fundus.foveaX, fundus.foveaY, 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.65)';
+                ctx.fill();
+
+                // 5. OCT / SLO Laser Scanning Sweep
+                scanProgress = (scanProgress + 3.2) % (width + 200);
+                const laserX = scanProgress - 100;
+
+                // Laser Beam gradient
+                const laserGrad = ctx.createLinearGradient(laserX - 60, 0, laserX + 60, 0);
+                laserGrad.addColorStop(0, 'rgba(16, 185, 129, 0)');
+                laserGrad.addColorStop(0.45, 'rgba(16, 185, 129, 0.08)');
+                laserGrad.addColorStop(0.5, 'rgba(52, 211, 153, 0.35)');
+                laserGrad.addColorStop(0.55, 'rgba(16, 185, 129, 0.08)');
+                laserGrad.addColorStop(1, 'rgba(16, 185, 129, 0)');
+
+                ctx.fillStyle = laserGrad;
+                ctx.fillRect(laserX - 60, 0, 120, height);
+
+                // Laser Vertical Scan Line
+                ctx.beginPath();
+                ctx.moveTo(laserX, 0);
+                ctx.lineTo(laserX, height);
+                ctx.strokeStyle = 'rgba(52, 211, 153, 0.55)';
+                ctx.lineWidth = 1.5;
+                ctx.shadowColor = 'rgba(52, 211, 153, 0.8)';
+                ctx.shadowBlur = 10;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                // 6. Draw Full Retinal Vascular System
+                for (let vessel of vessels) {
+                    drawVesselTree(vessel, laserX, time, cardiacPulse);
+                }
+
+                // 7. Clinical Ophthalmic HUD & Concentric FOV Reticles
+                ctx.strokeStyle = 'rgba(6, 182, 212, 0.12)';
+                ctx.lineWidth = 1;
+
+                // FOV 15° Macular Ring
+                ctx.beginPath();
+                ctx.arc(fundus.foveaX, fundus.foveaY, fundus.foveaRadius * 1.3, 0, Math.PI * 2);
+                ctx.setLineDash([2, 5]);
+                ctx.stroke();
+
+                // FOV 30° Diagnostic Ring
+                ctx.beginPath();
+                ctx.arc(fundus.cx, fundus.cy, fundus.radius * 0.45, 0, Math.PI * 2);
+                ctx.setLineDash([4, 6]);
+                ctx.stroke();
+
+                // FOV 55° Ultra-Widefield Ring
+                ctx.beginPath();
+                ctx.arc(fundus.cx, fundus.cy, fundus.radius * 0.85, 0, Math.PI * 2);
+                ctx.setLineDash([6, 8]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Cardinal Axis Ticks
+                const degR = fundus.radius * 0.85;
+                for (let deg = 0; deg < 360; deg += 30) {
+                    const rad = (deg * Math.PI) / 180;
+                    const cosR = Math.cos(rad);
+                    const sinR = Math.sin(rad);
+                    ctx.beginPath();
+                    ctx.moveTo(fundus.cx + cosR * (degR - 8), fundus.cy + sinR * (degR - 8));
+                    ctx.lineTo(fundus.cx + cosR * (degR + 8), fundus.cy + sinR * (degR + 8));
+                    ctx.strokeStyle = 'rgba(6, 182, 212, 0.22)';
+                    ctx.stroke();
+                }
+
+                // 8. Interactive Diagnostic Targeting Reticle at Mouse
+                if (mouse.active && mouse.x !== null) {
+                    const rx = mouse.smoothX - gazeOffsetX;
+                    const ry = mouse.smoothY - gazeOffsetY;
+
+                    // Targeting crosshair
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+                    ctx.lineWidth = 1;
+
+                    ctx.beginPath();
+                    ctx.arc(rx, ry, 18, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.arc(rx, ry, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.8)';
+                    ctx.fill();
+
+                    // Corner brackets
+                    const bSize = 28;
+                    ctx.beginPath();
+                    // Top-Left
+                    ctx.moveTo(rx - bSize, ry - bSize + 8);
+                    ctx.lineTo(rx - bSize, ry - bSize);
+                    ctx.lineTo(rx - bSize + 8, ry - bSize);
+                    // Top-Right
+                    ctx.moveTo(rx + bSize - 8, ry - bSize);
+                    ctx.lineTo(rx + bSize, ry - bSize);
+                    ctx.lineTo(rx + bSize, ry - bSize + 8);
+                    // Bottom-Left
+                    ctx.moveTo(rx - bSize, ry + bSize - 8);
+                    ctx.lineTo(rx - bSize, ry + bSize);
+                    ctx.lineTo(rx - bSize + 8, ry + bSize);
+                    // Bottom-Right
+                    ctx.moveTo(rx + bSize - 8, ry + bSize);
+                    ctx.lineTo(rx + bSize, ry + bSize);
+                    ctx.lineTo(rx + bSize, ry + bSize - 8);
+                    ctx.strokeStyle = 'rgba(6, 182, 212, 0.55)';
+                    ctx.stroke();
+
+                    // Micro Coordinate readout
+                    ctx.font = '9px monospace';
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.7)';
+                    ctx.fillText(`OCT-TARGET: [${Math.round(rx)}, ${Math.round(ry)}]`, rx + 24, ry - 10);
+                    ctx.fillText(`FLUX: 98.4% | RNFL: NORMAL`, rx + 24, ry + 4);
+                }
+
+                ctx.restore();
+
+                // 9. Static Medical Ophthalmic HUD Telemetry (Screen Edges)
+                ctx.font = '10px monospace';
+                ctx.fillStyle = 'rgba(6, 182, 212, 0.45)';
+
+                // Top Left
+                ctx.fillText('OPHTHALMIC SCANNING LASER OPHTHALMOSCOPE (SLO)', 24, 30);
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.35)';
+                ctx.fillText('CONFOCAL 488nm / SPECTRAL-DOMAIN OCT 840nm', 24, 46);
+
+                // Top Right
+                ctx.textAlign = 'right';
+                ctx.fillStyle = 'rgba(16, 185, 129, 0.55)';
+                ctx.fillText('LIVE ACQUISITION: CONTINUOUS', width - 24, 30);
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.35)';
+                ctx.fillText(`CARDIAC PULSE: ~66 BPM | PERFUSION: ACTIVE`, width - 24, 46);
+
+                // Bottom Left
+                ctx.textAlign = 'left';
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.35)';
+                ctx.fillText('FOV: 55° ULTRA-WIDEFIELD | C/D RATIO: 0.32', 24, height - 24);
+
+                // Bottom Right
+                ctx.textAlign = 'right';
+                ctx.fillStyle = 'rgba(6, 182, 212, 0.45)';
+                ctx.fillText('VISIONCARE AI RETINAL SCAN SUITE', width - 24, height - 24);
+                ctx.textAlign = 'left';
 
                 animFrameId = requestAnimationFrame(render);
             }
@@ -1711,7 +2144,7 @@
             }
         }
 
-        // Initialize Live Background
+        // Initialize Live Retinal Fundus Background
         startLiveAnimation();
 
         // Auth State Observer
