@@ -129,9 +129,56 @@
             display: none !important;
         }
 
+        /* Smooth Page Transition Keyframes */
+        @keyframes viewEnterFadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(14px) scale(0.992);
+                filter: blur(3px);
+            }
+            50% {
+                filter: blur(0.5px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes cardStaggerIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-view-fade {
+            animation: viewEnterFadeUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+            will-change: transform, opacity, filter;
+        }
+
+        .stagger-1 {
+            animation: cardStaggerIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both;
+        }
+
+        .stagger-2 {
+            animation: cardStaggerIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.09s both;
+        }
+
+        .stagger-3 {
+            animation: cardStaggerIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.14s both;
+        }
+
         /* View: Home */
         html.user-authenticated.view-home #home-section {
             display: flex !important;
+            animation: viewEnterFadeUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity, filter;
         }
         html.user-authenticated.view-home #app-content,
         html.user-authenticated.view-home #report-section {
@@ -145,6 +192,8 @@
         }
         html.user-authenticated.view-dashboard #app-content {
             display: flex !important;
+            animation: viewEnterFadeUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity, filter;
         }
 
         /* View: Report */
@@ -154,6 +203,8 @@
         }
         html.user-authenticated.view-report #report-section {
             display: block !important;
+            animation: viewEnterFadeUp 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity, filter;
         }
 
         /* Single Viewport Zero-Scroll Optimization for Home & Workspace on Standard Screens */
@@ -497,7 +548,7 @@
             <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
                 
                 <!-- LEFT COLUMN: Brand Mission, Headline, Description, & Direct CTA (7 Cols) -->
-                <div class="lg:col-span-7 flex flex-col justify-center space-y-3 sm:space-y-3.5">
+                <div class="lg:col-span-7 flex flex-col justify-center space-y-3 sm:space-y-3.5 stagger-1">
                     
                     <!-- 1. Innovation & Compliance Status Pill -->
                     <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/90 dark:bg-[#091b12]/90 border border-slate-200/90 dark:border-emerald-500/30 text-navy-900 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md self-start shadow-sm">
@@ -578,7 +629,7 @@
                 </div>
 
                 <!-- RIGHT COLUMN: Live Medical AI Retinal Scanner HUD (5 Cols) -->
-                <div class="lg:col-span-5 w-full">
+                <div class="lg:col-span-5 w-full stagger-2">
                     <div class="bg-white/95 dark:bg-[#06140d]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-emerald-500/30 rounded-3xl p-3.5 sm:p-4 shadow-2xl relative overflow-hidden group hover:border-cyan-500/50 transition-all">
                         
                         <!-- Ambient Glow Lights -->
@@ -728,7 +779,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-stretch w-full flex-1">
 
                 <!-- 1. Retinal Fundus Scan Card -->
-                <div class="bg-white/95 dark:bg-[#071710]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3">
+                <div class="bg-white/95 dark:bg-[#071710]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3 stagger-1">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center space-x-2">
@@ -802,7 +853,7 @@
                 </div>
 
                 <!-- 2. Patient Clinical Context Card -->
-                <div class="bg-white/95 dark:bg-[#071710]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3">
+                <div class="bg-white/95 dark:bg-[#071710]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3 stagger-2">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center space-x-2">
@@ -852,7 +903,7 @@
             </div>
 
             <!-- ACTION BUTTONS: RUN DIAGNOSIS + SEE REPORT -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 w-full flex-shrink-0">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 w-full flex-shrink-0 stagger-3">
                 <!-- 1. Run Real-Time Diagnosis Button -->
                 <button id="analyzeBtn" onclick="runAnalysis()"
                     class="py-3 sm:py-3.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider text-navy-950 bg-nuvica-accent hover:bg-nuvica-accentHover shadow-glow-accent transition-all transform active:scale-[0.99] flex items-center justify-center space-x-2 cursor-pointer">
@@ -912,7 +963,7 @@
             </div>
 
             <!-- 1. Main Action Referral Banner -->
-            <div id="actionBanner" class="rounded-3xl p-5 sm:p-6 shadow-nuvica-lg border transition-all duration-300">
+            <div id="actionBanner" class="rounded-3xl p-5 sm:p-6 shadow-nuvica-lg border transition-all duration-300 stagger-1">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="space-y-1">
                         <div class="flex items-center space-x-2">
@@ -945,7 +996,7 @@
             </div>
 
             <!-- 2. The 4 Safety Guardrail Cards -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 stagger-2">
                 <!-- Quality Gate -->
                 <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-3.5 shadow-sm border border-slate-100 space-y-1">
                     <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">Quality Gate</span>
@@ -988,7 +1039,7 @@
             </div>
 
             <!-- 3. Report Analytics Columns: 5-Class Spectrum + Safety Table + Grad-CAM -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start stagger-3">
                 
                 <!-- LEFT COLUMN: 5-Class Spectrum & Safety Table (6 Cols) -->
                 <div class="lg:col-span-6 space-y-5">
@@ -2526,16 +2577,37 @@
         const profileDropdownName = document.getElementById('profileDropdownName');
         const profileDropdownEmail = document.getElementById('profileDropdownEmail');
 
+        function transitionToView(targetName) {
+            const views = {
+                'home': homeSection,
+                'dashboard': appContent,
+                'report': reportSection
+            };
+
+            // Switch view classes on documentElement
+            document.documentElement.classList.remove('view-home', 'view-dashboard', 'view-report');
+            document.documentElement.classList.add(`view-${targetName}`);
+
+            Object.entries(views).forEach(([name, element]) => {
+                if (!element) return;
+                if (name === targetName) {
+                    element.classList.remove('hidden');
+                    // Reset and trigger smooth entrance animation
+                    element.classList.remove('animate-view-fade');
+                    void element.offsetWidth; // Force DOM reflow to re-trigger animation
+                    element.classList.add('animate-view-fade');
+                } else {
+                    element.classList.add('hidden');
+                    element.classList.remove('animate-view-fade');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            sessionStorage.setItem('visioncare_active_view', targetName);
+        }
+
         function navigateToDashboard() {
-            document.documentElement.classList.add('view-dashboard');
-            document.documentElement.classList.remove('view-home', 'view-report');
-            if (homeSection) homeSection.classList.add('hidden');
-            if (reportSection) reportSection.classList.add('hidden');
-            if (appContent) {
-                appContent.classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'instant' });
-            }
-            sessionStorage.setItem('visioncare_active_view', 'dashboard');
+            transitionToView('dashboard');
         }
 
         function navigateToReport() {
@@ -2548,27 +2620,11 @@
                 showToast("Please run diagnosis on a retinal scan first!", "error");
                 return;
             }
-            document.documentElement.classList.add('view-report');
-            document.documentElement.classList.remove('view-home', 'view-dashboard');
-            if (homeSection) homeSection.classList.add('hidden');
-            if (appContent) appContent.classList.add('hidden');
-            if (reportSection) {
-                reportSection.classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'instant' });
-            }
-            sessionStorage.setItem('visioncare_active_view', 'report');
+            transitionToView('report');
         }
 
         function navigateToHome() {
-            document.documentElement.classList.add('view-home');
-            document.documentElement.classList.remove('view-dashboard', 'view-report');
-            if (appContent) appContent.classList.add('hidden');
-            if (reportSection) reportSection.classList.add('hidden');
-            if (homeSection) {
-                homeSection.classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'instant' });
-            }
-            sessionStorage.setItem('visioncare_active_view', 'home');
+            transitionToView('home');
         }
 
         function closeProfileDropdown() {
@@ -2578,6 +2634,7 @@
         window.navigateToDashboard = navigateToDashboard;
         window.navigateToReport = navigateToReport;
         window.navigateToHome = navigateToHome;
+        window.transitionToView = transitionToView;
         window.closeProfileDropdown = closeProfileDropdown;
 
         // Profile Dropdown Toggle Listener
@@ -2611,26 +2668,14 @@
                     authOverlay.classList.add('hidden');
                     stopLiveAnimation(); // Free up CPU/GPU cycles for retinal processing
 
-                    // Default to Home section or preserve previous view in this session
+                    // Default to Home section or preserve previous view in this session with smooth animation
                     const activeView = sessionStorage.getItem('visioncare_active_view') || 'home';
                     if (activeView === 'dashboard') {
-                        document.documentElement.classList.add('view-dashboard');
-                        document.documentElement.classList.remove('view-home', 'view-report');
-                        if (homeSection) homeSection.classList.add('hidden');
-                        if (reportSection) reportSection.classList.add('hidden');
-                        if (appContent) appContent.classList.remove('hidden');
+                        transitionToView('dashboard');
                     } else if (activeView === 'report' && (window.latestPipelineData || sessionStorage.getItem('visioncare_has_diagnosis') === 'true')) {
-                        document.documentElement.classList.add('view-report');
-                        document.documentElement.classList.remove('view-home', 'view-dashboard');
-                        if (homeSection) homeSection.classList.add('hidden');
-                        if (appContent) appContent.classList.add('hidden');
-                        if (reportSection) reportSection.classList.remove('hidden');
+                        transitionToView('report');
                     } else {
-                        document.documentElement.classList.add('view-home');
-                        document.documentElement.classList.remove('view-dashboard', 'view-report');
-                        if (reportSection) reportSection.classList.add('hidden');
-                        if (appContent) appContent.classList.add('hidden');
-                        if (homeSection) homeSection.classList.remove('hidden');
+                        transitionToView('home');
                     }
 
                     // Update Profile Avatar & Information
