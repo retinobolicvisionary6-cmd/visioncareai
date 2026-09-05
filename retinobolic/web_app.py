@@ -11,6 +11,10 @@ from flask_cors import CORS
 PROJECT_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+import torch
+# Optimize PyTorch memory footprint for Render Free Tier (512MB RAM)
+torch.set_num_threads(1)
+
 from Integration.pipeline.screening_pipeline import run_pipeline
 
 app = Flask(
