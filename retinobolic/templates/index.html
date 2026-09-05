@@ -135,10 +135,44 @@
             display: block !important;
         }
         html.user-authenticated.view-home #home-section {
-            display: block !important;
+            display: flex !important;
         }
         html.user-authenticated.view-home #app-content {
             display: none !important;
+        }
+
+        /* Home Screen Single Viewport Zero-Scroll Optimization */
+        @media (min-height: 540px) {
+            html.view-home,
+            html.view-home body,
+            html:not(.view-dashboard) body {
+                height: 100vh;
+                max-height: 100vh;
+                overflow: hidden;
+            }
+            html.view-home #main-wrapper,
+            html:not(.view-dashboard) #main-wrapper {
+                height: 100%;
+                max-height: 100%;
+                overflow: hidden;
+            }
+        }
+        /* Dashboard Screen: Enable Full Natural Scrolling */
+        html.view-dashboard,
+        html.view-dashboard body {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow-y: auto !important;
+        }
+        html.view-dashboard #main-wrapper {
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+        }
+        html.view-dashboard #site-footer {
+            margin-top: 3rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 2rem !important;
         }
     </style>
 
@@ -186,15 +220,15 @@
 </head>
 
 <body
-    class="min-h-screen text-navy-900 dark:text-darkGreen-text dark:text-darkGreen-text antialiased selection:bg-nuvica-accent selection:text-navy-950 flex flex-col justify-between transition-colors duration-300 dark:bg-darkGreen-premium">
+    class="min-h-screen text-navy-900 dark:text-darkGreen-text antialiased selection:bg-nuvica-accent selection:text-navy-950 flex flex-col justify-between transition-colors duration-300 dark:bg-darkGreen-premium">
     <!-- Overlay for hero background in light mode -->
     <div id="lightBgOverlay"
         class="fixed inset-0 z-[-1] pointer-events-none transition-opacity duration-300 dark:opacity-0"
         style="background: var(--bg-hero);"></div>
 
-    <div>
+    <div id="main-wrapper" class="flex-1 flex flex-col justify-between overflow-hidden">
         <!-- TOP NAVIGATION BAR -->
-        <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+        <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3 w-full flex-shrink-0">
             <nav class="flex items-center justify-between gap-x-4">
 
                 <!-- Logo (Left - Clickable to Home) -->
@@ -431,77 +465,77 @@
         </div>
 
         <!-- HOME PAGE (HERO SECTION) - MATCHING USER WIREFRAME -->
-        <section id="home-section" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-8 transition-all duration-300">
+        <section id="home-section" class="flex-1 flex flex-col justify-center items-center max-w-4xl mx-auto px-4 sm:px-6 w-full space-y-2.5 sm:space-y-3.5 py-1 sm:py-2 my-auto transition-all duration-300">
             
             <!-- 1. PROJECT TITLE BOX (Matching Wireframe) -->
-            <div class="bg-white/95 dark:bg-darkGreen-card/95 backdrop-blur-xl border border-slate-200/80 dark:border-darkGreen-border rounded-3xl p-6 sm:p-10 shadow-nuvica relative overflow-hidden text-center group hover:border-cyan-500/40 transition-all">
-                <div class="absolute -top-16 -right-16 w-48 h-48 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="w-full bg-white/95 dark:bg-darkGreen-card/95 backdrop-blur-xl border border-slate-200/80 dark:border-darkGreen-border rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-nuvica relative overflow-hidden text-center group hover:border-cyan-500/40 transition-all">
+                <div class="absolute -top-16 -right-16 w-44 h-44 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-16 -left-16 w-44 h-44 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
                 
-                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-800/60 text-cyan-800 dark:text-cyan-300 text-xs font-bold uppercase tracking-wider mb-3 shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span>
+                <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 border border-cyan-200 dark:border-cyan-800/60 text-cyan-800 dark:text-cyan-300 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1.5 shadow-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
                     <span>AI-Powered Clinical Screening Suite</span>
                 </div>
                 
-                <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-navy-900 dark:text-white uppercase font-sans">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-navy-900 dark:text-white uppercase font-sans">
                     VisionCare AI
                 </h1>
-                <p class="text-base sm:text-xl font-bold text-slate-600 dark:text-emerald-400 mt-2 font-mono">
+                <p class="text-xs sm:text-sm md:text-base font-bold text-slate-600 dark:text-emerald-400 mt-0.5 font-mono">
                     Diabetic Retinopathy Diagnostic & Screening System
                 </p>
-                <div class="mt-3 flex flex-wrap items-center justify-center gap-2 text-[11px] font-mono text-slate-500 dark:text-gray-400">
-                    <span class="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">EfficientNet-B0</span>
-                    <span class="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">ICDR 5-Grade Standard</span>
-                    <span class="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">Bayesian Epistemic MCDO</span>
-                    <span class="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">Grad-CAM Explainability</span>
+                <div class="mt-2 flex flex-wrap items-center justify-center gap-1.5 text-[10px] sm:text-[11px] font-mono text-slate-500 dark:text-gray-400">
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">EfficientNet-B0</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">ICDR 5-Grade Standard</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">Bayesian Epistemic MCDO</span>
+                    <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-darkGreen-premium border border-slate-200 dark:border-darkGreen-border font-semibold">Grad-CAM Explainability</span>
                 </div>
             </div>
 
             <!-- 2. PROJECT DESCRIPTION IN SIMPLE ENGLISH BOX (Matching Wireframe) -->
-            <div class="bg-white/95 dark:bg-darkGreen-card/95 backdrop-blur-xl border border-slate-200/80 dark:border-darkGreen-border rounded-3xl p-6 sm:p-8 shadow-nuvica text-center space-y-4 relative overflow-hidden group hover:border-emerald-500/40 transition-all">
+            <div class="w-full bg-white/95 dark:bg-darkGreen-card/95 backdrop-blur-xl border border-slate-200/80 dark:border-darkGreen-border rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-nuvica text-center space-y-2 relative overflow-hidden group hover:border-emerald-500/40 transition-all">
                 
-                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider shadow-sm">
-                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-sm">
+                    <svg class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>Project Description</span>
                 </div>
 
-                <p class="text-base sm:text-lg text-navy-900 dark:text-white max-w-3xl mx-auto leading-relaxed font-semibold">
-                    VisionCare AI is an intelligent medical screening system that detects and grades Diabetic Retinopathy from eye photos in under 4 seconds.
+                <p class="text-xs sm:text-sm md:text-base text-navy-900 dark:text-white max-w-2xl mx-auto leading-snug font-semibold">
+                    VisionCare AI is an intelligent medical screening system that detects and grades Diabetic Retinopathy from retinal fundus images in under 4 seconds.
                 </p>
 
-                <p class="text-xs sm:text-sm text-slate-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                    It uses deep learning and visual heatmaps to identify early eye damage, assess patient risk, and help doctors prevent avoidable blindness.
+                <p class="text-[11px] sm:text-xs text-slate-600 dark:text-gray-300 max-w-xl mx-auto leading-normal">
+                    Combining deep learning and visual heatmaps, it helps clinicians detect early microvascular damage, assess patient risk, and prevent avoidable vision loss.
                 </p>
 
                 <!-- 3 Quick Clean Highlights -->
-                <div class="flex flex-wrap items-center justify-center gap-2.5 pt-1">
-                    <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-xs font-semibold text-slate-700 dark:text-emerald-300">
-                        <svg class="w-3.5 h-3.5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div class="flex flex-wrap items-center justify-center gap-2 pt-0.5">
+                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-[10px] sm:text-[11px] font-semibold text-slate-700 dark:text-emerald-300">
+                        <svg class="w-3 h-3 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         <span>4-Sec AI Scan</span>
                     </span>
-                    <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-xs font-semibold text-slate-700 dark:text-emerald-300">
+                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-[10px] sm:text-[11px] font-semibold text-slate-700 dark:text-emerald-300">
                         <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <span>5 Severity Grades</span>
                     </span>
-                    <span class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-xs font-semibold text-slate-700 dark:text-emerald-300">
-                        <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-darkGreen-premium/80 border border-slate-200/70 dark:border-darkGreen-border text-[10px] sm:text-[11px] font-semibold text-slate-700 dark:text-emerald-300">
+                        <svg class="w-3 h-3 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         <span>Visual Heatmaps</span>
                     </span>
                 </div>
             </div>
 
             <!-- 3. NAVIGATE TO DASHBOARD BUTTON (Matching Wireframe) -->
-            <div class="text-center pt-2">
+            <div class="text-center pt-1 sm:pt-1.5">
                 <button id="btnNavigateDashboard" onclick="navigateToDashboard()"
-                    class="group relative inline-flex items-center justify-center space-x-3 px-8 sm:px-12 py-4 sm:py-5 rounded-2xl font-black text-sm sm:text-base uppercase tracking-wider text-black bg-gradient-to-r from-nuvica-accent via-emerald-400 to-cyan-400 hover:from-emerald-400 hover:to-nuvica-accent shadow-glow-accent hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer">
+                    class="group relative inline-flex items-center justify-center space-x-2.5 px-6 sm:px-9 py-2.5 sm:py-3.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider text-black bg-gradient-to-r from-nuvica-accent via-emerald-400 to-cyan-400 hover:from-emerald-400 hover:to-nuvica-accent shadow-glow-accent hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer">
                     <span>Navigate to Dashboard</span>
-                    <svg class="w-5 h-5 transition-transform group-hover:translate-x-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                 </button>
-                <p class="text-xs text-slate-500 dark:text-gray-400 mt-2 font-medium">Click to open the real-time retinal upload, AI diagnostics, and clinical reporting suite</p>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-gray-400 mt-1 font-medium">Click to open real-time retinal upload, AI diagnostics, and clinical reporting suite</p>
             </div>
 
         </section>
@@ -1018,20 +1052,20 @@
     </div>
 
     <!-- FOOTER -->
-    <footer class="bg-navy-950 text-white py-8 border-t border-navy-900 mt-12">
+    <footer id="site-footer" class="bg-navy-950 text-white py-2 sm:py-2.5 border-t border-navy-900 flex-shrink-0 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex flex-row items-center justify-between gap-4">
 
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2.5">
                     <div
-                        class="w-7 h-7 rounded-lg bg-nuvica-accent text-navy-950 flex items-center justify-center font-black text-sm">
+                        class="w-6 h-6 rounded-lg bg-nuvica-accent text-navy-950 flex items-center justify-center font-black text-xs">
                         +
                     </div>
-                    <span class="text-lg font-extrabold tracking-tight">VisionCare</span>
-                    <span class="text-xs text-slate-400 pl-2">| High-Precision AI Clinical Diagnostics</span>
+                    <span class="text-sm sm:text-base font-extrabold tracking-tight">VisionCare</span>
+                    <span class="hidden sm:inline text-xs text-slate-400 pl-2">| High-Precision AI Clinical Diagnostics</span>
                 </div>
 
-                <div class="text-xs text-slate-400 font-medium">
+                <div class="text-[10px] sm:text-xs text-slate-400 font-medium">
                     &copy; 2026 VisionCare Healthcare Systems. All rights reserved.
                 </div>
 
@@ -2367,7 +2401,7 @@
             if (appContent) appContent.classList.add('hidden');
             if (homeSection) {
                 homeSection.classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: 'instant' });
             }
             sessionStorage.setItem('visioncare_active_view', 'home');
         }
