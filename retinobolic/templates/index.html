@@ -197,59 +197,131 @@
 
             </nav>
         </header>
-
-        <!-- LOGIN/AUTH MODAL (Visible by Default, Hidden when Auth'd) -->
+        <!-- LOGIN/AUTH MODAL WITH LIVE INTERACTIVE BACKGROUND -->
         <div id="authOverlay"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-navy-900/60 backdrop-blur-sm transition-opacity duration-300">
+            class="fixed inset-0 z-50 flex items-center justify-center bg-[#070b12] transition-opacity duration-300 overflow-hidden select-none">
+            
+            <!-- Live Interactive Background Canvas -->
+            <canvas id="authLiveCanvas" class="absolute inset-0 w-full h-full pointer-events-auto"></canvas>
+
+            <!-- Atmospheric glowing orbs -->
+            <div class="absolute -top-40 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+            <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none animate-pulse" style="animation-delay: 2s;"></div>
+
+            <!-- Sleek Glassmorphic Auth Card (Matching User Wireframe) -->
             <div
-                class="bg-white dark:bg-darkGreen-card border border-slate-200 dark:border-darkGreen-border rounded-3xl p-8 max-w-md w-full shadow-nuvica-lg m-4 transform transition-all relative overflow-hidden">
+                class="relative z-10 bg-[#0d131f]/95 border border-slate-700/70 rounded-3xl p-8 sm:p-10 max-w-[420px] w-full shadow-2xl backdrop-blur-2xl m-4 transition-all duration-300">
+                
+                <!-- Header -->
                 <div class="text-center mb-6">
-                    <h2 class="text-2xl font-black text-navy-900 dark:text-darkGreen-text">VisionCare Access</h2>
-                    <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Sign in to access the clinical diagnostic
-                        suite.</p>
+                    <h2 id="authCardTitle" class="text-2xl font-black tracking-widest uppercase text-white font-mono">LOGIN PAGE</h2>
+                    <p id="authCardSubtitle" class="text-xs text-slate-400 mt-1 font-sans">VisionCare AI Clinical Screening Suite</p>
                 </div>
 
-                <div class="space-y-4">
-                    <!-- Google Sign In -->
-                    <button id="btnGoogleSignIn"
-                        class="w-full flex items-center justify-center space-x-3 px-4 py-3 border border-slate-200 dark:border-darkGreen-border rounded-xl bg-white dark:bg-darkGreen-premium hover:bg-slate-50 dark:hover:bg-darkGreen-border text-sm font-bold text-navy-900 dark:text-darkGreen-text transition-all shadow-sm">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24">
-                            <path fill="#4285F4"
-                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                            <path fill="#34A853"
-                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                            <path fill="#FBBC05"
-                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                            <path fill="#EA4335"
-                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                        </svg>
-                        <span>Continue with Google</span>
-                    </button>
-
-                    <div class="relative flex items-center py-2">
-                        <div class="flex-grow border-t border-slate-200 dark:border-darkGreen-border"></div>
-                        <span class="flex-shrink-0 mx-4 text-xs font-medium text-slate-400">OR EMAIL</span>
-                        <div class="flex-grow border-t border-slate-200 dark:border-darkGreen-border"></div>
+                <!-- Auth Form -->
+                <form id="authForm" class="space-y-4">
+                    <!-- Name Field (Register Mode Only) -->
+                    <div id="registerNameGroup" class="hidden">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Full Name</label>
+                        <input type="text" id="authName" placeholder="Dr. Jane Doe / Clinician"
+                            class="w-full bg-[#131b2a] border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-sans">
                     </div>
 
-                    <form id="authForm" class="space-y-4">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-600 dark:text-gray-300 mb-1">Email
-                                Address</label>
-                            <input type="email" id="authEmail" required
-                                class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text text-sm focus:outline-none focus:border-navy-900 transition-colors">
+                    <!-- Email Field -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Email</label>
+                        <input type="email" id="authEmail" required placeholder="email"
+                            class="w-full bg-[#131b2a] border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-sans">
+                    </div>
+
+                    <!-- Password Field with Eye Button -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="authPassword" required minlength="6" placeholder="password"
+                                class="w-full bg-[#131b2a] border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-sans">
+                            <button type="button" id="togglePasswordBtn" title="Toggle password visibility"
+                                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-cyan-400 transition-colors focus:outline-none p-1">
+                                <!-- Eye Open Icon -->
+                                <svg id="eyeIconOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <!-- Eye Closed Icon -->
+                                <svg id="eyeIconClosed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                </svg>
+                            </button>
                         </div>
-                        <div>
-                            <label
-                                class="block text-[11px] font-bold text-slate-600 dark:text-gray-300 mb-1">Password</label>
-                            <input type="password" id="authPassword" required minlength="6"
-                                class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text text-sm focus:outline-none focus:border-navy-900 transition-colors">
+                    </div>
+
+                    <!-- Confirm Password Field (Register Mode Only) -->
+                    <div id="registerConfirmGroup" class="hidden">
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <input type="password" id="authConfirmPassword" minlength="6" placeholder="Repeat password"
+                                class="w-full bg-[#131b2a] border border-slate-700 rounded-xl px-4 py-3 pr-12 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-sans">
+                            <button type="button" id="toggleConfirmPasswordBtn" title="Toggle password visibility"
+                                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-cyan-400 transition-colors focus:outline-none p-1">
+                                <svg id="eyeConfirmOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <svg id="eyeConfirmClosed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                </svg>
+                            </button>
                         </div>
-                        <button type="submit" id="btnEmailAuth"
-                            class="w-full py-3 rounded-xl font-black text-sm uppercase tracking-wider text-navy-950 bg-nuvica-accent hover:bg-nuvica-accentHover shadow-glow-accent transition-all">
-                            Sign In / Sign Up
+                    </div>
+
+                    <!-- Stay Logged In & Forgot Password Row -->
+                    <div class="flex items-center justify-between text-xs pt-1">
+                        <label class="inline-flex items-center space-x-2 cursor-pointer select-none text-slate-300 hover:text-white transition-colors">
+                            <input type="checkbox" id="authStayLoggedIn" checked
+                                class="w-4 h-4 rounded border-slate-700 text-cyan-500 focus:ring-cyan-400 bg-[#131b2a] cursor-pointer accent-cyan-400">
+                            <span class="font-medium">Stay logged in</span>
+                        </label>
+                        <button type="button" id="btnForgotPassword"
+                            class="text-slate-400 hover:text-cyan-400 transition-colors font-medium hover:underline">
+                            forgot password?
                         </button>
-                    </form>
+                    </div>
+
+                    <!-- Primary Action Button -->
+                    <button type="submit" id="btnEmailAuth"
+                        class="w-full py-3.5 rounded-xl font-black text-sm uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 shadow-lg shadow-cyan-500/20 active:scale-[0.99] transition-all">
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="relative flex items-center my-5">
+                    <div class="flex-grow border-t border-slate-700/80"></div>
+                    <span class="flex-shrink-0 mx-3 text-[10px] font-bold tracking-widest text-slate-500 uppercase">OR</span>
+                    <div class="flex-grow border-t border-slate-700/80"></div>
+                </div>
+
+                <!-- Google Sign In Button (Matching Wireframe) -->
+                <button type="button" id="btnGoogleSignIn"
+                    class="w-full flex items-center justify-center space-x-3 px-4 py-3 border border-slate-700 rounded-xl bg-[#131b2a] hover:bg-[#1c273c] text-sm font-semibold text-white transition-all shadow-sm active:scale-[0.99]">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    <span>Continue with Google</span>
+                </button>
+
+                <!-- Toggle to Register / Login -->
+                <div class="text-center mt-5">
+                    <p class="text-xs text-slate-400">
+                        <span id="authTogglePrompt">Didn't register yet?</span>
+                        <button type="button" id="btnSwitchAuthMode"
+                            class="text-cyan-400 hover:text-cyan-300 font-bold ml-1 hover:underline focus:outline-none">
+                            Create new account
+                        </button>
+                    </p>
                 </div>
             </div>
         </div>
@@ -1277,7 +1349,12 @@
             signInWithEmailAndPassword,
             createUserWithEmailAndPassword,
             onAuthStateChanged,
-            signOut
+            signOut,
+            setPersistence,
+            browserLocalPersistence,
+            browserSessionPersistence,
+            sendPasswordResetEmail,
+            updateProfile
         } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
@@ -1302,6 +1379,47 @@
         } catch (e) {
             console.error("Firebase Initialization Error. Please update firebaseConfig.", e);
         }
+
+        // Sleek Non-intrusive Toast Notification System
+        function showToast(message, type = 'info') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed top-5 right-5 z-[999] flex flex-col space-y-2 pointer-events-none max-w-sm w-full px-4';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            const isError = type === 'error' || message.toLowerCase().includes('error') || message.toLowerCase().includes('failed');
+            const isSuccess = type === 'success' || message.toLowerCase().includes('success') || message.toLowerCase().includes('welcome');
+            
+            let bgStyle = 'bg-[#0f172a]/95 border-cyan-500/50 text-slate-100';
+            let iconSvg = `<svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+            
+            if (isError) {
+                bgStyle = 'bg-rose-950/95 border-rose-500/50 text-rose-100';
+                iconSvg = `<svg class="w-4 h-4 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+            } else if (isSuccess) {
+                bgStyle = 'bg-emerald-950/95 border-emerald-500/50 text-emerald-100';
+                iconSvg = `<svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+            }
+
+            toast.className = `${bgStyle} pointer-events-auto border rounded-xl px-4 py-3 shadow-2xl backdrop-blur-md text-xs sm:text-sm font-medium flex items-center space-x-3 transition-all duration-300 transform -translate-y-3 opacity-0`;
+            toast.innerHTML = `${iconSvg}<span class="flex-1">${message}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('-translate-y-3', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-3', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+        window.showToast = showToast;
 
         // Expose global function to save diagnosis
         window.saveDiagnosisToFirestore = async function (clinicalData, pipelineData) {
@@ -1337,8 +1455,264 @@
         const btnSignOut = document.getElementById('btnSignOut');
         const btnGoogleSignIn = document.getElementById('btnGoogleSignIn');
         const authForm = document.getElementById('authForm');
+        const authName = document.getElementById('authName');
         const authEmail = document.getElementById('authEmail');
         const authPassword = document.getElementById('authPassword');
+        const authConfirmPassword = document.getElementById('authConfirmPassword');
+        const registerNameGroup = document.getElementById('registerNameGroup');
+        const registerConfirmGroup = document.getElementById('registerConfirmGroup');
+        const authStayLoggedIn = document.getElementById('authStayLoggedIn');
+        const btnForgotPassword = document.getElementById('btnForgotPassword');
+        const btnEmailAuth = document.getElementById('btnEmailAuth');
+        const authCardTitle = document.getElementById('authCardTitle');
+        const authCardSubtitle = document.getElementById('authCardSubtitle');
+        const authTogglePrompt = document.getElementById('authTogglePrompt');
+        const btnSwitchAuthMode = document.getElementById('btnSwitchAuthMode');
+
+        // Eye Toggle Elements
+        const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+        const eyeIconOpen = document.getElementById('eyeIconOpen');
+        const eyeIconClosed = document.getElementById('eyeIconClosed');
+        const toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPasswordBtn');
+        const eyeConfirmOpen = document.getElementById('eyeConfirmOpen');
+        const eyeConfirmClosed = document.getElementById('eyeConfirmClosed');
+
+        // Restore Stay Logged In Preference
+        const savedStayPref = localStorage.getItem('visioncare_stay_logged_in');
+        if (savedStayPref !== null && authStayLoggedIn) {
+            authStayLoggedIn.checked = savedStayPref === '1';
+        }
+
+        // Apply Firebase Auth Persistence Based On Stay Logged In Checkbox
+        // Checked: browserLocalPersistence (stays logged in even if closed and reopened)
+        // Unchecked: browserSessionPersistence (survives page refresh, logs out on tab/window close)
+        async function applyAuthPersistence() {
+            if (!auth) return;
+            const stayLoggedIn = authStayLoggedIn ? authStayLoggedIn.checked : true;
+            try {
+                const persistenceMode = stayLoggedIn ? browserLocalPersistence : browserSessionPersistence;
+                await setPersistence(auth, persistenceMode);
+                localStorage.setItem('visioncare_stay_logged_in', stayLoggedIn ? '1' : '0');
+            } catch (err) {
+                console.warn("Firebase setPersistence notice:", err);
+            }
+        }
+
+        if (authStayLoggedIn) {
+            authStayLoggedIn.addEventListener('change', () => {
+                applyAuthPersistence();
+            });
+        }
+
+        // Toggle Password Visibility Handlers
+        if (togglePasswordBtn && authPassword) {
+            togglePasswordBtn.addEventListener('click', () => {
+                const isPassword = authPassword.type === 'password';
+                authPassword.type = isPassword ? 'text' : 'password';
+                if (eyeIconOpen && eyeIconClosed) {
+                    eyeIconOpen.classList.toggle('hidden', isPassword);
+                    eyeIconClosed.classList.toggle('hidden', !isPassword);
+                }
+            });
+        }
+
+        if (toggleConfirmPasswordBtn && authConfirmPassword) {
+            toggleConfirmPasswordBtn.addEventListener('click', () => {
+                const isPassword = authConfirmPassword.type === 'password';
+                authConfirmPassword.type = isPassword ? 'text' : 'password';
+                if (eyeConfirmOpen && eyeConfirmClosed) {
+                    eyeConfirmOpen.classList.toggle('hidden', isPassword);
+                    eyeConfirmClosed.classList.toggle('hidden', !isPassword);
+                }
+            });
+        }
+
+        // Switch Between Login and Register Mode
+        let isRegisterMode = false;
+        if (btnSwitchAuthMode) {
+            btnSwitchAuthMode.addEventListener('click', () => {
+                isRegisterMode = !isRegisterMode;
+                if (isRegisterMode) {
+                    if (authCardTitle) authCardTitle.textContent = "REGISTER ACCOUNT";
+                    if (authCardSubtitle) authCardSubtitle.textContent = "Create an account for clinical diagnostic access";
+                    if (registerNameGroup) registerNameGroup.classList.remove('hidden');
+                    if (registerConfirmGroup) registerConfirmGroup.classList.remove('hidden');
+                    if (authConfirmPassword) authConfirmPassword.setAttribute('required', 'true');
+                    if (btnForgotPassword) btnForgotPassword.classList.add('hidden');
+                    if (btnEmailAuth) btnEmailAuth.textContent = "Create Account";
+                    if (authTogglePrompt) authTogglePrompt.textContent = "Already have an account?";
+                    btnSwitchAuthMode.textContent = "Sign in here";
+                } else {
+                    if (authCardTitle) authCardTitle.textContent = "LOGIN PAGE";
+                    if (authCardSubtitle) authCardSubtitle.textContent = "VisionCare AI Clinical Screening Suite";
+                    if (registerNameGroup) registerNameGroup.classList.add('hidden');
+                    if (registerConfirmGroup) registerConfirmGroup.classList.add('hidden');
+                    if (authConfirmPassword) authConfirmPassword.removeAttribute('required');
+                    if (btnForgotPassword) btnForgotPassword.classList.remove('hidden');
+                    if (btnEmailAuth) btnEmailAuth.textContent = "Sign In";
+                    if (authTogglePrompt) authTogglePrompt.textContent = "Didn't register yet?";
+                    btnSwitchAuthMode.textContent = "Create new account";
+                }
+            });
+        }
+
+        // Forgot Password Handler
+        if (btnForgotPassword) {
+            btnForgotPassword.addEventListener('click', async () => {
+                if (!auth) return showToast("Firebase not initialized.", "error");
+                let email = authEmail.value.trim();
+                if (!email) {
+                    email = prompt("Please enter your account email to receive password reset instructions:");
+                    if (email) email = email.trim();
+                }
+                if (!email) return;
+
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    showToast(`Password reset email sent to ${email}. Please check your inbox!`, "success");
+                } catch (err) {
+                    console.error("Password reset error:", err);
+                    let msg = err.message;
+                    if (err.code === 'auth/user-not-found') {
+                        msg = "No account found with this email address.";
+                    }
+                    showToast(msg, "error");
+                }
+            });
+        }
+
+        // Live Retinal Neural Constellation Canvas Background
+        let animFrameId = null;
+        function initLiveCanvas() {
+            const canvas = document.getElementById('authLiveCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            let width, height;
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Particle nodes
+            const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 14000), 85);
+            const particles = [];
+            const colors = [
+                'rgba(6, 182, 212, ',   // cyan
+                'rgba(16, 185, 129, ',  // emerald
+                'rgba(56, 189, 248, ',  // sky
+                'rgba(99, 102, 241, '   // indigo
+            ];
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.7,
+                    vy: (Math.random() - 0.5) * 0.7,
+                    radius: Math.random() * 2 + 1.2,
+                    baseAlpha: Math.random() * 0.5 + 0.3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+
+            let mouse = { x: null, y: null, maxDist: 150 };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            let time = 0;
+            function render() {
+                time += 0.015;
+                ctx.clearRect(0, 0, width, height);
+
+                // Update & draw particles
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    // Bounce off walls
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                    // Gentle breathing alpha
+                    const alpha = p.baseAlpha + Math.sin(time + p.phase) * 0.2;
+
+                    // Draw node
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color + Math.max(0.1, alpha) + ')';
+                    ctx.shadowColor = p.color + '0.8)';
+                    ctx.shadowBlur = 8;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Mouse interaction
+                    if (mouse.x !== null && mouse.y !== null) {
+                        const mdx = p.x - mouse.x;
+                        const mdy = p.y - mouse.y;
+                        const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+                        if (mDist < mouse.maxDist) {
+                            const mAlpha = (1 - mDist / mouse.maxDist) * 0.45;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${mAlpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+
+                    // Interconnections
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 115) {
+                            const lineAlpha = (1 - dist / 115) * 0.22;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${lineAlpha})`;
+                            ctx.lineWidth = 0.75;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                animFrameId = requestAnimationFrame(render);
+            }
+
+            render();
+        }
+
+        function startLiveAnimation() {
+            if (!animFrameId) {
+                initLiveCanvas();
+            }
+        }
+
+        function stopLiveAnimation() {
+            if (animFrameId) {
+                cancelAnimationFrame(animFrameId);
+                animFrameId = null;
+            }
+        }
+
+        // Initialize Live Background
+        startLiveAnimation();
 
         // Auth State Observer
         if (auth) {
@@ -1348,50 +1722,102 @@
                     authOverlay.classList.add('hidden');
                     appContent.classList.remove('hidden');
                     btnSignOut.classList.remove('hidden');
-                    showToast("Welcome to VisionCare, " + (user.displayName || user.email));
+                    stopLiveAnimation(); // Free up CPU/GPU cycles for retinal processing
+                    showToast("Welcome to VisionCare, " + (user.displayName || user.email), "success");
                 } else {
                     // User is signed out
                     authOverlay.classList.remove('hidden');
                     appContent.classList.add('hidden');
                     btnSignOut.classList.add('hidden');
+                    startLiveAnimation();
                 }
             });
         }
 
         // Google Sign In
         if (btnGoogleSignIn) {
-            btnGoogleSignIn.addEventListener('click', () => {
-                if (!auth) return showToast("Firebase not configured!");
-                signInWithPopup(auth, googleProvider)
-                    .catch((error) => {
-                        console.error(error);
-                        showToast("Google Auth Error: " + error.message);
-                    });
+            btnGoogleSignIn.addEventListener('click', async () => {
+                if (!auth) return showToast("Firebase not configured!", "error");
+                await applyAuthPersistence();
+                try {
+                    await signInWithPopup(auth, googleProvider);
+                    showToast("Signed in with Google successfully!", "success");
+                } catch (error) {
+                    console.error("Google auth error:", error);
+                    if (error.code !== 'auth/popup-closed-by-user') {
+                        showToast("Google Auth Error: " + error.message, "error");
+                    }
+                }
             });
         }
 
-        // Email/Password Sign In / Sign Up
+        // Email/Password Sign In & Register Form Handler
         if (authForm) {
-            authForm.addEventListener('submit', (e) => {
+            authForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                if (!auth) return showToast("Firebase not configured!");
+                if (!auth) return showToast("Firebase not configured!", "error");
+
                 const email = authEmail.value.trim();
                 const password = authPassword.value;
+                const name = authName ? authName.value.trim() : '';
 
-                if (!email || !password) return showToast("Please enter email and password.");
+                if (!email || !password) {
+                    return showToast("Please enter email and password.", "error");
+                }
 
-                // Attempt to sign in first
-                signInWithEmailAndPassword(auth, email, password)
-                    .catch((error) => {
-                        // If user doesn't exist, try to sign them up
-                        if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                            createUserWithEmailAndPassword(auth, email, password)
-                                .then(() => showToast("Account created successfully!"))
-                                .catch(err => showToast("Sign Up Error: " + err.message));
-                        } else {
-                            showToast("Sign In Error: " + error.message);
+                // Apply persistence preference (Local vs Session)
+                await applyAuthPersistence();
+
+                if (btnEmailAuth) {
+                    btnEmailAuth.disabled = true;
+                }
+                const prevText = btnEmailAuth ? btnEmailAuth.textContent : "";
+                if (btnEmailAuth) btnEmailAuth.textContent = isRegisterMode ? "Creating Account..." : "Signing In...";
+
+                try {
+                    if (isRegisterMode) {
+                        const confirmPass = authConfirmPassword ? authConfirmPassword.value : '';
+                        if (password !== confirmPass) {
+                            if (btnEmailAuth) {
+                                btnEmailAuth.disabled = false;
+                                btnEmailAuth.textContent = prevText;
+                            }
+                            return showToast("Passwords do not match. Please re-enter.", "error");
                         }
-                    });
+                        if (password.length < 6) {
+                            if (btnEmailAuth) {
+                                btnEmailAuth.disabled = false;
+                                btnEmailAuth.textContent = prevText;
+                            }
+                            return showToast("Password must be at least 6 characters long.", "error");
+                        }
+
+                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        if (name && userCredential.user) {
+                            await updateProfile(userCredential.user, { displayName: name });
+                        }
+                        showToast("Account created successfully! Welcome.", "success");
+                    } else {
+                        await signInWithEmailAndPassword(auth, email, password);
+                        showToast("Signed in successfully!", "success");
+                    }
+                } catch (error) {
+                    console.error("Auth error:", error);
+                    let msg = error.message;
+                    if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                        msg = "Invalid email or password. Please try again.";
+                    } else if (error.code === 'auth/email-already-in-use') {
+                        msg = "This email is already registered. Please sign in.";
+                    } else if (error.code === 'auth/weak-password') {
+                        msg = "Password should be at least 6 characters.";
+                    }
+                    showToast(msg, "error");
+                } finally {
+                    if (btnEmailAuth) {
+                        btnEmailAuth.disabled = false;
+                        btnEmailAuth.textContent = prevText;
+                    }
+                }
             });
         }
 
@@ -1400,9 +1826,9 @@
             btnSignOut.addEventListener('click', () => {
                 if (auth) {
                     signOut(auth).then(() => {
-                        showToast("Signed out successfully.");
+                        showToast("Signed out successfully.", "info");
                     }).catch((error) => {
-                        showToast("Sign Out Error: " + error.message);
+                        showToast("Sign Out Error: " + error.message, "error");
                     });
                 }
             });
