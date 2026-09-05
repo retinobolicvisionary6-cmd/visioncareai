@@ -128,48 +128,66 @@
         html.user-authenticated #authOverlay {
             display: none !important;
         }
-        html.user-authenticated.view-dashboard #home-section {
-            display: none !important;
-        }
-        html.user-authenticated.view-dashboard #app-content {
-            display: block !important;
-        }
+
+        /* View: Home */
         html.user-authenticated.view-home #home-section {
             display: flex !important;
         }
-        html.user-authenticated.view-home #app-content {
+        html.user-authenticated.view-home #app-content,
+        html.user-authenticated.view-home #report-section {
             display: none !important;
         }
 
-        /* Home Screen Single Viewport Zero-Scroll Optimization */
+        /* View: Dashboard (Workspace) */
+        html.user-authenticated.view-dashboard #home-section,
+        html.user-authenticated.view-dashboard #report-section {
+            display: none !important;
+        }
+        html.user-authenticated.view-dashboard #app-content {
+            display: flex !important;
+        }
+
+        /* View: Report */
+        html.user-authenticated.view-report #home-section,
+        html.user-authenticated.view-report #app-content {
+            display: none !important;
+        }
+        html.user-authenticated.view-report #report-section {
+            display: block !important;
+        }
+
+        /* Single Viewport Zero-Scroll Optimization for Home & Workspace on Standard Screens */
         @media (min-height: 540px) {
             html.view-home,
             html.view-home body,
-            html:not(.view-dashboard) body {
+            html.view-dashboard,
+            html.view-dashboard body,
+            html:not(.view-report) body {
                 height: 100vh;
                 max-height: 100vh;
                 overflow: hidden;
             }
             html.view-home #main-wrapper,
-            html:not(.view-dashboard) #main-wrapper {
+            html.view-dashboard #main-wrapper,
+            html:not(.view-report) #main-wrapper {
                 height: 100%;
                 max-height: 100%;
                 overflow: hidden;
             }
         }
-        /* Dashboard Screen: Enable Full Natural Scrolling */
-        html.view-dashboard,
-        html.view-dashboard body {
+        /* Report Screen: Full Natural Scrolling */
+        html.view-report,
+        html.view-report body {
             height: auto !important;
             min-height: 100vh !important;
             overflow-y: auto !important;
         }
-        html.view-dashboard #main-wrapper {
+        html.view-report #main-wrapper {
             height: auto !important;
             max-height: none !important;
             overflow: visible !important;
         }
-        html.view-dashboard #site-footer {
+        html.view-report #site-footer {
             margin-top: 3rem !important;
             padding-top: 2rem !important;
             padding-bottom: 2rem !important;
@@ -208,6 +226,8 @@
                     const activeView = sessionStorage.getItem('visioncare_active_view') || 'home';
                     if (activeView === 'dashboard') {
                         document.documentElement.classList.add('view-dashboard');
+                    } else if (activeView === 'report') {
+                        document.documentElement.classList.add('view-report');
                     } else {
                         document.documentElement.classList.add('view-home');
                     }
@@ -315,7 +335,14 @@
                                     <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                     </svg>
-                                    <span>Diagnostic Dashboard</span>
+                                    <span>Diagnostic Workspace</span>
+                                </button>
+                                <button onclick="navigateToReport(); closeProfileDropdown();"
+                                    class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-gray-200 hover:bg-slate-50 dark:hover:bg-darkGreen-border flex items-center space-x-2 transition-colors">
+                                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>Clinical Diagnostic Report</span>
                                 </button>
                             </div>
 
@@ -673,515 +700,408 @@
 
         </section>
 
-        <!-- WE OFFER PRO DNA & RETINAL AI DIAGNOSTICS SECTION (DASHBOARD) -->
-        <main id="app-content" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <!-- DIAGNOSTIC SCREENING WORKSPACE (DASHBOARD) - ONLY SCAN & CLINICAL CONTEXT -->
+        <main id="app-content" class="hidden flex-1 flex flex-col justify-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3 w-full my-auto transition-all duration-300">
 
-            <!-- Navigation Bar inside Dashboard: Back to Home -->
-            <div class="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-darkGreen-border">
+            <!-- Workspace Top Navigation Bar -->
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/80 dark:border-darkGreen-border flex-shrink-0">
                 <button onclick="navigateToHome()"
-                    class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-gray-200 hover:text-navy-900 dark:hover:text-white bg-white hover:bg-slate-50 dark:bg-darkGreen-card dark:border-darkGreen-border border border-slate-200 transition-all shadow-sm">
-                    <svg class="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-gray-200 hover:text-navy-900 dark:hover:text-white bg-white hover:bg-slate-50 dark:bg-darkGreen-card dark:border-darkGreen-border border border-slate-200 transition-all shadow-sm">
+                    <svg class="w-3.5 h-3.5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    <span>← Back to Home Page</span>
+                    <span>← Home</span>
                 </button>
-                <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500 dark:text-gray-400">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Diagnostic Dashboard Active</span>
+                <div class="flex items-center space-x-2">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-xs font-bold text-navy-900 dark:text-white uppercase tracking-wider font-mono">DIAGNOSTIC WORKSPACE</span>
+                </div>
+                <div class="text-[11px] font-mono text-slate-500 dark:text-gray-400 hidden sm:block">
+                    SIH26038 · ICDR 5-GRADE
                 </div>
             </div>
 
-            <!-- Section Header -->
-            <div class="space-y-2">
-                <div
-                    class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold tracking-wide uppercase shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>REAL-TIME MULTI-LAYER AI SCREENING</span>
-                </div>
-                <h1
-                    class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-navy-900 dark:text-darkGreen-text uppercase">
-                    WE OFFER PRO DNA & RETINAL AI DIAGNOSTICS
-                </h1>
-                <p class="text-sm sm:text-base text-slate-600 dark:text-gray-300 max-w-3xl leading-relaxed">
-                    High-precision clinical screening powered by 5-Class ICDR Deep Ensemble, Bayesian Epistemic
-                    Uncertainty (MCDO), Out-of-Distribution Safety Guardrails, and Grad-CAM Explainable AI.
-                </p>
-            </div>
+            <!-- WORKSPACE 2-CARD GRID: 1. Retinal Fundus Scan & 2. Patient Clinical Context -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-stretch w-full flex-1">
 
-            <!-- WORKSPACE GRID -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-                <!-- LEFT COLUMN: Patient Input & Clinical Context (5 Cols) -->
-                <div class="lg:col-span-5 space-y-6">
-
-                    <!-- 1. Retinal Fundus Input Card -->
-                    <div
-                        class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-4">
-
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2.5">
-                                <div
-                                    class="w-6 h-6 rounded-lg bg-navy-900 text-nuvica-accent flex items-center justify-center text-xs font-bold">
-                                    1</div>
-                                <h3
-                                    class="text-sm font-extrabold text-navy-900 dark:text-darkGreen-text tracking-tight uppercase">
-                                    Retinal Fundus Scan</h3>
+                <!-- 1. Retinal Fundus Scan Card -->
+                <div class="bg-white/95 dark:bg-[#071710]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-5 h-5 rounded-lg bg-navy-900 text-nuvica-accent flex items-center justify-center text-[10px] font-black">1</div>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-navy-900 dark:text-white tracking-tight uppercase">
+                                    Retinal Fundus Scan
+                                </h3>
                             </div>
-                            <span id="fileBadge"
-                                class="text-[11px] font-mono text-slate-500 dark:text-gray-400 font-semibold truncate max-w-[170px]">No
-                                scan chosen</span>
+                            <span id="fileBadge" class="text-[10px] font-mono text-slate-500 dark:text-gray-400 font-semibold truncate max-w-[150px]">No scan chosen</span>
                         </div>
 
                         <!-- Drag & Drop Zone -->
                         <div id="dropzone"
-                            class="relative group cursor-pointer border-2 border-dashed border-slate-200 hover:border-nuvica-accent rounded-2xl p-5 transition-all duration-300 bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70 hover:bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border text-center overflow-hidden min-h-[220px] flex flex-col items-center justify-center">
-                            <input type="file" id="fileInput" accept="image/*"
-                                class="absolute inset-0 opacity-0 cursor-pointer z-20">
+                            class="relative group cursor-pointer border-2 border-dashed border-slate-200 hover:border-nuvica-accent rounded-xl p-3 transition-all duration-300 bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70 text-center overflow-hidden min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center">
+                            <input type="file" id="fileInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20">
 
                             <!-- Placeholder State -->
-                            <div id="uploadPlaceholder" class="space-y-3">
-                                <div
-                                    class="w-14 h-14 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center mx-auto text-sky-600 group-hover:scale-110 transition-transform shadow-sm">
-                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            <div id="uploadPlaceholder" class="space-y-1.5 py-2">
+                                <div class="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center mx-auto text-sky-600 group-hover:scale-110 transition-transform shadow-sm">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <div>
-                                    <p class="text-xs font-bold text-navy-900 dark:text-darkGreen-text">Drag & drop
-                                        patient fundus scan</p>
-                                    <p class="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">High-resolution PNG,
-                                        JPG, JPEG, TIFF</p>
-                                </div>
-                                <span
-                                    class="inline-block px-3.5 py-1.5 text-xs font-bold text-navy-900 dark:text-emerald-900 bg-white dark:bg-emerald-50 border border-slate-200 dark:border-emerald-200 rounded-full shadow-sm group-hover:border-navy-900 transition-colors">
+                                <p class="text-xs font-bold text-navy-900 dark:text-white">Drag & drop patient fundus scan</p>
+                                <span class="inline-block px-3 py-1 text-[10px] font-bold text-navy-900 dark:text-emerald-900 bg-white dark:bg-emerald-50 border border-slate-200 rounded-full shadow-sm">
                                     Browse Local Scan
                                 </span>
                             </div>
 
                             <!-- Image Preview State -->
-                            <div id="previewContainer"
-                                class="hidden relative w-full h-full min-h-[200px] flex items-center justify-center">
-                                <img id="imagePreview" src="" alt="Fundus Preview"
-                                    class="max-h-[220px] rounded-xl object-contain shadow-md">
-
-                                <!-- Scanner Animation Overlay -->
-                                <div id="scanEffect"
-                                    class="hidden absolute inset-0 overflow-hidden pointer-events-none rounded-xl">
+                            <div id="previewContainer" class="hidden relative w-full h-full min-h-[140px] flex items-center justify-center">
+                                <img id="imagePreview" src="" alt="Fundus Preview" class="max-h-[140px] sm:max-h-[160px] rounded-lg object-contain shadow-md">
+                                <div id="scanEffect" class="hidden absolute inset-0 overflow-hidden pointer-events-none rounded-lg">
                                     <div class="scanner-beam"></div>
                                 </div>
-
-                                <button onclick="clearImage(event)"
-                                    class="absolute top-2 right-2 p-1.5 bg-navy-950/80 hover:bg-rose-600 text-white rounded-full transition-colors z-30 shadow-md"
-                                    title="Remove image">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-
-                        </div>
-
-                        <!-- Preset Quick Test Bench Cases -->
-                        <div class="space-y-2 pt-1">
-                            <label
-                                class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 flex items-center justify-between">
-                                <span>⚡ Verified Preset Case Bench</span>
-                            </label>
-                            <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
-                                <button onclick="loadSample(0)"
-                                    class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-emerald-50 border border-slate-200 hover:border-emerald-400 transition-all">
-                                    <span class="block text-[10px] font-extrabold text-emerald-600">G-0</span>
-                                    <span
-                                        class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Normal</span>
-                                </button>
-                                <button onclick="loadSample(1)"
-                                    class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-sky-50 border border-slate-200 hover:border-sky-400 transition-all">
-                                    <span class="block text-[10px] font-extrabold text-sky-600">G-1</span>
-                                    <span
-                                        class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Mild</span>
-                                </button>
-                                <button onclick="loadSample(2)"
-                                    class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-amber-50 border border-slate-200 hover:border-amber-400 transition-all">
-                                    <span class="block text-[10px] font-extrabold text-amber-600">G-2</span>
-                                    <span
-                                        class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Moderate</span>
-                                </button>
-                                <button onclick="loadSample(3)"
-                                    class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-rose-50 border border-slate-200 hover:border-rose-400 transition-all">
-                                    <span class="block text-[10px] font-extrabold text-rose-600">G-3</span>
-                                    <span
-                                        class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Severe</span>
-                                </button>
-                                <button onclick="loadSample(4)"
-                                    class="sample-btn px-1.5 py-2.5 text-center rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-purple-50 border border-slate-200 hover:border-purple-400 transition-all">
-                                    <span class="block text-[10px] font-extrabold text-purple-600">G-4</span>
-                                    <span
-                                        class="text-[9px] text-slate-500 dark:text-gray-400 font-semibold block truncate">PDR</span>
+                                <button onclick="clearImage(event)" class="absolute top-1 right-1 p-1 bg-navy-950/80 hover:bg-rose-600 text-white rounded-full transition-colors z-30 shadow-md" title="Remove image">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                 </button>
                             </div>
                         </div>
-
                     </div>
 
-                    <!-- 2. Patient Clinical Context (Optional EHR) -->
-                    <div
-                        class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-2.5">
-                                <div
-                                    class="w-6 h-6 rounded-lg bg-navy-900 text-nuvica-accent flex items-center justify-center text-xs font-bold">
-                                    2</div>
-                                <h3
-                                    class="text-sm font-extrabold text-navy-900 dark:text-darkGreen-text tracking-tight uppercase">
-                                    Patient Clinical Context</h3>
+                    <!-- Preset Quick Test Bench Cases -->
+                    <div class="pt-1 border-t border-slate-100 dark:border-darkGreen-border">
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 block mb-1">
+                            ⚡ Quick Verified Preset Cases
+                        </label>
+                        <div class="grid grid-cols-5 gap-1.5">
+                            <button onclick="loadSample(0)" class="sample-btn px-1 py-1.5 text-center rounded-lg bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-emerald-50 border border-slate-200 hover:border-emerald-400 transition-all">
+                                <span class="block text-[10px] font-extrabold text-emerald-600">G-0</span>
+                                <span class="text-[8px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Normal</span>
+                            </button>
+                            <button onclick="loadSample(1)" class="sample-btn px-1 py-1.5 text-center rounded-lg bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-sky-50 border border-slate-200 hover:border-sky-400 transition-all">
+                                <span class="block text-[10px] font-extrabold text-sky-600">G-1</span>
+                                <span class="text-[8px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Mild</span>
+                            </button>
+                            <button onclick="loadSample(2)" class="sample-btn px-1 py-1.5 text-center rounded-lg bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-amber-50 border border-slate-200 hover:border-amber-400 transition-all">
+                                <span class="block text-[10px] font-extrabold text-amber-600">G-2</span>
+                                <span class="text-[8px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Moderate</span>
+                            </button>
+                            <button onclick="loadSample(3)" class="sample-btn px-1 py-1.5 text-center rounded-lg bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-rose-50 border border-slate-200 hover:border-rose-400 transition-all">
+                                <span class="block text-[10px] font-extrabold text-rose-600">G-3</span>
+                                <span class="text-[8px] text-slate-500 dark:text-gray-400 font-semibold block truncate">Severe</span>
+                            </button>
+                            <button onclick="loadSample(4)" class="sample-btn px-1 py-1.5 text-center rounded-lg bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border hover:bg-purple-50 border border-slate-200 hover:border-purple-400 transition-all">
+                                <span class="block text-[10px] font-extrabold text-purple-600">G-4</span>
+                                <span class="text-[8px] text-slate-500 dark:text-gray-400 font-semibold block truncate">PDR</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Patient Clinical Context Card -->
+                <div class="bg-white/95 dark:bg-[#071710]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-5 h-5 rounded-lg bg-navy-900 text-nuvica-accent flex items-center justify-center text-[10px] font-black">2</div>
+                                <h3 class="text-xs sm:text-sm font-extrabold text-navy-900 dark:text-white tracking-tight uppercase">
+                                    Patient Clinical Context
+                                </h3>
                             </div>
                             <span class="text-[10px] font-mono text-slate-400 font-semibold">Multimodal EHR</span>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="grid grid-cols-2 gap-2.5 text-xs">
                             <div>
-                                <label
-                                    class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">Patient
-                                    Age</label>
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[10px] mb-1">Patient Age</label>
                                 <input type="number" id="ageInput" placeholder="e.g. 58"
-                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-navy-900 dark:text-white focus:outline-none focus:border-cyan-400 transition-colors font-medium">
                             </div>
                             <div>
-                                <label
-                                    class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">HbA1c
-                                    Level (%)</label>
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[10px] mb-1">HbA1c Level (%)</label>
                                 <input type="number" step="0.1" id="hba1cInput" placeholder="e.g. 7.8"
-                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-navy-900 dark:text-white focus:outline-none focus:border-cyan-400 transition-colors font-medium">
                             </div>
                             <div>
-                                <label
-                                    class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">Systolic
-                                    BP (mmHg)</label>
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[10px] mb-1">Systolic BP (mmHg)</label>
                                 <input type="number" id="bpSysInput" placeholder="e.g. 135"
-                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-navy-900 dark:text-white focus:outline-none focus:border-cyan-400 transition-colors font-medium">
                             </div>
                             <div>
-                                <label
-                                    class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">Diastolic
-                                    BP (mmHg)</label>
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[10px] mb-1">Diastolic BP (mmHg)</label>
                                 <input type="number" id="bpDiaInput" placeholder="e.g. 88"
-                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-navy-900 dark:text-white focus:outline-none focus:border-cyan-400 transition-colors font-medium">
                             </div>
-                            <div class="col-span-1 sm:col-span-2">
-                                <label
-                                    class="block text-slate-600 dark:text-gray-300 font-semibold text-[11px] mb-1">Diabetes
-                                    Duration (Years)</label>
+                            <div class="col-span-2">
+                                <label class="block text-slate-600 dark:text-gray-300 font-semibold text-[10px] mb-1">Diabetes Duration (Years)</label>
                                 <input type="number" id="durationInput" placeholder="e.g. 12"
-                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-3 py-2 text-navy-900 dark:text-darkGreen-text focus:outline-none focus:border-navy-900 transition-colors font-medium">
+                                    class="w-full bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-navy-900 dark:text-white focus:outline-none focus:border-cyan-400 transition-colors font-medium">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button id="analyzeBtn" onclick="runAnalysis()"
-                        class="w-full py-4 rounded-2xl font-black text-sm uppercase tracking-wider text-navy-950 bg-nuvica-accent hover:bg-nuvica-accentHover shadow-glow-accent transition-all transform active:scale-[0.99] flex items-center justify-center space-x-2">
-                        <svg id="btnIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span id="btnText">RUN REAL-TIME DIAGNOSIS</span>
-                    </button>
-
-                </div>
-
-                <!-- RIGHT COLUMN: Real-Time AI Diagnostic Dashboard (7 Cols) -->
-                <div class="lg:col-span-7 space-y-6">
-
-                    <!-- Welcome Placeholder State -->
-                    <div id="resultsPlaceholder"
-                        class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-10 text-center space-y-4 shadow-nuvica border border-slate-100">
-                        <div
-                            class="w-16 h-16 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center mx-auto text-sky-600 shadow-sm">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                        </div>
-                        <div class="max-w-md mx-auto">
-                            <h3 class="text-lg font-extrabold text-navy-900 dark:text-darkGreen-text">Awaiting Retinal
-                                Fundus Scan</h3>
-                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1.5 leading-relaxed">
-                                Upload a retinal fundus scan on the left panel or click any preset sample case (G-0 to
-                                G-4) to execute the end-to-end multi-layer AI screening pipeline in real time.
-                            </p>
-                        </div>
-                        <div
-                            class="pt-3 flex flex-wrap justify-center gap-2 text-[11px] font-mono font-bold text-slate-500 dark:text-emerald-900">
-                            <span
-                                class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">Quality
-                                Gate</span>
-                            <span
-                                class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">5-Class
-                                DR Inference</span>
-                            <span
-                                class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">MCDO
-                                Epistemic</span>
-                            <span
-                                class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">Shannon
-                                Entropy</span>
-                            <span
-                                class="px-3 py-1 bg-slate-100 dark:bg-emerald-50 rounded-full border border-slate-200 dark:border-emerald-200">Grad-CAM
-                                XAI</span>
-                        </div>
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/60 border border-slate-200/60 text-[10px] text-slate-500 dark:text-gray-400 flex items-center space-x-2">
+                        <svg class="w-3.5 h-3.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Multimodal decision rules gate automated referral pathways with Bayesian uncertainty checks.</span>
                     </div>
-
-                    <!-- Active Results Dashboard (Hidden until diagnosis is performed) -->
-                    <div id="resultsDashboard" class="hidden space-y-6">
-
-                        <!-- 1. Main Action Referral Banner -->
-                        <div id="actionBanner"
-                            class="rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border transition-all duration-300">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                <div class="space-y-1">
-                                    <div class="flex items-center space-x-2">
-                                        <span id="priorityBadge"
-                                            class="px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full tracking-wider">PRIORITY:
-                                            URGENT</span>
-                                        <span id="ruleBadge"
-                                            class="text-[10px] font-mono text-slate-500 dark:text-gray-400 font-bold">RULE_3_REFERRAL</span>
-                                    </div>
-                                    <h2 id="actionTitle"
-                                        class="text-2xl sm:text-3xl font-black tracking-tight text-navy-900 dark:text-darkGreen-text">
-                                        REFERRAL REQUIRED</h2>
-                                    <p id="actionSubtitle"
-                                        class="text-xs text-slate-600 dark:text-gray-300 font-semibold">Specialist
-                                        ophthalmology intervention recommended.</p>
-                                </div>
-
-                                <div class="sm:text-right sm:border-l sm:border-slate-200 sm:pl-6">
-                                    <p class="text-[10px] uppercase font-mono font-bold tracking-wider text-slate-400">
-                                        Assessed DR Severity</p>
-                                    <p id="gradeTitle" class="text-xl sm:text-2xl font-black text-rose-600">Grade 3 —
-                                        Severe NPDR</p>
-                                </div>
-                            </div>
-
-                            <!-- Clinical Reasoning Quote -->
-                            <div class="mt-4 pt-4 border-t border-slate-200/60">
-                                <p
-                                    class="text-[11px] font-mono uppercase font-bold tracking-wider text-slate-500 dark:text-gray-400 mb-1">
-                                    Clinical Evidence & Decision Rationale:</p>
-                                <p id="decisionReason"
-                                    class="text-xs text-slate-700 dark:text-gray-200 leading-relaxed font-medium bg-white/70 p-3 rounded-xl border border-slate-200/60">
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- 2. Multi-Layer Clinical Screening Summary Table -->
-                        <div
-                            class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-3">
-                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                                <h3
-                                    class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-darkGreen-text flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
-                                    <span>Fundus Quality & AI Safety Audit</span>
-                                </h3>
-                                <span class="text-[10px] font-mono font-bold text-slate-400">VisionCare AI Engine</span>
-                            </div>
-
-                            <div class="overflow-hidden rounded-2xl border border-slate-100 text-xs">
-                                <table class="w-full text-left divide-y divide-slate-100">
-                                    <tbody class="divide-y divide-slate-100 font-medium">
-                                        <tr
-                                            class="bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70">
-                                            <td
-                                                class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px] w-1/3">
-                                                Referral Action</td>
-                                            <td id="summaryReferralAction"
-                                                class="py-2.5 px-4 text-emerald-600 font-bold">
-                                                🟢 ROUTINE ANNUAL SCREENING
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px]">
-                                                Image Quality Gate</td>
-                                            <td id="summaryQualityGate" class="py-2.5 px-4 text-slate-800">
-                                                Clear macular focus <span id="summaryQualityBadge"
-                                                    class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">GOOD
-                                                    (79%)</span>
-                                            </td>
-                                        </tr>
-                                        <tr
-                                            class="bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70">
-                                            <td
-                                                class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px]">
-                                                OOD Fake Detector</td>
-                                            <td id="summaryOOD" class="py-2.5 px-4 text-slate-800">
-                                                Real clinical fundus verified <span id="summaryOodBadge"
-                                                    class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">IN-DISTRIBUTION</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td
-                                                class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px]">
-                                                Shannon Entropy</td>
-                                            <td id="summaryUncertainty" class="py-2.5 px-4 text-slate-800">
-                                                Standard clinical uncertainty <span id="summaryEntropyBadge"
-                                                    class="text-[10px] font-mono text-sky-700 ml-1.5 px-2 py-0.5 bg-sky-50 rounded-full font-bold">MEDIUM
-                                                    (0.68)</span>
-                                            </td>
-                                        </tr>
-                                        <tr
-                                            class="bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70">
-                                            <td
-                                                class="py-2.5 px-4 text-slate-500 dark:text-gray-400 font-mono text-[11px]">
-                                                Epistemic (MCDO)</td>
-                                            <td id="summaryMCDO" class="py-2.5 px-4 text-slate-800">
-                                                10 Bayesian Monte Carlo passes <span id="summaryMcdoBadge"
-                                                    class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">HIGH
-                                                    STABILITY (0.003)</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- 3. 5-Class Probability Spectrum -->
-                        <div
-                            class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-3">
-                            <div class="flex items-center justify-between">
-                                <h3
-                                    class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-darkGreen-text flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
-                                    <span>5-Class ICDR Probability Spectrum</span>
-                                </h3>
-                                <span class="text-[10px] font-mono font-bold text-slate-400">Softmax Confidence</span>
-                            </div>
-
-                            <div class="space-y-2.5 pt-1" id="probabilityBars">
-                                <!-- Injected by JavaScript -->
-                            </div>
-                        </div>
-
-                        <!-- 4. Safety Guardrail Cards (4 Metrics) -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <!-- Quality -->
-                            <div
-                                class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-4 shadow-sm border border-slate-100 space-y-1">
-                                <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">Quality
-                                    Gate</span>
-                                <div class="flex items-baseline space-x-1.5">
-                                    <span id="cardQualityScore"
-                                        class="text-base font-black text-navy-900 dark:text-darkGreen-text">92%</span>
-                                    <span id="cardQualityStatus"
-                                        class="text-[10px] font-bold text-emerald-600">GOOD</span>
-                                </div>
-                                <p id="cardQualityDetail"
-                                    class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Clear macular focus
-                                </p>
-                            </div>
-
-                            <!-- Confidence -->
-                            <div
-                                class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-4 shadow-sm border border-slate-100 space-y-1">
-                                <span
-                                    class="text-[10px] font-mono font-bold text-slate-400 block uppercase">Confidence</span>
-                                <div class="flex items-baseline space-x-1.5">
-                                    <span id="cardConfidence"
-                                        class="text-base font-black text-navy-900 dark:text-darkGreen-text">88%</span>
-                                    <span id="cardConfidenceLevel"
-                                        class="text-[10px] font-bold text-emerald-600">HIGH</span>
-                                </div>
-                                <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Top class margin</p>
-                            </div>
-
-                            <!-- Bayesian MCDO -->
-                            <div
-                                class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-4 shadow-sm border border-slate-100 space-y-1">
-                                <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">MCDO
-                                    Epistemic</span>
-                                <div class="flex items-baseline space-x-1.5">
-                                    <span id="cardMcdoVar" class="text-base font-black text-emerald-600">0.003</span>
-                                    <span id="cardMcdoLevel"
-                                        class="text-[10px] font-bold text-emerald-600">STABLE</span>
-                                </div>
-                                <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">10-Pass Bayesian Var
-                                </p>
-                            </div>
-
-                            <!-- OOD Fake Check -->
-                            <div
-                                class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-4 shadow-sm border border-slate-100 space-y-1">
-                                <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">OOD
-                                    Detector</span>
-                                <div class="flex items-baseline space-x-1.5">
-                                    <span id="cardOod" class="text-base font-black text-emerald-600">NO</span>
-                                    <span class="text-[10px] font-bold text-slate-400">IN-DIST</span>
-                                </div>
-                                <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Real fundus verified
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- 5. Explainable AI (Grad-CAM Visualizer) -->
-                        <div
-                            class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-6 shadow-nuvica border border-slate-100 space-y-4">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                <div>
-                                    <h3
-                                        class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-darkGreen-text flex items-center space-x-2">
-                                        <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
-                                        <span>Explainable AI (Grad-CAM Localization)</span>
-                                    </h3>
-                                    <p class="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">Visual verification
-                                        of microaneurysms, hemorrhages, and exudates</p>
-                                </div>
-
-                                <!-- Image View Selector Tabs -->
-                                <div
-                                    class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 text-[11px] font-bold">
-                                    <button onclick="setGradCamView('overlay')" id="tabOverlay"
-                                        class="px-3 py-1.5 rounded-lg bg-navy-900 text-white transition-all">Overlay</button>
-                                    <button onclick="setGradCamView('heatmap')" id="tabHeatmap"
-                                        class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-gray-300 hover:text-navy-900 dark:text-darkGreen-text transition-all">Heatmap</button>
-                                    <button onclick="setGradCamView('original')" id="tabOriginal"
-                                        class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-gray-300 hover:text-navy-900 dark:text-darkGreen-text transition-all">Retina</button>
-                                </div>
-                            </div>
-
-                            <!-- Grad-CAM Image Display -->
-                            <div
-                                class="relative bg-slate-900 rounded-2xl overflow-hidden flex items-center justify-center min-h-[300px] max-h-[420px] p-2 border border-slate-200">
-                                <img id="gradcamDisplay" src="" alt="Grad-CAM Visualization"
-                                    class="max-h-[400px] w-auto object-contain rounded-xl shadow-lg transition-opacity duration-200">
-
-                                <div id="gradcamBadge"
-                                    class="absolute bottom-4 left-4 bg-navy-950/80 backdrop-blur-md px-3.5 py-1 rounded-full border border-white/20 text-[11px] font-mono text-white font-semibold">
-                                    View: Diagnostic Lesion Overlay
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Action Footer -->
-                        <div class="flex items-center justify-between pt-2">
-                            <p class="text-[11px] text-slate-400 italic">VisionCare Automated Screening Engine — Final
-                                clinical confirmation by licensed ophthalmologist required.</p>
-                            <button onclick="window.print()"
-                                class="px-4 py-2 bg-navy-900 hover:bg-navy-950 text-white rounded-xl text-xs font-bold flex items-center space-x-2 transition-colors shadow-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                                </svg>
-                                <span>Print Diagnostic Slip</span>
-                            </button>
-                        </div>
-
-                    </div>
-
                 </div>
 
             </div>
 
+            <!-- ACTION BUTTONS: RUN DIAGNOSIS + SEE REPORT -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 w-full flex-shrink-0">
+                <!-- 1. Run Real-Time Diagnosis Button -->
+                <button id="analyzeBtn" onclick="runAnalysis()"
+                    class="py-3 sm:py-3.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider text-navy-950 bg-nuvica-accent hover:bg-nuvica-accentHover shadow-glow-accent transition-all transform active:scale-[0.99] flex items-center justify-center space-x-2 cursor-pointer">
+                    <svg id="btnIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span id="btnText">RUN REAL-TIME DIAGNOSIS</span>
+                </button>
+
+                <!-- 2. See Report Button -->
+                <button id="btnSeeReport" onclick="navigateToReport()"
+                    class="py-3 sm:py-3.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider text-white bg-gradient-to-r from-cyan-600 via-sky-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 shadow-md hover:shadow-xl transition-all transform active:scale-[0.99] flex items-center justify-center space-x-2 cursor-pointer border border-cyan-400/40">
+                    <svg class="w-4 h-4 text-cyan-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span id="btnSeeReportText">SEE REPORT →</span>
+                    <span id="reportReadyBadge" class="hidden ml-1 px-1.5 py-0.2 text-[9px] bg-emerald-400 text-navy-950 rounded-full font-mono font-bold animate-pulse">READY</span>
+                </button>
+            </div>
+
         </main>
+
+        <!-- CLINICAL DIAGNOSTIC REPORT (REPORT SECTION) -->
+        <section id="report-section" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-5 transition-all duration-300">
+
+            <!-- Top Report Navigation Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-darkGreen-border">
+                <div class="flex items-center space-x-2">
+                    <button onclick="navigateToDashboard()"
+                        class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-gray-200 hover:text-navy-900 dark:hover:text-white bg-white hover:bg-slate-50 dark:bg-darkGreen-card dark:border-darkGreen-border border border-slate-200 transition-all shadow-sm">
+                        <svg class="w-3.5 h-3.5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        <span>← Back to Workspace</span>
+                    </button>
+                    <button onclick="navigateToHome()"
+                        class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-gray-200 hover:text-navy-900 dark:hover:text-white bg-white hover:bg-slate-50 dark:bg-darkGreen-card dark:border-darkGreen-border border border-slate-200 transition-all shadow-sm">
+                        <span>🏠 Home</span>
+                    </button>
+                </div>
+
+                <!-- Report Title & Patient Tag -->
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-xs font-mono font-bold text-navy-950 dark:text-white uppercase">CLINICAL DIAGNOSTIC REPORT</span>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-semibold">ICDR STANDARDS</span>
+                </div>
+
+                <!-- Print Slip Button -->
+                <button onclick="window.print()"
+                    class="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-navy-900 hover:bg-navy-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                    <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    <span>Print Diagnostic Slip</span>
+                </button>
+            </div>
+
+            <!-- 1. Main Action Referral Banner -->
+            <div id="actionBanner" class="rounded-3xl p-5 sm:p-6 shadow-nuvica-lg border transition-all duration-300">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <span id="priorityBadge" class="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full tracking-wider bg-emerald-100 text-emerald-800">PRIORITY: ROUTINE</span>
+                            <span id="ruleBadge" class="text-[10px] font-mono text-slate-500 dark:text-gray-400 font-bold">ROUTINE_ANNUAL</span>
+                        </div>
+                        <h2 id="actionTitle" class="text-2xl sm:text-3xl font-black tracking-tight text-navy-900 dark:text-white uppercase">
+                            ROUTINE ANNUAL SCREENING
+                        </h2>
+                        <p id="actionSubtitle" class="text-xs text-slate-600 dark:text-gray-300 font-semibold">
+                            No immediate proliferative referral required based on clinical thresholds.
+                        </p>
+                    </div>
+
+                    <div class="sm:text-right sm:border-l sm:border-slate-200 dark:sm:border-darkGreen-border sm:pl-6">
+                        <p class="text-[10px] uppercase font-mono font-bold tracking-wider text-slate-400">Assessed DR Severity</p>
+                        <p id="gradeTitle" class="text-xl sm:text-2xl font-black text-emerald-600">Grade 0 — No DR (Healthy)</p>
+                    </div>
+                </div>
+
+                <!-- Clinical Reasoning Quote -->
+                <div class="mt-3 pt-3 border-t border-slate-200/60 dark:border-darkGreen-border/60">
+                    <p class="text-[10px] font-mono uppercase font-bold tracking-wider text-slate-500 dark:text-gray-400 mb-1">
+                        Clinical Evidence & Decision Rationale:
+                    </p>
+                    <p id="decisionReason" class="text-xs text-slate-700 dark:text-gray-200 leading-relaxed font-medium bg-white/70 dark:bg-darkGreen-card/70 p-3 rounded-xl border border-slate-200/60 dark:border-darkGreen-border/60">
+                        Diagnosis completed based on clinical safety thresholds.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. The 4 Safety Guardrail Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <!-- Quality Gate -->
+                <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-3.5 shadow-sm border border-slate-100 space-y-1">
+                    <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">Quality Gate</span>
+                    <div class="flex items-baseline space-x-1.5">
+                        <span id="cardQualityScore" class="text-base font-black text-navy-900 dark:text-white">92%</span>
+                        <span id="cardQualityStatus" class="text-[10px] font-bold text-emerald-600">GOOD</span>
+                    </div>
+                    <p id="cardQualityDetail" class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Clear macular focus</p>
+                </div>
+
+                <!-- Confidence Score -->
+                <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-3.5 shadow-sm border border-slate-100 space-y-1">
+                    <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">Confidence Score</span>
+                    <div class="flex items-baseline space-x-1.5">
+                        <span id="cardConfidence" class="text-base font-black text-navy-900 dark:text-white">88%</span>
+                        <span id="cardConfidenceLevel" class="text-[10px] font-bold text-emerald-600">HIGH</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Top class softmax margin</p>
+                </div>
+
+                <!-- Bayesian MCDO -->
+                <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-3.5 shadow-sm border border-slate-100 space-y-1">
+                    <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">MCDO Epistemic</span>
+                    <div class="flex items-baseline space-x-1.5">
+                        <span id="cardMcdoVar" class="text-base font-black text-emerald-600">0.0032</span>
+                        <span id="cardMcdoLevel" class="text-[10px] font-bold text-emerald-600">STABLE</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">10-Pass Bayesian Var</p>
+                </div>
+
+                <!-- OOD Fake Detector -->
+                <div class="bg-white dark:bg-darkGreen-card rounded-2xl dark:border-darkGreen-border p-3.5 shadow-sm border border-slate-100 space-y-1">
+                    <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">OOD Detector</span>
+                    <div class="flex items-baseline space-x-1.5">
+                        <span id="cardOod" class="text-base font-black text-emerald-600">NO</span>
+                        <span class="text-[10px] font-bold text-slate-400">IN-DIST</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 dark:text-gray-400 truncate">Real fundus verified</p>
+                </div>
+            </div>
+
+            <!-- 3. Report Analytics Columns: 5-Class Spectrum + Safety Table + Grad-CAM -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- LEFT COLUMN: 5-Class Spectrum & Safety Table (6 Cols) -->
+                <div class="lg:col-span-6 space-y-5">
+                    
+                    <!-- 5-Class ICDR Probability Spectrum -->
+                    <div class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-5 shadow-nuvica border border-slate-100 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
+                                <span>5-Class ICDR Probability Spectrum</span>
+                            </h3>
+                            <span class="text-[10px] font-mono font-bold text-slate-400">Softmax Output</span>
+                        </div>
+                        <div class="space-y-2.5 pt-1" id="probabilityBars">
+                            <!-- Injected by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Fundus Quality & AI Safety Audit Table -->
+                    <div class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-5 shadow-nuvica border border-slate-100 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-darkGreen-border pb-2.5">
+                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
+                                <span>Fundus Quality & AI Safety Audit</span>
+                            </h3>
+                            <span class="text-[10px] font-mono font-bold text-slate-400">VisionCare Safety V1</span>
+                        </div>
+                        <div class="overflow-hidden rounded-xl border border-slate-100 dark:border-darkGreen-border text-xs">
+                            <table class="w-full text-left divide-y divide-slate-100 dark:divide-darkGreen-border">
+                                <tbody class="divide-y divide-slate-100 dark:divide-darkGreen-border font-medium">
+                                    <tr class="bg-slate-50 dark:bg-darkGreen-premium">
+                                        <td class="py-2.5 px-3.5 text-slate-500 dark:text-gray-400 font-mono text-[11px] w-1/3">Referral Action</td>
+                                        <td id="summaryReferralAction" class="py-2.5 px-3.5 text-emerald-600 font-bold">🟢 ROUTINE ANNUAL SCREENING</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2.5 px-3.5 text-slate-500 dark:text-gray-400 font-mono text-[11px]">Image Quality Gate</td>
+                                        <td id="summaryQualityGate" class="py-2.5 px-3.5 text-slate-800 dark:text-gray-200">
+                                            Clear macular focus <span id="summaryQualityBadge" class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">GOOD (92%)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-50 dark:bg-darkGreen-premium">
+                                        <td class="py-2.5 px-3.5 text-slate-500 dark:text-gray-400 font-mono text-[11px]">OOD Fake Detector</td>
+                                        <td id="summaryOOD" class="py-2.5 px-3.5 text-slate-800 dark:text-gray-200">
+                                            Real clinical fundus verified <span id="summaryOodBadge" class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">IN-DISTRIBUTION</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2.5 px-3.5 text-slate-500 dark:text-gray-400 font-mono text-[11px]">Shannon Entropy</td>
+                                        <td id="summaryUncertainty" class="py-2.5 px-3.5 text-slate-800 dark:text-gray-200">
+                                            Standard clinical uncertainty <span id="summaryEntropyBadge" class="text-[10px] font-mono text-sky-700 ml-1.5 px-2 py-0.5 bg-sky-50 rounded-full font-bold">LOW (0.24)</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-50 dark:bg-darkGreen-premium">
+                                        <td class="py-2.5 px-3.5 text-slate-500 dark:text-gray-400 font-mono text-[11px]">Epistemic (MCDO)</td>
+                                        <td id="summaryMCDO" class="py-2.5 px-3.5 text-slate-800 dark:text-gray-200">
+                                            10 Bayesian Monte Carlo passes <span id="summaryMcdoBadge" class="text-[10px] font-mono text-emerald-700 ml-1.5 px-2 py-0.5 bg-emerald-50 rounded-full font-bold">HIGH STABILITY (0.003)</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: Explainable AI (Grad-CAM Visualizer) (6 Cols) -->
+                <div class="lg:col-span-6 space-y-4">
+                    <div class="bg-white dark:bg-darkGreen-card rounded-3xl dark:border-darkGreen-border p-5 shadow-nuvica border border-slate-100 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <h3 class="text-xs font-extrabold uppercase tracking-wider text-navy-900 dark:text-white flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-nuvica-accent"></span>
+                                    <span>Explainable AI (Grad-CAM Localization)</span>
+                                </h3>
+                                <p class="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">Visual biomarker attribution heatmaps</p>
+                            </div>
+
+                            <!-- Image View Selector Tabs -->
+                            <div class="inline-flex rounded-xl bg-slate-100 dark:bg-darkGreen-premium p-1 border border-slate-200 dark:border-darkGreen-border text-[11px] font-bold">
+                                <button onclick="setGradCamView('overlay')" id="tabOverlay" class="px-3 py-1 rounded-lg bg-navy-900 text-white transition-all">Overlay</button>
+                                <button onclick="setGradCamView('heatmap')" id="tabHeatmap" class="px-3 py-1 rounded-lg text-slate-600 dark:text-gray-300 hover:text-navy-900 dark:hover:text-white transition-all">Heatmap</button>
+                                <button onclick="setGradCamView('original')" id="tabOriginal" class="px-3 py-1 rounded-lg text-slate-600 dark:text-gray-300 hover:text-navy-900 dark:hover:text-white transition-all">Retina</button>
+                            </div>
+                        </div>
+
+                        <!-- Grad-CAM Image Display -->
+                        <div class="relative bg-slate-900 rounded-2xl overflow-hidden flex items-center justify-center min-h-[260px] max-h-[360px] p-2 border border-slate-800">
+                            <img id="gradcamDisplay" src="" alt="Grad-CAM Visualization" class="max-h-[340px] w-auto object-contain rounded-xl shadow-lg transition-opacity duration-200">
+                            <div id="gradcamBadge" class="absolute bottom-3 left-3 bg-navy-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-[10px] font-mono text-white font-semibold">
+                                View: Diagnostic Lesion Overlay
+                            </div>
+                        </div>
+
+                        <p class="text-[10px] text-slate-400 italic">
+                            Biomarker attribution map generated via gradient-weighted class activation mapping (Grad-CAM) on final convolutional feature maps.
+                        </p>
+                    </div>
+
+                    <!-- Clinical Disclaimer & Action Notice -->
+                    <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/40 text-[11px] text-amber-900 dark:text-amber-200 space-y-1">
+                        <div class="font-bold flex items-center space-x-1.5">
+                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            <span>Clinical Safeguard Verification</span>
+                        </div>
+                        <p class="leading-relaxed">
+                            VisionCare AI is an assistive decision support system. Final diagnosis and treatment decisions must be confirmed by a licensed ophthalmologist or retinal specialist.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
     </div>
 
     <!-- FOOTER -->
@@ -1470,9 +1390,18 @@
         }
 
         function renderResults(pipeline) {
-            document.getElementById('resultsPlaceholder').classList.add('hidden');
-            const dash = document.getElementById('resultsDashboard');
-            dash.classList.remove('hidden');
+            latestPipelineData = pipeline;
+            const reportReadyBadge = document.getElementById('reportReadyBadge');
+            const btnSeeReport = document.getElementById('btnSeeReport');
+            const btnSeeReportText = document.getElementById('btnSeeReportText');
+            if (reportReadyBadge) reportReadyBadge.classList.remove('hidden');
+            if (btnSeeReport) {
+                btnSeeReport.classList.add('ring-2', 'ring-cyan-400', 'animate-pulse');
+                setTimeout(() => {
+                    if (btnSeeReport) btnSeeReport.classList.remove('animate-pulse');
+                }, 3000);
+            }
+            if (btnSeeReportText) btnSeeReportText.textContent = "SEE REPORT (READY) →";
 
             const quality = pipeline.quality || {};
             const drResult = pipeline.dr_result || {};
@@ -1493,30 +1422,30 @@
             decisionReason.textContent = decision.reason || "Diagnosis completed based on clinical safety thresholds.";
 
             if (action === "REFER" || action === "REFERRAL") {
-                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-rose-200 bg-gradient-to-br from-rose-50/90 via-white to-rose-50/40";
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-rose-200 dark:border-rose-900/50 bg-gradient-to-br from-rose-50/90 via-white to-rose-50/40 dark:from-rose-950/40 dark:via-[#081510] dark:to-rose-950/20";
                 actionTitle.textContent = "SPECIALIST REFERRAL REQUIRED";
-                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-rose-600";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-rose-600 dark:text-rose-400";
                 actionSubtitle.textContent = "High risk of progressive vision loss detected. Urgent ophthalmology triage recommended.";
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-rose-600 text-white shadow-sm";
                 priorityBadge.textContent = `PRIORITY: ${priority}`;
             } else if (action === "DOCTOR_REVIEW") {
-                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-amber-200 bg-gradient-to-br from-amber-50/90 via-white to-amber-50/40";
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-amber-200 dark:border-amber-900/50 bg-gradient-to-br from-amber-50/90 via-white to-amber-50/40 dark:from-amber-950/40 dark:via-[#081510] dark:to-amber-950/20";
                 actionTitle.textContent = "HUMAN DOCTOR REVIEW REQUIRED";
-                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-amber-700";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-amber-700 dark:text-amber-400";
                 actionSubtitle.textContent = "Safety Engine intercepted high uncertainty / out-of-distribution artifact. Automated triage bypassed.";
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-amber-500 text-white";
                 priorityBadge.textContent = `PRIORITY: ${priority}`;
             } else if (action === "RECAPTURE") {
-                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-yellow-300 bg-yellow-50/80";
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-yellow-300 dark:border-yellow-900/50 bg-yellow-50/80 dark:bg-yellow-950/30";
                 actionTitle.textContent = "RECAPTURE FUNDUS IMAGE";
-                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-yellow-800";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-yellow-800 dark:text-yellow-400";
                 actionSubtitle.textContent = "Image quality inadequate for reliable clinical grading.";
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-yellow-500 text-white";
                 priorityBadge.textContent = `STATUS: UNGRADABLE`;
             } else {
-                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-emerald-200 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/40";
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/40 dark:from-emerald-950/40 dark:via-[#081510] dark:to-emerald-950/20";
                 actionTitle.textContent = "ROUTINE ANNUAL SCREENING";
-                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-emerald-600";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-emerald-600 dark:text-emerald-400";
                 actionSubtitle.textContent = "No referable DR detected. Continue standard annual screening schedule.";
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-emerald-600 text-white shadow-sm";
                 priorityBadge.textContent = `PRIORITY: LOW`;
@@ -1663,8 +1592,13 @@
             document.getElementById('bpSysInput').value = "";
             document.getElementById('bpDiaInput').value = "";
             document.getElementById('durationInput').value = "";
-            document.getElementById('resultsDashboard').classList.add('hidden');
-            document.getElementById('resultsPlaceholder').classList.remove('hidden');
+            latestPipelineData = null;
+            const reportReadyBadge = document.getElementById('reportReadyBadge');
+            const btnSeeReport = document.getElementById('btnSeeReport');
+            const btnSeeReportText = document.getElementById('btnSeeReportText');
+            if (reportReadyBadge) reportReadyBadge.classList.add('hidden');
+            if (btnSeeReport) btnSeeReport.classList.remove('ring-2', 'ring-cyan-400', 'animate-pulse');
+            if (btnSeeReportText) btnSeeReportText.textContent = "SEE REPORT →";
             showToast("Interface reset to default state.");
         }
 
@@ -2509,8 +2443,14 @@
         // Initialize Live Retinal Fundus Background
         startLiveAnimation();
 
-        // View Navigation (Home Page <-> Dashboard)
+        // View Navigation (Home Page <-> Workspace Dashboard <-> Report)
         const homeSection = document.getElementById('home-section');
+        const reportSection = document.getElementById('report-section');
+        const btnSeeReport = document.getElementById('btnSeeReport');
+        const btnSeeReportText = document.getElementById('btnSeeReportText');
+        const reportReadyBadge = document.getElementById('reportReadyBadge');
+        let latestPipelineData = null;
+
         const btnProfileToggle = document.getElementById('btnProfileToggle');
         const profileDropdown = document.getElementById('profileDropdown');
         const profileAvatarText = document.getElementById('profileAvatarText');
@@ -2519,19 +2459,37 @@
 
         function navigateToDashboard() {
             document.documentElement.classList.add('view-dashboard');
-            document.documentElement.classList.remove('view-home');
+            document.documentElement.classList.remove('view-home', 'view-report');
             if (homeSection) homeSection.classList.add('hidden');
+            if (reportSection) reportSection.classList.add('hidden');
             if (appContent) {
                 appContent.classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: 'instant' });
             }
             sessionStorage.setItem('visioncare_active_view', 'dashboard');
         }
 
+        function navigateToReport() {
+            if (!latestPipelineData) {
+                showToast("Please run diagnosis on a retinal scan first!", "error");
+                return;
+            }
+            document.documentElement.classList.add('view-report');
+            document.documentElement.classList.remove('view-home', 'view-dashboard');
+            if (homeSection) homeSection.classList.add('hidden');
+            if (appContent) appContent.classList.add('hidden');
+            if (reportSection) {
+                reportSection.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'instant' });
+            }
+            sessionStorage.setItem('visioncare_active_view', 'report');
+        }
+
         function navigateToHome() {
             document.documentElement.classList.add('view-home');
-            document.documentElement.classList.remove('view-dashboard');
+            document.documentElement.classList.remove('view-dashboard', 'view-report');
             if (appContent) appContent.classList.add('hidden');
+            if (reportSection) reportSection.classList.add('hidden');
             if (homeSection) {
                 homeSection.classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'instant' });
@@ -2544,6 +2502,7 @@
         }
 
         window.navigateToDashboard = navigateToDashboard;
+        window.navigateToReport = navigateToReport;
         window.navigateToHome = navigateToHome;
         window.closeProfileDropdown = closeProfileDropdown;
 
@@ -2582,14 +2541,22 @@
                     const activeView = sessionStorage.getItem('visioncare_active_view') || 'home';
                     if (activeView === 'dashboard') {
                         document.documentElement.classList.add('view-dashboard');
-                        document.documentElement.classList.remove('view-home');
+                        document.documentElement.classList.remove('view-home', 'view-report');
                         if (homeSection) homeSection.classList.add('hidden');
+                        if (reportSection) reportSection.classList.add('hidden');
                         if (appContent) appContent.classList.remove('hidden');
+                    } else if (activeView === 'report' && latestPipelineData) {
+                        document.documentElement.classList.add('view-report');
+                        document.documentElement.classList.remove('view-home', 'view-dashboard');
+                        if (homeSection) homeSection.classList.add('hidden');
+                        if (appContent) appContent.classList.add('hidden');
+                        if (reportSection) reportSection.classList.remove('hidden');
                     } else {
                         document.documentElement.classList.add('view-home');
-                        document.documentElement.classList.remove('view-dashboard');
-                        if (homeSection) homeSection.classList.remove('hidden');
+                        document.documentElement.classList.remove('view-dashboard', 'view-report');
+                        if (reportSection) reportSection.classList.add('hidden');
                         if (appContent) appContent.classList.add('hidden');
+                        if (homeSection) homeSection.classList.remove('hidden');
                     }
 
                     // Update Profile Avatar & Information
@@ -2602,12 +2569,13 @@
                     showToast("Welcome to VisionCare, " + displayName, "success");
                 } else {
                     // User is signed out
-                    document.documentElement.classList.remove('user-authenticated', 'view-dashboard', 'view-home');
+                    document.documentElement.classList.remove('user-authenticated', 'view-dashboard', 'view-home', 'view-report');
                     sessionStorage.removeItem('visioncare_logged_in');
                     localStorage.removeItem('visioncare_logged_in');
                     authOverlay.classList.remove('hidden');
                     if (homeSection) homeSection.classList.add('hidden');
                     if (appContent) appContent.classList.add('hidden');
+                    if (reportSection) reportSection.classList.add('hidden');
                     startLiveAnimation();
                 }
             });
