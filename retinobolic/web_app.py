@@ -70,6 +70,8 @@ def handle_exception(e):
     import traceback
     return jsonify({"error": str(e), "traceback": traceback.format_exc()}), 500
 
+@app.route("/retinobolic/assets/<path:filename>")
+@app.route("/retino/retinobolic/assets/<path:filename>")
 @app.route("/assets/<path:filename>")
 def serve_assets(filename):
     from flask import send_from_directory
@@ -83,7 +85,11 @@ def serve_assets(filename):
         return send_file(str(file_path / "logo.png"))
     return send_from_directory(str(assets_dir), filename)
 
+@app.route("/retino/retinobolic/assets/logo.png")
+@app.route("/retinobolic/assets/logo.png")
+@app.route("/assets/logo.png")
 @app.route("/assets/logo")
+@app.route("/favicon.ico")
 def serve_logo_direct():
     logo_path = PROJECT_ROOT / "assets" / "logo.png"
     if logo_path.is_file():
