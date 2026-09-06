@@ -1,0 +1,29 @@
+# Outputs — generated files from screening runs
+outputs/
+retinobolic/outputs/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Environment
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Logs & temp
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

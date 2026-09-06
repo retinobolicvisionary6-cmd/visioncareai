@@ -70,6 +70,26 @@ def handle_exception(e):
     import traceback
     return jsonify({"error": str(e), "traceback": traceback.format_exc()}), 500
 
+@app.route("/assets/<path:filename>")
+def serve_assets(filename):
+    from flask import send_from_directory
+    assets_dir = PROJECT_ROOT / "assets"
+    file_path = assets_dir / filename
+    if file_path.is_file():
+        return send_file(str(file_path))
+    if (assets_dir / f"{filename}.png").is_file():
+        return send_file(str(assets_dir / f"{filename}.png"))
+    if (file_path / "logo.png").is_file():
+        return send_file(str(file_path / "logo.png"))
+    return send_from_directory(str(assets_dir), filename)
+
+@app.route("/assets/logo")
+def serve_logo_direct():
+    logo_path = PROJECT_ROOT / "assets" / "logo.png"
+    if logo_path.is_file():
+        return send_file(str(logo_path))
+    return jsonify({"error": "Logo not found"}), 404
+
 @app.route("/")
 def index():
     return render_template("index.html")
