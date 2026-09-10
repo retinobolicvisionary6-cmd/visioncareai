@@ -1379,12 +1379,27 @@
         const btnModalClose = document.getElementById('btnModalClose');
         const btnModalDismissX = document.getElementById('btnModalDismissX');
 
+        function formatHumanFriendlyReason(rawText) {
+            if (!rawText) return "This image does not look like an eye retina scan. Please upload a genuine retinal fundus photograph taken with an eye camera.";
+            const lower = rawText.toLowerCase();
+            if (lower.includes('human') || lower.includes('face') || lower.includes('person')) {
+                return "A photo of a person was detected instead of an eye retina scan. Please upload a genuine retinal fundus photograph.";
+            }
+            if (lower.includes('chrominance') || lower.includes('ratio') || lower.includes('spectrum') || lower.includes('hue') || lower.includes('color')) {
+                return "The colors and lighting in this image do not match an eye retina scan. Please upload a genuine retinal fundus photo taken with an eye camera.";
+            }
+            if (lower.includes('full-frame') || lower.includes('aperture') || lower.includes('camera photo') || lower.includes('rectangular') || lower.includes('corner')) {
+                return "A standard camera photo was detected instead of a circular eye retina scan. Please insert a genuine retinal fundus image.";
+            }
+            return rawText;
+        }
+
         function showNonFundusModal(message, detail) {
             if (nonFundusModalMessage) {
                 nonFundusModalMessage.textContent = message || "Other image detected please insert fundus image";
             }
-            if (nonFundusModalDetail && detail) {
-                nonFundusModalDetail.textContent = detail;
+            if (nonFundusModalDetail) {
+                nonFundusModalDetail.textContent = formatHumanFriendlyReason(detail || "");
             }
             if (nonFundusModal) {
                 nonFundusModal.classList.remove('hidden');
@@ -1461,11 +1476,11 @@
                 if (valRes.ok) {
                     const valData = await valRes.json();
                     if (valData.is_fundus === false) {
-                        // Immediately abort and show center-screen popup modal!
+                        // Immediately abort and show center-screen popup modal with friendly message!
                         clearImage();
                         showNonFundusModal(
                             valData.message || "Other image detected please insert fundus image",
-                            valData.reason || "The uploaded file is not a genuine retinal fundus photograph."
+                            formatHumanFriendlyReason(valData.reason)
                         );
                         showToast("Other image detected please insert fundus image", "error");
                     }
@@ -1785,17 +1800,19 @@
             const decisionReason = document.getElementById('decisionReason');
 
             ruleBadge.textContent = (decision.metadata && decision.metadata.rule_applied) || (isRejected ? "RULE_0_REJECTED_NON_FUNDUS" : "DECISION_ENGINE_V1");
-            decisionReason.textContent = decision.reason || "Diagnosis completed based on clinical safety thresholds.";
 
             // Workspace Dashboard Rejection Alert
             const rejAlert = document.getElementById('rejectionAlert');
             const rejAlertMsg = document.getElementById('rejectionAlertMsg');
             if (isRejected) {
+                const friendlyReason = formatHumanFriendlyReason(decision.reason || quality.reason);
+                decisionReason.textContent = friendlyReason;
                 if (rejAlert) {
                     rejAlert.classList.remove('hidden');
-                    if (rejAlertMsg) rejAlertMsg.textContent = decision.reason || quality.reason || "The uploaded image was rejected because it is not a retinal fundus scan.";
+                    if (rejAlertMsg) rejAlertMsg.textContent = friendlyReason;
                 }
             } else {
+                decisionReason.textContent = decision.reason || "Diagnosis completed based on clinical safety thresholds.";
                 if (rejAlert) rejAlert.classList.add('hidden');
             }
 

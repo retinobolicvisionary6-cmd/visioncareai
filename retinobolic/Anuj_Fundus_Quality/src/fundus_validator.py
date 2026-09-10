@@ -62,19 +62,19 @@ def verify_fundus_image(img_bgr: np.ndarray) -> Dict[str, Any]:
     detected_features = []
 
     if face_casc is not None and not face_casc.empty():
-        faces = face_casc.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(30, 30))
+        faces = face_casc.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=6, minSize=(45, 45))
         if len(faces) > 0:
             human_detected = True
             detected_features.append(f"{len(faces)} human face(s)")
 
     if not human_detected and profile_casc is not None and not profile_casc.empty():
-        profiles = profile_casc.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(30, 30))
+        profiles = profile_casc.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=6, minSize=(45, 45))
         if len(profiles) > 0:
             human_detected = True
             detected_features.append(f"{len(profiles)} profile face(s)")
 
     if not human_detected and upper_casc is not None and not upper_casc.empty():
-        uppers = upper_casc.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(40, 40))
+        uppers = upper_casc.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(60, 60))
         if len(uppers) > 0:
             human_detected = True
             detected_features.append(f"{len(uppers)} human upper body structure(s)")
@@ -85,7 +85,7 @@ def verify_fundus_image(img_bgr: np.ndarray) -> Dict[str, Any]:
             "is_fundus": False,
             "is_human_image": True,
             "confidence": 0.0,
-            "reasons": [f"Human photo detected ({feature_str}). Other image detected please insert fundus image."],
+            "reasons": ["A photo of a person was detected instead of an eye retina scan. Please insert a genuine retinal fundus image."],
             "metrics": {"human_detected": True, "features": feature_str}
         }
     
@@ -140,31 +140,25 @@ def verify_fundus_image(img_bgr: np.ndarray) -> Dict[str, Any]:
     hard_fail = False
 
     # Check A: Red to Blue Dominance
-    # Real fundus scans have rb_ratio >= 2.5 (measured clinical mean is 3.5 - 8.0).
-    # Non-retinal photos (faces, rooms, objects) have high blue content with rb_ratio < 2.0.
     if rb_ratio < 1.85:
-        reasons.append(f"Image lacks retinal chrominance profile (Red/Blue ratio: {rb_ratio:.2f}, expected > 2.0)")
+        reasons.append("non-retinal color tones")
         hard_fail = True
     elif rb_ratio < 2.2:
-        reasons.append(f"Marginal Red/Blue ratio ({rb_ratio:.2f})")
+        reasons.append("marginal color balance")
 
     # Check B: Blue Channel Absorption
-    # Fundus images have low blue reflection (mean blue < 65).
-    # Normal daylight/indoor photos have high blue channel (> 80).
     if b_mean > 85.0 and rb_ratio < 2.5:
-        reasons.append(f"Excessive blue spectrum reflection (Blue mean: {b_mean:.1f}, expected < 70)")
+        reasons.append("unnatural lighting for an eye scan")
         hard_fail = True
 
     # Check C: Retinal Hue Concentration
-    # Real fundus scans have > 85% orange/red hue in valid foreground.
     if retinal_hue_pct < 65.0:
-        reasons.append(f"Non-retinal color distribution ({retinal_hue_pct:.1f}% retinal hue, expected > 75%)")
+        reasons.append("lacks retinal tissue appearance")
         hard_fail = True
 
     # Check D: Rectangular Full-Scene vs Circular Retinal Aperture
-    # If corners are bright AND red/blue ratio is low or hue std is wide, it's a regular camera photo.
     if corner_brightness > 35.0 and (rb_ratio < 2.8 or hue_std > 35.0):
-        reasons.append(f"Full-frame non-aperture composition detected (Corner brightness: {corner_brightness:.1f})")
+        reasons.append("regular camera photo detected")
         hard_fail = True
 
     is_fundus = not hard_fail
@@ -187,8 +181,13 @@ def verify_fundus_image(img_bgr: np.ndarray) -> Dict[str, Any]:
 
     confidence = float(np.clip(np.mean(confidence_factors), 0.0, 1.0))
 
-    if is_fundus and not reasons:
-        reasons.append("Retinal fundus chromatic and aperture characteristics verified.")
+    if not is_fundus:
+        if "regular camera photo detected" in reasons:
+            reasons = ["A standard camera photo was detected instead of a circular eye retina scan. Please insert a genuine retinal fundus image."]
+        else:
+            reasons = ["This image does not appear to be an eye retina scan. Please upload a genuine retinal fundus photo taken with an eye camera."]
+    elif not reasons:
+        reasons.append("Genuine retinal fundus scan verified.")
 
     return {
         "is_fundus": is_fundus,
