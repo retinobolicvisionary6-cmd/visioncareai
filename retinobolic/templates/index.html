@@ -30,19 +30,33 @@
                             700: '#25446c',
                         },
                         nuvica: {
-                            accent: '#00e676',       /* Vibrant neon mint green from design */
-                            accentHover: '#00c853',
-                            accentLight: '#e8faf0',
-                            sky: '#0284c7',
+                            accent: '#00f0ff',       /* Electric Cyan primary accent */
+                            accentMint: '#00e676',   /* Laser Mint affirmative accent */
+                            accentHover: '#00d0e0',
+                            accentLight: '#e0f9ff',
+                            sky: '#0ea5e9',
                             ice: '#ebf4fa',
                             iceLight: '#f4f9fd',
                             cardBlue: '#3b5879',
                         },
                         darkGreen: {
-                            premium: '#051b11',      /* Very dark green premium */
-                            card: '#0a2e1d',         /* Dark green for cards */
-                            border: '#114a2f',       /* Dark green for borders */
-                            text: '#f0fdf4',         /* Very light green / white text */
+                            premium: '#060913',      /* Obsidian Deep Midnight Canvas */
+                            card: '#0d1527',         /* Elevated Surgical Slate Card */
+                            border: '#1c2c4c',       /* Luminous Slate/Cyan Border */
+                            text: '#f8fafc',         /* Ice White Text */
+                            cardInner: '#101b33',    /* Inner Container Slate */
+                            hover: '#14223d',        /* Slate Hover Highlight */
+                        },
+                        obsidian: {
+                            950: '#04060c',
+                            900: '#060913',
+                            850: '#0a1020',
+                            800: '#0d1527',
+                            700: '#101b33',
+                            600: '#14223d',
+                            border: '#1c2c4c',
+                            cyan: '#00f0ff',
+                            mint: '#00e676',
                         }
                     },
                     fontFamily: {
@@ -52,8 +66,10 @@
                     boxShadow: {
                         'nuvica': '0 20px 40px -15px rgba(15, 33, 55, 0.08), 0 0 1px 1px rgba(15, 33, 55, 0.04)',
                         'nuvica-lg': '0 30px 60px -20px rgba(15, 33, 55, 0.12), 0 0 1px 1px rgba(15, 33, 55, 0.06)',
-                        'glow-accent': '0 10px 25px -5px rgba(0, 230, 118, 0.4)',
+                        'glow-accent': '0 10px 25px -5px rgba(0, 240, 255, 0.55)',
+                        'glow-mint': '0 10px 25px -5px rgba(0, 230, 118, 0.45)',
                         'card-float': '0 25px 50px -12px rgba(15, 33, 55, 0.1)',
+                        'obsidian-glow': '0 20px 45px -10px rgba(2, 6, 17, 0.85), 0 0 1px 1px rgba(56, 189, 248, 0.15)',
                     }
                 }
             }
@@ -63,7 +79,14 @@
         :root {
             --bg-hero: radial-gradient(130% 85% at 50% -5%, #c5e0f5 0%, #e5f1fb 32%, #f5f9fd 65%, #ffffff 100%);
             --navy-primary: #0f2137;
-            --accent-green: #00e676;
+            --accent-green: #00f0ff;
+            --accent-mint: #00e676;
+        }
+
+        html.dark {
+            --bg-hero: radial-gradient(130% 85% at 50% -5%, #0e203c 0%, #091325 35%, #060913 70%, #04060c 100%);
+            --navy-primary: #f8fafc;
+            --accent-green: #00f0ff;
         }
 
         body {
@@ -71,6 +94,11 @@
             background-color: #f7faff;
             color: #0f2137;
             overflow-x: hidden;
+        }
+
+        html.dark body {
+            background-color: #060913;
+            color: #f8fafc;
         }
 
         /* Glassmorphic floating cards */
@@ -82,14 +110,20 @@
             box-shadow: 0 20px 35px -10px rgba(15, 33, 55, 0.12), 0 2px 6px rgba(0, 0, 0, 0.02);
         }
 
-        /* Laser Scanner Animation */
+        html.dark .glass-badge {
+            background: rgba(13, 21, 39, 0.88);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 20px 35px -10px rgba(4, 6, 12, 0.6), 0 0 1px 1px rgba(56, 189, 248, 0.1);
+        }
+
+        /* Laser Scanner Animation — Electric Cyan & Laser Mint */
         .scanner-beam {
             position: absolute;
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, transparent, #00e676, #38bdf8, #00e676, transparent);
-            box-shadow: 0 0 20px 4px rgba(0, 230, 118, 0.8);
+            background: linear-gradient(90deg, transparent, #00f0ff, #00e676, #00f0ff, transparent);
+            box-shadow: 0 0 25px 5px rgba(0, 240, 255, 0.85);
             animation: scanUpDown 2.2s ease-in-out infinite alternate;
         }
 
@@ -121,6 +155,23 @@
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        html.dark ::-webkit-scrollbar-track {
+            background: #060913;
+        }
+
+        html.dark ::-webkit-scrollbar-thumb {
+            background: #1c2c4c;
+            border-radius: 4px;
+        }
+
+        html.dark ::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -380,8 +431,8 @@
                 </div>
 
                 <!-- Center Model Badge (Matching Wireframe) -->
-                <div class="hidden md:flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-darkGreen-card border border-slate-200 dark:border-darkGreen-border text-xs font-semibold text-slate-700 dark:text-emerald-300 shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <div class="hidden md:flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-darkGreen-card border border-slate-200 dark:border-darkGreen-border text-xs font-semibold text-slate-700 dark:text-cyan-300 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
                     <span class="font-mono">EfficientNet-B0 Ensemble</span>
                 </div>
 
@@ -401,7 +452,7 @@
                     <!-- Theme Change Button -->
                     <button onclick="toggleTheme()" title="Theme change button"
                         class="p-2 sm:px-3 sm:py-2 text-xs font-bold text-slate-700 dark:text-gray-200 hover:text-navy-900 dark:hover:text-white bg-white hover:bg-slate-50 dark:bg-darkGreen-card dark:border-darkGreen-border border border-slate-200 rounded-xl transition-all shadow-sm flex items-center space-x-1.5">
-                        <svg class="w-4 h-4 text-amber-500 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-amber-500 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                         </svg>
@@ -411,7 +462,7 @@
                     <!-- Profile Button & Dropdown (Matching Wireframe) -->
                     <div class="relative">
                         <button id="btnProfileToggle" title="User profile"
-                            class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-navy-900 dark:bg-emerald-600 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-md hover:ring-2 hover:ring-cyan-400 transition-all">
+                            class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-navy-900 dark:bg-cyan-600 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-md hover:ring-2 hover:ring-cyan-400 transition-all">
                             <span id="profileAvatarText">VC</span>
                         </button>
 
@@ -603,8 +654,8 @@
                 <!-- Demo Clinician Direct Access -->
                 <div class="text-center mt-3 pt-3 border-t border-slate-800">
                     <button type="button" id="btnDemoGuestLogin" onclick="enterDemoMode()"
-                        class="w-full py-2.5 px-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-sm">
-                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="w-full py-2.5 px-4 rounded-xl border border-cyan-500/40 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-sm">
+                        <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                         <span>Clinician Demo / Fast Access</span>
@@ -684,24 +735,24 @@
                 <div class="lg:col-span-7 flex flex-col justify-center space-y-3 sm:space-y-3.5 stagger-1">
                     
                     <!-- 1. Innovation & Compliance Status Pill -->
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/90 dark:bg-[#091b12]/90 border border-slate-200/90 dark:border-emerald-500/30 text-navy-900 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md self-start shadow-sm">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/90 dark:bg-[#0d1527]/90 border border-slate-200/90 dark:border-cyan-500/30 text-navy-900 dark:text-cyan-300 text-[11px] font-bold uppercase tracking-wider backdrop-blur-md self-start shadow-sm">
                         <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
                         </span>
                         <span class="font-mono text-cyan-600 dark:text-cyan-400">SIH26038</span>
                         <span class="text-slate-300 dark:text-slate-600">|</span>
                         <span>Clinical AI Screening Suite</span>
-                        <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-mono font-bold">ICDR STANDARDS</span>
+                        <span class="hidden sm:inline-block px-1.5 py-0.5 text-[9px] rounded bg-cyan-100 dark:bg-cyan-950/80 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-500/30 font-mono font-bold">ICDR STANDARDS</span>
                     </div>
 
                     <!-- 2. Commanding Hero Title -->
                     <div>
                         <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight uppercase leading-[1.08] font-sans">
                             <span class="text-navy-950 dark:text-white">Clinical Precision in</span><br/>
-                            <span class="bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-sm">Retinal AI Screening</span>
+                            <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent drop-shadow-sm">Retinal AI Screening</span>
                         </h1>
-                        <p class="text-xs sm:text-sm font-bold text-slate-500 dark:text-emerald-400/90 mt-1 font-mono tracking-wide">
+                        <p class="text-xs sm:text-sm font-bold text-slate-500 dark:text-cyan-400/90 mt-1 font-mono tracking-wide">
                             Diabetic Retinopathy Diagnostic & Real-Time Epistemic Risk Assessment
                         </p>
                     </div>
@@ -715,7 +766,7 @@
                     <div class="flex flex-col sm:flex-row sm:items-center gap-3 pt-1 w-full sm:w-auto">
                         <!-- Primary Glowing CTA Button -->
                         <button id="btnNavigateDashboard" onclick="navigateToDashboard()"
-                            class="w-full sm:w-auto group relative inline-flex items-center justify-center space-x-2.5 px-6 sm:px-8 py-3.5 sm:py-3 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider text-black bg-gradient-to-r from-nuvica-accent via-emerald-400 to-cyan-400 hover:from-emerald-400 hover:to-nuvica-accent shadow-glow-accent hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer">
+                            class="w-full sm:w-auto group relative inline-flex items-center justify-center space-x-2.5 px-6 sm:px-8 py-3.5 sm:py-3 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 shadow-glow-accent hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer">
                             <span>Navigate to Dashboard</span>
                             <svg class="w-4 h-4 transition-transform group-hover:translate-x-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -723,33 +774,33 @@
                         </button>
 
                         <!-- Quick Feature Metric Pill -->
-                        <div class="inline-flex items-center justify-center space-x-2 px-3.5 py-2.5 rounded-xl bg-slate-100/90 dark:bg-darkGreen-card/90 border border-slate-200/80 dark:border-darkGreen-border text-xs font-semibold text-slate-700 dark:text-emerald-300 shadow-sm">
-                            <span class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span>
+                        <div class="inline-flex items-center justify-center space-x-2 px-3.5 py-2.5 rounded-xl bg-slate-100/90 dark:bg-darkGreen-card/90 border border-slate-200/80 dark:border-darkGreen-border text-xs font-semibold text-slate-700 dark:text-cyan-300 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
                             <span class="font-mono text-[11px]">&lt; 4.0s Inference</span>
                         </div>
                     </div>
 
                     <!-- 5. Interactive 3-Metric Feature Grid -->
                     <div class="grid grid-cols-3 gap-2 sm:gap-2.5 pt-1 max-w-lg">
-                        <div class="p-2 sm:p-2.5 rounded-2xl bg-white/80 dark:bg-[#071a10]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-cyan-500/40 transition-all shadow-sm group">
+                        <div class="p-2 sm:p-2.5 rounded-2xl bg-white/80 dark:bg-[#0d1527]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-cyan-500/40 transition-all shadow-sm group">
                             <div class="flex items-center space-x-1 sm:space-x-1.5 mb-1">
-                                <svg class="w-3.5 h-3.5 text-cyan-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                <svg class="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                 <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 font-mono">Speed</span>
                             </div>
                             <div class="text-xs sm:text-base font-black text-navy-950 dark:text-white font-mono">&lt; 4.0s</div>
                             <div class="text-[9px] sm:text-[10px] text-slate-500 dark:text-gray-400 font-medium truncate">Deep Ensemble</div>
                         </div>
 
-                        <div class="p-2 sm:p-2.5 rounded-2xl bg-white/80 dark:bg-[#071a10]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-emerald-500/40 transition-all shadow-sm group">
+                        <div class="p-2 sm:p-2.5 rounded-2xl bg-white/80 dark:bg-[#0d1527]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-emerald-500/40 transition-all shadow-sm group">
                             <div class="flex items-center space-x-1 sm:space-x-1.5 mb-1">
-                                <svg class="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 font-mono">Staging</span>
                             </div>
                             <div class="text-xs sm:text-base font-black text-emerald-600 dark:text-emerald-400 font-mono">5 Grades</div>
                             <div class="text-[9px] sm:text-[10px] text-slate-500 dark:text-gray-400 font-medium truncate">ICDR Standard</div>
                         </div>
 
-                        <div class="p-2 sm:p-2.5 rounded-2xl bg-white/80 dark:bg-[#071a10]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-amber-500/40 transition-all shadow-sm group">
+                        <div class="p-2 sm:p-2.5 rounded-2xl bg-white/80 dark:bg-[#0d1527]/80 border border-slate-200/80 dark:border-darkGreen-border/80 backdrop-blur-md hover:border-amber-500/40 transition-all shadow-sm group">
                             <div class="flex items-center space-x-1 sm:space-x-1.5 mb-1">
                                 <svg class="w-3.5 h-3.5 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 font-mono">Explainable</span>
@@ -763,7 +814,7 @@
 
                 <!-- RIGHT COLUMN: Live Medical AI Retinal Scanner HUD (5 Cols) -->
                 <div class="lg:col-span-5 w-full stagger-2">
-                    <div class="bg-white/95 dark:bg-[#06140d]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-emerald-500/30 rounded-3xl p-3.5 sm:p-4 shadow-2xl relative overflow-hidden group hover:border-cyan-500/50 transition-all">
+                    <div class="bg-white/95 dark:bg-[#0a1020]/95 backdrop-blur-2xl border border-slate-200/90 dark:border-cyan-500/30 rounded-3xl p-3.5 sm:p-4 shadow-2xl relative overflow-hidden group hover:border-cyan-500/50 transition-all">
                         
                         <!-- Ambient Glow Lights -->
                         <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none"></div>
@@ -773,16 +824,16 @@
                         <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-darkGreen-border">
                             <div class="flex items-center space-x-2">
                                 <span class="relative flex h-2 w-2">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
                                 </span>
                                 <span class="text-[11px] font-mono font-bold tracking-wider uppercase text-navy-950 dark:text-white">AI TELEMETRY HUD</span>
                             </div>
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold">ACTIVE SCANNER</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/80 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800/80 font-bold">ACTIVE SCANNER</span>
                         </div>
 
                         <!-- Retinal Fundus Scanner Display -->
-                        <div class="relative my-2.5 rounded-2xl overflow-hidden bg-gradient-to-b from-slate-950 via-[#031109] to-slate-950 border border-slate-800/80 aspect-[16/9] flex items-center justify-center select-none shadow-inner">
+                        <div class="relative my-2.5 rounded-2xl overflow-hidden bg-gradient-to-b from-slate-950 via-[#060e1d] to-slate-950 border border-slate-800/80 aspect-[16/9] flex items-center justify-center select-none shadow-inner">
                             
                             <!-- Authentic Retinal Fundus Anatomy SVG -->
                             <svg class="w-full h-full object-contain p-1" viewBox="0 0 400 225" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -847,8 +898,8 @@
                             <div class="scanner-beam"></div>
 
                             <!-- Diagnostic Result Overlay Pill -->
-                            <div class="absolute bottom-2 left-2.5 px-2 py-1 rounded-lg bg-slate-950/80 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono text-emerald-300 flex items-center space-x-1.5 shadow-lg">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <div class="absolute bottom-2 left-2.5 px-2 py-1 rounded-lg bg-slate-950/80 backdrop-blur-md border border-cyan-500/40 text-[10px] font-mono text-cyan-300 flex items-center space-x-1.5 shadow-lg">
+                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
                                 <span>FOVEA AVASCULAR ZONE: NORMAL</span>
                             </div>
                         </div>
@@ -912,11 +963,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-stretch w-full flex-1">
 
                 <!-- 1. Retinal Fundus Scan Card -->
-                <div class="bg-white/95 dark:bg-[#071710]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3 stagger-1">
+                <div class="bg-white/95 dark:bg-[#0d1527]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3 stagger-1">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center space-x-2">
-                                <div class="w-5 h-5 rounded-lg bg-navy-900 text-nuvica-accent flex items-center justify-center text-[10px] font-black">1</div>
+                                <div class="w-5 h-5 rounded-lg bg-navy-900 dark:bg-cyan-500/20 text-cyan-500 dark:text-cyan-300 border border-transparent dark:border-cyan-500/30 flex items-center justify-center text-[10px] font-black">1</div>
                                 <h3 class="text-xs sm:text-sm font-extrabold text-navy-900 dark:text-white tracking-tight uppercase">
                                     Retinal Fundus Scan
                                 </h3>
@@ -938,18 +989,18 @@
 
                         <!-- Drag & Drop Zone -->
                         <div id="dropzone"
-                            class="relative group cursor-pointer border-2 border-dashed border-slate-200 hover:border-nuvica-accent rounded-xl p-3 transition-all duration-300 bg-slate-50 dark:bg-darkGreen-premium dark:border-darkGreen-border/70 text-center overflow-hidden min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center">
+                            class="relative group cursor-pointer border-2 border-dashed border-slate-200 hover:border-cyan-400 dark:hover:border-cyan-400 rounded-xl p-3 transition-all duration-300 bg-slate-50 dark:bg-[#09101f] dark:border-darkGreen-border/80 text-center overflow-hidden min-h-[140px] sm:min-h-[160px] flex flex-col items-center justify-center shadow-inner">
                             <input type="file" id="fileInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20">
 
                             <!-- Placeholder State -->
                             <div id="uploadPlaceholder" class="space-y-1.5 py-2">
-                                <div class="w-10 h-10 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center mx-auto text-sky-600 group-hover:scale-110 transition-transform shadow-sm">
+                                <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-cyan-950/50 border border-sky-100 dark:border-cyan-500/30 flex items-center justify-center mx-auto text-sky-600 dark:text-cyan-400 group-hover:scale-110 transition-transform shadow-sm">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                                 <p class="text-xs font-bold text-navy-900 dark:text-white">Drag & drop patient fundus scan</p>
-                                <span class="inline-block px-3 py-1 text-[10px] font-bold text-navy-900 dark:text-emerald-900 bg-white dark:bg-emerald-50 border border-slate-200 rounded-full shadow-sm">
+                                <span class="inline-block px-3 py-1 text-[10px] font-bold text-navy-900 dark:text-slate-950 bg-white dark:bg-cyan-400 border border-slate-200 dark:border-cyan-300 rounded-full shadow-sm hover:dark:bg-cyan-300 transition-colors">
                                     Browse Local Scan
                                 </span>
                             </div>
@@ -998,11 +1049,11 @@
                 </div>
 
                 <!-- 2. Patient Clinical Context Card -->
-                <div class="bg-white/95 dark:bg-[#071710]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3 stagger-2">
+                <div class="bg-white/95 dark:bg-[#0d1527]/95 backdrop-blur-xl rounded-2xl dark:border-darkGreen-border p-4 sm:p-5 shadow-nuvica border border-slate-100 flex flex-col justify-between space-y-3 stagger-2">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center space-x-2">
-                                <div class="w-5 h-5 rounded-lg bg-navy-900 text-nuvica-accent flex items-center justify-center text-[10px] font-black">2</div>
+                                <div class="w-5 h-5 rounded-lg bg-navy-900 dark:bg-cyan-500/20 text-cyan-500 dark:text-cyan-300 border border-transparent dark:border-cyan-500/30 flex items-center justify-center text-[10px] font-black">2</div>
                                 <h3 class="text-xs sm:text-sm font-extrabold text-navy-900 dark:text-white tracking-tight uppercase">
                                     Patient Clinical Context
                                 </h3>
@@ -1092,15 +1143,15 @@
 
                 <!-- Report Title & Patient Tag -->
                 <div class="flex items-center space-x-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
                     <span class="text-xs font-mono font-bold text-navy-950 dark:text-white uppercase">CLINICAL DIAGNOSTIC REPORT</span>
-                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-semibold">ICDR STANDARDS</span>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950/80 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-500/30 font-semibold">ICDR STANDARDS</span>
                 </div>
 
                 <!-- Print Slip Button -->
                 <button onclick="window.print()"
-                    class="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-navy-900 hover:bg-navy-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
-                    <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-navy-900 hover:bg-navy-950 dark:bg-cyan-500 hover:dark:bg-cyan-400 text-white dark:text-slate-950 rounded-xl text-xs font-bold transition-all shadow-sm">
+                    <svg class="w-3.5 h-3.5 text-cyan-400 dark:text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                     </svg>
                     <span>Print Diagnostic Slip</span>
@@ -1851,14 +1902,14 @@
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-rose-700 text-white shadow-sm";
                 priorityBadge.textContent = "STATUS: REJECTED (NON-RETINA)";
             } else if (action === "REFER" || action === "REFERRAL") {
-                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-rose-200 dark:border-rose-900/50 bg-gradient-to-br from-rose-50/90 via-white to-rose-50/40 dark:from-rose-950/40 dark:via-[#081510] dark:to-rose-950/20";
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-rose-200 dark:border-rose-900/50 bg-gradient-to-br from-rose-50/90 via-white to-rose-50/40 dark:from-rose-950/40 dark:via-[#0c1628] dark:to-rose-950/20";
                 actionTitle.textContent = "SPECIALIST REFERRAL REQUIRED";
                 actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-rose-600 dark:text-rose-400";
                 actionSubtitle.textContent = "High risk of progressive vision loss detected. Urgent ophthalmology triage recommended.";
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-rose-600 text-white shadow-sm";
                 priorityBadge.textContent = `PRIORITY: ${priority}`;
             } else if (action === "DOCTOR_REVIEW") {
-                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-amber-200 dark:border-amber-900/50 bg-gradient-to-br from-amber-50/90 via-white to-amber-50/40 dark:from-amber-950/40 dark:via-[#081510] dark:to-amber-950/20";
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-amber-200 dark:border-amber-900/50 bg-gradient-to-br from-amber-50/90 via-white to-amber-50/40 dark:from-amber-950/40 dark:via-[#0c1628] dark:to-amber-950/20";
                 actionTitle.textContent = "HUMAN DOCTOR REVIEW REQUIRED";
                 actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-amber-700 dark:text-amber-400";
                 actionSubtitle.textContent = "Safety Engine intercepted high uncertainty / out-of-distribution artifact. Automated triage bypassed.";
@@ -1872,11 +1923,11 @@
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-yellow-500 text-white";
                 priorityBadge.textContent = "STATUS: UNGRADABLE";
             } else {
-                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/40 dark:from-emerald-950/40 dark:via-[#081510] dark:to-emerald-950/20";
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-cyan-200 dark:border-cyan-900/50 bg-gradient-to-br from-cyan-50/90 via-white to-cyan-50/40 dark:from-cyan-950/40 dark:via-[#0c1628] dark:to-emerald-950/20";
                 actionTitle.textContent = "ROUTINE ANNUAL SCREENING";
-                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-emerald-600 dark:text-emerald-400";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-cyan-600 dark:text-cyan-400";
                 actionSubtitle.textContent = "No referable DR detected. Continue standard annual screening schedule.";
-                priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-emerald-600 text-white shadow-sm";
+                priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-cyan-600 text-white shadow-sm";
                 priorityBadge.textContent = `PRIORITY: LOW`;
             }
 
