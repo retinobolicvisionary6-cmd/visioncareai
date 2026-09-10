@@ -304,8 +304,11 @@ def assess_quality(image_path: str) -> dict:
     # ------------------------------------------------------- fundus domain gate
     fundus_check = verify_fundus_image(resized)
     if not fundus_check["is_fundus"]:
-        first_r = fundus_check["reasons"][0] if fundus_check.get("reasons") else "This image does not appear to be an eye retina scan. Please upload a genuine retinal fundus photo."
-        reason_msg = f"Image rejected: {first_r}"
+        if fundus_check.get("is_human_image"):
+            reason_msg = "Image rejected: A photo of a person was detected instead of an eye retina scan. Please insert a genuine retinal fundus image."
+        else:
+            first_r = fundus_check["reasons"][0] if fundus_check.get("reasons") else "This photo is not an eye retina scan. Please upload a genuine retinal fundus image."
+            reason_msg = f"Image rejected: {first_r}"
         res = {
             "status": "invalid_image",
             "is_fundus": False,

@@ -81,7 +81,7 @@ def rule_0_image_rejection(
             matched=True,
             rule_name="RULE_0_REJECTED_NON_FUNDUS",
             action="rejected",
-            trigger=f"Image rejected as non-retinal scan ({quality.reason}).",
+            trigger=quality.reason or "Image rejected: Other image detected please insert fundus image.",
         )
     return RuleResult(matched=False, rule_name="RULE_0_REJECTED_NON_FUNDUS", action="", trigger="")
 

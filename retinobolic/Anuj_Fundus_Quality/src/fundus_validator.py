@@ -183,9 +183,9 @@ def verify_fundus_image(img_bgr: np.ndarray) -> Dict[str, Any]:
 
     if not is_fundus:
         if "regular camera photo detected" in reasons:
-            reasons = ["A standard camera photo was detected instead of a circular eye retina scan. Please insert a genuine retinal fundus image."]
+            reasons = ["A standard camera photo was detected instead of an eye retina scan. Please insert a genuine retinal fundus image."]
         else:
-            reasons = ["This image does not appear to be an eye retina scan. Please upload a genuine retinal fundus photo taken with an eye camera."]
+            reasons = ["This photo is not an eye retina scan. Please upload a genuine retinal fundus image taken with an eye camera."]
     elif not reasons:
         reasons.append("Genuine retinal fundus scan verified.")
 

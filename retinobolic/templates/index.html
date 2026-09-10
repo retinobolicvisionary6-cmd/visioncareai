@@ -1380,18 +1380,24 @@
         const btnModalDismissX = document.getElementById('btnModalDismissX');
 
         function formatHumanFriendlyReason(rawText) {
-            if (!rawText) return "This image does not look like an eye retina scan. Please upload a genuine retinal fundus photograph taken with an eye camera.";
+            if (!rawText) return "This photo is not an eye retina scan. Please upload a genuine retinal fundus image taken with an eye camera.";
             const lower = rawText.toLowerCase();
-            if (lower.includes('human') || lower.includes('face') || lower.includes('person')) {
-                return "A photo of a person was detected instead of an eye retina scan. Please upload a genuine retinal fundus photograph.";
+            if (lower.includes('human') || lower.includes('face') || lower.includes('person') || lower.includes('body')) {
+                return "A photo of a person was detected instead of an eye retina scan. Please insert a genuine retinal fundus image.";
             }
-            if (lower.includes('chrominance') || lower.includes('ratio') || lower.includes('spectrum') || lower.includes('hue') || lower.includes('color')) {
-                return "The colors and lighting in this image do not match an eye retina scan. Please upload a genuine retinal fundus photo taken with an eye camera.";
+            if (lower.includes('chrominance') || lower.includes('ratio') || lower.includes('spectrum') || lower.includes('hue') || lower.includes('color') || lower.includes('lighting') || lower.includes('profile')) {
+                return "This photo is not an eye retina scan. Please upload a genuine retinal fundus image taken with an eye camera.";
             }
-            if (lower.includes('full-frame') || lower.includes('aperture') || lower.includes('camera photo') || lower.includes('rectangular') || lower.includes('corner')) {
-                return "A standard camera photo was detected instead of a circular eye retina scan. Please insert a genuine retinal fundus image.";
+            if (lower.includes('full-frame') || lower.includes('aperture') || lower.includes('camera photo') || lower.includes('rectangular') || lower.includes('corner') || lower.includes('standard')) {
+                return "A standard camera photo was detected instead of an eye retina scan. Please insert a genuine retinal fundus image.";
             }
-            return rawText;
+            if (lower.includes('out-of-distribution') || lower.includes('ood') || lower.includes('distance')) {
+                return "This image does not match eye retina scan patterns. Please insert a genuine retinal fundus image.";
+            }
+            if (lower.includes('other image detected') || lower.includes('fundus image')) {
+                return rawText;
+            }
+            return "This photo is not an eye retina scan. Please upload a genuine retinal fundus image taken with an eye camera.";
         }
 
         function showNonFundusModal(message, detail) {
@@ -1839,9 +1845,9 @@
             // Action Banner Styling
             if (isRejected) {
                 actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border-2 border-rose-500 bg-gradient-to-br from-rose-100 via-white to-rose-50 dark:from-rose-950/70 dark:via-[#160b0d] dark:to-rose-950/40";
-                actionTitle.textContent = "WRONG IMAGE DETECTED — NOT A RETINAL SCAN";
+                actionTitle.textContent = "OTHER IMAGE DETECTED — PLEASE INSERT FUNDUS IMAGE";
                 actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-rose-700 dark:text-rose-400";
-                actionSubtitle.textContent = "The uploaded file is not a retinal fundus photograph (e.g. personal photograph, face portrait, everyday scene, or unsupported image). Retinobolic AI diagnostic models are strictly calibrated for retinal fundus photography.";
+                actionSubtitle.textContent = "The uploaded file is not an eye retina scan. Retinobolic AI screens only genuine retinal fundus images. Please upload a genuine retinal fundus scan taken with an eye camera.";
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-rose-700 text-white shadow-sm";
                 priorityBadge.textContent = "STATUS: REJECTED (NON-RETINA)";
             } else if (action === "REFER" || action === "REFERRAL") {
@@ -1947,7 +1953,7 @@
             const qStatus = isRejected ? "REJECTED" : (quality.status || "GOOD").toUpperCase();
             document.getElementById('cardQualityStatus').textContent = qStatus;
             document.getElementById('cardQualityStatus').className = isRejected ? "text-[10px] font-bold text-rose-600" : (qStatus === "GOOD" ? "text-[10px] font-bold text-emerald-600" : "text-[10px] font-bold text-amber-600");
-            document.getElementById('cardQualityDetail').textContent = isRejected ? "Non-retinal image rejected" : (quality.reason || "Gradable retina focus");
+            document.getElementById('cardQualityDetail').textContent = isRejected ? "Other image detected (Not an eye scan)" : (quality.reason || "Gradable retina focus");
 
             const conf = isRejected ? 0 : (reliability.confidence !== undefined ? Math.round(reliability.confidence * 100) : 80);
             document.getElementById('cardConfidence').textContent = `${conf}%`;
@@ -1964,7 +1970,7 @@
             // Multi-Layer Screening Summary Table
             const summaryAction = document.getElementById('summaryReferralAction');
             if (isRejected) {
-                summaryAction.innerHTML = `<span class="text-rose-600 font-black">❌ REJECTED (NON-RETINAL IMAGE)</span>`;
+                summaryAction.innerHTML = `<span class="text-rose-600 font-black">❌ REJECTED (OTHER IMAGE DETECTED)</span>`;
             } else if (action === "REFER" || action === "REFERRAL") {
                 summaryAction.innerHTML = `<span class="text-rose-600 font-black">🔴 SPECIALIST REFERRAL REQUIRED (${priority})</span>`;
             } else if (action === "DOCTOR_REVIEW") {
@@ -1977,14 +1983,14 @@
 
             const qualityBadgeClass = isRejected ? "text-rose-700 bg-rose-50" : (qStatus === "GOOD" ? "text-emerald-700 bg-emerald-50" : "text-amber-700 bg-amber-50");
             document.getElementById('summaryQualityGate').innerHTML = `
-                ${quality.reason || (isRejected ? "Non-retinal composition" : "Clear macular focus, well-illuminated retina")} 
+                ${isRejected ? "Other image detected — please insert fundus image" : (quality.reason || "Clear macular focus, well-illuminated retina")} 
                 <span class="text-[10px] font-mono ml-1.5 px-2 py-0.5 rounded-full font-bold ${qualityBadgeClass}">${qStatus} (${qScore}%)</span>
             `;
 
             if (isOod) {
                 document.getElementById('summaryOOD').innerHTML = `
-                    Non-retinal artifact detected 
-                    <span class="text-[10px] font-mono text-rose-700 ml-1.5 px-2 py-0.5 bg-rose-50 rounded-full font-bold">OOD REJECTED</span>
+                    Non-retinal image detected 
+                    <span class="text-[10px] font-mono text-rose-700 ml-1.5 px-2 py-0.5 bg-rose-50 rounded-full font-bold">REJECTED</span>
                 `;
             } else {
                 document.getElementById('summaryOOD').innerHTML = `

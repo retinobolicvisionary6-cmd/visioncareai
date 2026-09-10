@@ -101,7 +101,11 @@ def run_pipeline(
     
     # 1A. Hard Rejection for Non-Fundus Images (Faces, Selfies, Objects, Buildings)
     if quality_result.get("status") in ("invalid_image", "rejected") or quality_result.get("is_fundus") is False:
-        rejection_reason = quality_result.get("reason") or "Uploaded image is not a retinal fundus scan."
+        is_human = quality_result.get("is_human_image", False)
+        if is_human:
+            rejection_reason = "Other image detected please insert fundus image. A photo of a person was detected instead of an eye retina scan."
+        else:
+            rejection_reason = "Other image detected please insert fundus image. This photo is not an eye retina scan."
         mock_dr = {
             "grade": None,
             "probabilities": None,
@@ -137,7 +141,7 @@ def run_pipeline(
                 "reliability_score": 0.0,
                 "gradcam_path": "",
                 "clinical_context_complete": False,
-                "reliability_signals": ["Non-retinal image rejected"]
+                "reliability_signals": ["Other image detected - Please insert fundus image"]
             },
             "metadata": {
                 "rule_applied": "RULE_0_REJECTED_NON_FUNDUS",
