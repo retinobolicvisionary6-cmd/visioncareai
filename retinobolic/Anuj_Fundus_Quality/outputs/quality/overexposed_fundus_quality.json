@@ -1,58 +1,36 @@
 {
-  "status": "borderline",
-  "quality_score": 0.7194,
-  "focus_score": 1.0,
-  "illumination_score": 0.6188,
-  "field_of_view_score": 1.0,
-  "retinal_visibility_score": 0.077,
-  "artifact_score": 0.5313,
-  "reason": "Poor retinal structure visibility may affect screening quality.",
-  "action": "enhance_and_recheck",
-  "enhanced": true,
-  "enhanced_image_path": "outputs\\enhanced\\overexposed_fundus_enhanced.jpg",
-  "error": null,
+  "status": "invalid_image",
+  "is_fundus": false,
+  "quality_score": 0.0,
+  "focus_score": 0.0,
+  "illumination_score": 0.0,
+  "field_of_view_score": 0.0,
+  "retinal_visibility_score": 0.0,
+  "artifact_score": 0.0,
+  "reason": "Image rejected: Image lacks retinal chrominance profile (Red/Blue ratio: 1.66, expected > 2.0); Excessive blue spectrum reflection (Blue mean: 151.1, expected < 70); Full-frame non-aperture composition detected (Corner brightness: 123.5)",
+  "action": "reject",
+  "enhanced": false,
+  "enhanced_image_path": null,
+  "error": "Image is not a valid retinal fundus photograph.",
   "component_details": {
-    "focus": {
-      "focus_score": 1.0,
-      "laplacian_var": 1540.92,
-      "tenengrad_mean": 33.9703,
-      "is_hard_fail": false,
-      "detail": "Image is well focused (Laplacian=1540.9, Tenengrad=33.97)."
-    },
-    "illumination": {
-      "illumination_score": 0.6188,
-      "mean_brightness": 201.69,
-      "std_brightness": 19.7,
-      "clip_ratio": 0.0118,
-      "uniformity_std": 0.86,
-      "is_hard_fail": false,
-      "conditions": [
-        "overexposed",
-        "low_contrast"
+    "fundus_check": {
+      "is_fundus": false,
+      "confidence": 0.5,
+      "reasons": [
+        "Image lacks retinal chrominance profile (Red/Blue ratio: 1.66, expected > 2.0)",
+        "Excessive blue spectrum reflection (Blue mean: 151.1, expected < 70)",
+        "Full-frame non-aperture composition detected (Corner brightness: 123.5)"
       ],
-      "detail": "Illumination issues detected: overexposed, low contrast. (mean=202, std=19.7, clip=1.18%)"
-    },
-    "field_of_view": {
-      "field_of_view_score": 1.0,
-      "fundus_area_ratio": 0.6291,
-      "disk_fill_ratio": 1.0,
-      "circle_detected": true,
-      "is_hard_fail": false,
-      "detail": "Adequate field of view (fill=100.0%, area_ratio=62.9%)."
-    },
-    "retinal_visibility": {
-      "retinal_visibility_score": 0.077,
-      "edge_density": 0.028473,
-      "detail": "Limited retinal structure visibility (edge density=0.028)."
-    },
-    "artifacts": {
-      "artifact_score": 0.5313,
-      "glare_ratio": 0.0114,
-      "noise_level": 0.503,
-      "artifacts_found": [
-        "severe_noise"
-      ],
-      "detail": "Artifacts detected: severe noise. (glare=0.011, noise=0.503)"
+      "metrics": {
+        "rb_ratio": 1.66,
+        "rg_ratio": 1.26,
+        "b_mean": 151.1,
+        "r_mean": 250.2,
+        "g_mean": 198.9,
+        "corner_brightness": 123.5,
+        "retinal_hue_pct": 97.7,
+        "hue_std": 1.1
+      }
     }
   }
 }

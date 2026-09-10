@@ -27,26 +27,26 @@ class TestValidInputFormats:
 
     def test_dict_string_keys(self):
         """Standard DR model output with string keys."""
-        probs = validate_probabilities({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08})
-        assert probs.shape == (4,)
+        probs = validate_probabilities({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08, "4": 0.0})
+        assert probs.shape == (5,)
         assert math.isclose(probs[2], 0.81)
 
     def test_dict_int_keys(self):
         """Dict with integer keys — also valid."""
-        probs = validate_probabilities({0: 0.03, 1: 0.08, 2: 0.81, 3: 0.08})
-        assert probs.shape == (4,)
+        probs = validate_probabilities({0: 0.03, 1: 0.08, 2: 0.81, 3: 0.08, 4: 0.0})
+        assert probs.shape == (5,)
         assert math.isclose(probs[2], 0.81)
 
     def test_list_input(self):
         """Python list of 4 floats — valid."""
         probs = validate_probabilities([0.03, 0.08, 0.81, 0.08])
-        assert probs.shape == (4,)
+        assert probs.shape == (5,)
 
     def test_numpy_array_input(self):
         """Numpy array of shape (4,) — valid."""
         arr = np.array([0.03, 0.08, 0.81, 0.08])
         probs = validate_probabilities(arr)
-        assert probs.shape == (4,)
+        assert probs.shape == (5,)
 
     def test_returns_ordered_array(self):
         """Probabilities are ordered by class index 0..3 regardless of dict ordering."""
@@ -60,17 +60,17 @@ class TestValidInputFormats:
     def test_sum_within_tolerance(self):
         """Sum slightly off from 1.0 due to floating-point — should be accepted."""
         # 0.999999 is within the default tolerance of 1e-3.
-        probs = validate_probabilities({"0": 0.249999, "1": 0.25, "2": 0.25, "3": 0.25})
+        probs = validate_probabilities({"0": 0.249999, "1": 0.25, "2": 0.25, "3": 0.25, "4": 0.0})
         assert probs is not None
 
     def test_high_confidence_valid(self):
         """High confidence distribution is valid."""
-        probs = validate_probabilities({"0": 0.02, "1": 0.03, "2": 0.92, "3": 0.03})
+        probs = validate_probabilities({"0": 0.02, "1": 0.03, "2": 0.92, "3": 0.03, "4": 0.0})
         assert math.isclose(probs.sum(), 1.0, abs_tol=1e-3)
 
     def test_uniform_valid(self):
         """Uniform distribution sums to exactly 1.0 — valid."""
-        probs = validate_probabilities({"0": 0.25, "1": 0.25, "2": 0.25, "3": 0.25})
+        probs = validate_probabilities({"0": 0.25, "1": 0.25, "2": 0.25, "3": 0.25, "4": 0.0})
         assert math.isclose(probs.sum(), 1.0)
 
 
@@ -159,7 +159,7 @@ class TestProbabilityValueErrors:
     def test_probability_greater_than_one(self):
         """Probability > 1.0 on one class."""
         with pytest.raises(InvalidProbabilityError, match="exceeding 1.0"):
-            validate_probabilities({"0": 1.5, "1": 0.0, "2": 0.0, "3": 0.0})
+            validate_probabilities({"0": 1.5, "1": 0.0, "2": 0.0, "3": 0.0, "4": 0.0})
 
     def test_nan_probability(self):
         """NaN in probability values."""
@@ -184,17 +184,17 @@ class TestProbabilityValueErrors:
     def test_sum_too_high(self):
         """Probability sum materially exceeds 1.0."""
         with pytest.raises(InvalidProbabilityError, match="sums to"):
-            validate_probabilities({"0": 0.4, "1": 0.4, "2": 0.4, "3": 0.1})
+            validate_probabilities({"0": 0.4, "1": 0.4, "2": 0.4, "3": 0.1, "4": 0.0})
 
     def test_sum_too_low(self):
         """Probability sum materially below 1.0."""
         with pytest.raises(InvalidProbabilityError, match="sums to"):
-            validate_probabilities({"0": 0.1, "1": 0.1, "2": 0.1, "3": 0.1})
+            validate_probabilities({"0": 0.1, "1": 0.1, "2": 0.1, "3": 0.1, "4": 0.0})
 
     def test_all_zeros(self):
         """All zero probabilities — sum is 0.0."""
         with pytest.raises(InvalidProbabilityError, match="sums to"):
-            validate_probabilities({"0": 0.0, "1": 0.0, "2": 0.0, "3": 0.0})
+            validate_probabilities({"0": 0.0, "1": 0.0, "2": 0.0, "3": 0.0, "4": 0.0})
 
     def test_string_probability_value(self):
         """Probability given as a string — numpy will raise on conversion."""

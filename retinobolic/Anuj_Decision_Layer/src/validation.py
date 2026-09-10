@@ -35,10 +35,10 @@ log = logging.getLogger(__name__)
 # Valid constants (aligned with upstream modules)
 # ---------------------------------------------------------------------------
 
-VALID_QUALITY_STATUSES = {"good", "borderline", "ungradable"}
-VALID_QUALITY_ACTIONS = {"continue", "enhance_and_recheck", "recapture"}
+VALID_QUALITY_STATUSES = {"good", "borderline", "ungradable", "invalid_image", "rejected"}
+VALID_QUALITY_ACTIONS = {"continue", "enhance_and_recheck", "recapture", "reject", "rejected"}
 VALID_DR_GRADES = {0, 1, 2, 3, 4}
-VALID_RELIABILITY_STATUSES = {"acceptable", "caution", "review_required"}
+VALID_RELIABILITY_STATUSES = {"acceptable", "caution", "review_required", "rejected"}
 VALID_CONFIDENCE_LEVELS = {"high", "medium", "low"}
 VALID_UNCERTAINTY_LEVELS = {"low", "medium", "high"}
 
@@ -68,6 +68,10 @@ class QualityResult:
     @property
     def is_ungradable(self) -> bool:
         return self.status == "ungradable"
+
+    @property
+    def is_rejected(self) -> bool:
+        return self.status in ("invalid_image", "rejected")
 
     @property
     def is_gradable(self) -> bool:

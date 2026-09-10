@@ -256,7 +256,7 @@ def test_7_high_grade_ungradable_recaptures():
     # Override probabilities for high Grade 3 confidence
     dr_data = {
         "grade": 3,
-        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97},
+        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97, "4": 0.0},
         "gradcam_path": None,
     }
     result = make_final_decision(
@@ -353,7 +353,7 @@ def test_9_conflict_high_uncertainty_overrides_referral():
 
 def test_conflict_a_ungradable_beats_high_grade():
     """From spec Case A: quality=ungradable, DR Grade=3, Confidence=0.99 → recapture."""
-    dr_data = {"grade": 3, "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97}}
+    dr_data = {"grade": 3, "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97, "4": 0.0}}
     result = make_final_decision(
         quality_result=quality("ungradable"),
         dr_result=dr_data,
@@ -368,7 +368,7 @@ def test_conflict_a_ungradable_beats_high_grade():
 
 def test_conflict_b_high_confidence_high_uncertainty():
     """From spec Case B: Grade 3, Confidence=0.95, Uncertainty=high → doctor_review."""
-    dr_data = {"grade": 3, "probabilities": {"0": 0.02, "1": 0.02, "2": 0.02, "3": 0.94}}
+    dr_data = {"grade": 3, "probabilities": {"0": 0.02, "1": 0.02, "2": 0.02, "3": 0.94, "4": 0.0}}
     result = make_final_decision(
         quality_result=quality("good"),
         dr_result=dr_data,
@@ -387,7 +387,7 @@ def test_conflict_b_high_confidence_high_uncertainty():
 
 def test_conflict_c_grade2_reliable_ood():
     """Grade 2, high confidence, but OOD=True → doctor_review."""
-    dr_data = {"grade": 2, "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06}}
+    dr_data = {"grade": 2, "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06, "4": 0.0}}
     result = make_final_decision(
         quality_result=quality("good"),
         dr_result=dr_data,
@@ -464,7 +464,7 @@ class TestOutputContract:
         """Grad-CAM path must be preserved in evidence output."""
         dr_data = {
             "grade": 2,
-            "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06},
+            "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06, "4": 0.0},
             "gradcam_path": "outputs/gradcam/test.jpg",
         }
         result = make_final_decision(quality("good"), dr_data, reliability("acceptable"))

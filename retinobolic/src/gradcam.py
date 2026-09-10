@@ -202,6 +202,31 @@ def generate_gradcam_overlay(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # --- Load and prepare original image ---
+    img_bgr = cv2.imread(str(image_path))
+    if img_bgr is None:
+        raise ValueError(f"Could not load image for Grad-CAM overlay: {image_path}")
+
+    # --- Fundus Domain Gate: Strictly scan ONLY retinal fundus images ---
+    # Non-fundus images (human faces, portraits, everyday photos) are strictly aborted.
+    try:
+        import importlib.util
+        vpath = Path(__file__).resolve().parent.parent / "Anuj_Fundus_Quality" / "src" / "fundus_validator.py"
+        if vpath.exists():
+            spec = importlib.util.spec_from_file_location("anuj_fundus_validator_gc", str(vpath))
+            vmod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(vmod)
+            f_check = vmod.verify_fundus_image(img_bgr)
+            if not f_check.get("is_fundus", True):
+                reason = f_check.get("reasons", ["Non-fundus image detected"])[0]
+                log.warning(
+                    "Grad-CAM scan aborted for '%s': %s. Other image detected please insert fundus image.",
+                    image_path.name, reason
+                )
+                return ""
+    except Exception as e:
+        log.warning("Grad-CAM fundus verification check deferred: %s", e)
+
     # --- Compute heatmap ---
     target_layer = model.get_target_layer_for_gradcam()
     gradcam = GradCAM(model, target_layer)
@@ -209,11 +234,6 @@ def generate_gradcam_overlay(
         heatmap = gradcam.generate_heatmap(input_tensor, target_class=target_class)
     finally:
         gradcam.remove_hooks()
-
-    # --- Load and prepare original image ---
-    img_bgr = cv2.imread(str(image_path))
-    if img_bgr is None:
-        raise ValueError(f"Could not load image for Grad-CAM overlay: {image_path}")
 
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     cropped_rgb = crop_retina_circle(img_rgb)

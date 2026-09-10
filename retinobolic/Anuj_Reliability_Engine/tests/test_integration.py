@@ -52,7 +52,7 @@ class TestIntegrationFullyReliable:
 
     DR_RESULT = {
         "grade": 2,
-        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.97, "3": 0.01},
+        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.97, "3": 0.01, "4": 0.0},
     }
 
     @pytest.mark.skipif(not IN_DIST_IMAGE.exists(), reason="Sample in-distribution image not found")
@@ -100,7 +100,7 @@ class TestIntegrationHighUncertainty:
 
     DR_RESULT = {
         "grade": 1,
-        "probabilities": {"0": 0.26, "1": 0.28, "2": 0.24, "3": 0.22},
+        "probabilities": {"0": 0.26, "1": 0.28, "2": 0.24, "3": 0.22, "4": 0.0},
     }
 
     @pytest.mark.skipif(not IN_DIST_IMAGE.exists(), reason="Sample in-distribution image not found")
@@ -120,7 +120,7 @@ class TestIntegrationOODHighConfidence:
 
     DR_RESULT = {
         "grade": 2,
-        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.97, "3": 0.01},
+        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.97, "3": 0.01, "4": 0.0},
     }
 
     @pytest.mark.skipif(not OUT_DIST_IMAGE.exists(), reason="Sample OOD image not found")
@@ -148,7 +148,7 @@ class TestIntegrationLowConfidence:
 
     DR_RESULT = {
         "grade": 0,
-        "probabilities": {"0": 0.35, "1": 0.25, "2": 0.20, "3": 0.20},
+        "probabilities": {"0": 0.35, "1": 0.25, "2": 0.20, "3": 0.20, "4": 0.0},
     }
 
     @pytest.mark.skipif(not IN_DIST_IMAGE.exists(), reason="Sample in-distribution image not found")
@@ -167,7 +167,7 @@ class TestIntegrationMultipleFailures:
 
     DR_RESULT = {
         "grade": 0,
-        "probabilities": {"0": 0.27, "1": 0.24, "2": 0.25, "3": 0.24},
+        "probabilities": {"0": 0.27, "1": 0.24, "2": 0.25, "3": 0.24, "4": 0.0},
     }
 
     @pytest.mark.skipif(not OUT_DIST_IMAGE.exists(), reason="Sample OOD image not found")
@@ -188,7 +188,7 @@ class TestNoDuplication:
 
     DR_RESULT = {
         "grade": 2,
-        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.97, "3": 0.01},
+        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.97, "3": 0.01, "4": 0.0},
     }
 
     @pytest.mark.skipif(not IN_DIST_IMAGE.exists(), reason="Sample in-distribution image not found")

@@ -1,58 +1,34 @@
 {
-  "status": "ungradable",
-  "quality_score": 0.252,
-  "focus_score": 0.1105,
-  "illumination_score": 0.3496,
+  "status": "invalid_image",
+  "is_fundus": false,
+  "quality_score": 0.0,
+  "focus_score": 0.0,
+  "illumination_score": 0.0,
   "field_of_view_score": 0.0,
-  "retinal_visibility_score": 0.4761,
-  "artifact_score": 0.6,
-  "reason": "Low image sharpness, critically dark image, insufficient retinal field of view \u2014 image is not suitable for reliable screening.",
-  "action": "recapture",
+  "retinal_visibility_score": 0.0,
+  "artifact_score": 0.0,
+  "reason": "Image rejected: Non-retinal color distribution (5.3% retinal hue, expected > 75%)",
+  "action": "reject",
   "enhanced": false,
   "enhanced_image_path": null,
-  "error": null,
+  "error": "Image is not a valid retinal fundus photograph.",
   "component_details": {
-    "focus": {
-      "focus_score": 0.1105,
-      "laplacian_var": 6.24,
-      "tenengrad_mean": 4.221,
-      "is_hard_fail": false,
-      "detail": "Image sharpness is low (Laplacian=6.2, Tenengrad=4.22). Fine retinal details may be unclear."
-    },
-    "illumination": {
-      "illumination_score": 0.3496,
-      "mean_brightness": 11.2,
-      "std_brightness": 1.88,
-      "clip_ratio": 0.0,
-      "uniformity_std": 0.16,
-      "is_hard_fail": true,
-      "conditions": [
-        "critically_dark",
-        "no_contrast"
+    "fundus_check": {
+      "is_fundus": false,
+      "confidence": 0.5,
+      "reasons": [
+        "Non-retinal color distribution (5.3% retinal hue, expected > 75%)"
       ],
-      "detail": "Illumination issues detected: critically dark, no contrast. (mean=11, std=1.9, clip=0.00%)"
-    },
-    "field_of_view": {
-      "field_of_view_score": 0.0,
-      "fundus_area_ratio": 0.5565,
-      "disk_fill_ratio": 0.015,
-      "circle_detected": false,
-      "is_hard_fail": true,
-      "detail": "Insufficient fundus area visible (fill=1.5%, area_ratio=55.6%). Image is likely heavily cropped or mostly background."
-    },
-    "retinal_visibility": {
-      "retinal_visibility_score": 0.4761,
-      "edge_density": 0.124274,
-      "detail": "Retinal structures appear adequately visible (edge density=0.124)."
-    },
-    "artifacts": {
-      "artifact_score": 0.6,
-      "glare_ratio": 0.0,
-      "noise_level": 0.6107,
-      "artifacts_found": [
-        "severe_noise"
-      ],
-      "detail": "Artifacts detected: severe noise. (glare=0.000, noise=0.611)"
+      "metrics": {
+        "rb_ratio": 6.29,
+        "rg_ratio": 1.95,
+        "b_mean": 2.9,
+        "r_mean": 18.1,
+        "g_mean": 9.3,
+        "corner_brightness": 0.1,
+        "retinal_hue_pct": 5.3,
+        "hue_std": 2.7
+      }
     }
   }
 }

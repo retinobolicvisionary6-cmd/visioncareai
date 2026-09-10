@@ -599,6 +599,79 @@
                         </button>
                     </p>
                 </div>
+
+                <!-- Demo Clinician Direct Access -->
+                <div class="text-center mt-3 pt-3 border-t border-slate-800">
+                    <button type="button" id="btnDemoGuestLogin" onclick="enterDemoMode()"
+                        class="w-full py-2.5 px-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-sm">
+                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span>Clinician Demo / Fast Access</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- NON-FUNDUS IMAGE REJECTION POP-UP MODAL (CENTER OF SCREEN) -->
+        <div id="nonFundusModal"
+            class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#050b14]/85 backdrop-blur-md transition-all duration-300 select-none">
+            
+            <!-- Atmospheric Warning Pulse Glow -->
+            <div class="absolute w-80 h-80 bg-rose-500/15 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+
+            <!-- Modal Content Card (Centered) -->
+            <div
+                class="relative z-10 bg-[#0d1424]/95 border-2 border-rose-500/80 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl backdrop-blur-2xl text-center transform transition-all duration-300 scale-100">
+                
+                <!-- Close Button (X) -->
+                <button type="button" id="btnModalDismissX"
+                    class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800/80 hover:bg-rose-900/50 text-slate-400 hover:text-white flex items-center justify-center transition-colors border border-slate-700/50"
+                    title="Close">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Icon Badge -->
+                <div class="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto mb-4 text-rose-500 shadow-lg shadow-rose-500/20">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+
+                <!-- Tag Badge -->
+                <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-black uppercase tracking-wider bg-rose-500/20 border border-rose-500/40 text-rose-400 mb-3">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+                    <span>NON-RETINAL IMAGE DETECTED • SCAN ABORTED</span>
+                </div>
+
+                <!-- Primary User-Facing Message in Center of Screen -->
+                <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 mb-4">
+                    <p id="nonFundusModalMessage" class="text-base sm:text-lg font-black text-rose-400 dark:text-rose-300 leading-snug tracking-tight">
+                        Other image detected please insert fundus image
+                    </p>
+                </div>
+
+                <!-- Diagnostic System Explanation -->
+                <p id="nonFundusModalDetail" class="text-xs text-slate-300 dark:text-slate-300 leading-relaxed mb-6 font-medium">
+                    The Retinobolic AI diagnostic pipeline and Grad-CAM explainability engine are strictly calibrated for retinal fundus photographs. Personal photos, human faces, selfies, or other non-retinal images cannot be scanned.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="space-y-2.5">
+                    <button type="button" id="btnModalInsertFundus"
+                        class="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/25 flex items-center justify-center space-x-2 transition-all transform hover:scale-[1.02] active:scale-[0.98]">
+                        <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        <span>Insert Fundus Image</span>
+                    </button>
+                    <button type="button" id="btnModalClose"
+                        class="w-full py-2.5 px-4 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white font-bold text-xs uppercase tracking-wider transition-colors">
+                        Dismiss
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -849,6 +922,18 @@
                                 </h3>
                             </div>
                             <span id="fileBadge" class="text-[10px] font-mono text-slate-500 dark:text-gray-400 font-semibold truncate max-w-[150px]">No scan chosen</span>
+                        </div>
+
+                        <!-- Rejection Alert Notification (shown when non-retinal image uploaded) -->
+                        <div id="rejectionAlert" class="hidden mb-2.5 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/70 border border-rose-300 dark:border-rose-800 text-left transition-all">
+                            <div class="flex items-start space-x-2.5">
+                                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-black text-xs">✕</span>
+                                <div class="space-y-0.5">
+                                    <h4 class="text-xs font-black text-rose-800 dark:text-rose-200 uppercase tracking-tight">Wrong Image — Not a Retinal Scan</h4>
+                                    <p id="rejectionAlertMsg" class="text-[11px] text-rose-700 dark:text-rose-300 leading-snug font-medium"></p>
+                                    <p class="text-[10px] text-slate-500 dark:text-gray-400 font-semibold pt-0.5">💡 Retinobolic AI screens only genuine retinal fundus scans. Non-retinal photos are rejected without grading.</p>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Drag & Drop Zone -->
@@ -1286,7 +1371,70 @@
         const fileBadge = document.getElementById('fileBadge');
         const dropzone = document.getElementById('dropzone');
 
-        function handleFileSelect(file) {
+        // Center-Screen Non-Fundus Modal Controls
+        const nonFundusModal = document.getElementById('nonFundusModal');
+        const nonFundusModalMessage = document.getElementById('nonFundusModalMessage');
+        const nonFundusModalDetail = document.getElementById('nonFundusModalDetail');
+        const btnModalInsertFundus = document.getElementById('btnModalInsertFundus');
+        const btnModalClose = document.getElementById('btnModalClose');
+        const btnModalDismissX = document.getElementById('btnModalDismissX');
+
+        function showNonFundusModal(message, detail) {
+            if (nonFundusModalMessage) {
+                nonFundusModalMessage.textContent = message || "Other image detected please insert fundus image";
+            }
+            if (nonFundusModalDetail && detail) {
+                nonFundusModalDetail.textContent = detail;
+            }
+            if (nonFundusModal) {
+                nonFundusModal.classList.remove('hidden');
+            }
+            const scanEffect = document.getElementById('scanEffect');
+            if (scanEffect) scanEffect.classList.add('hidden');
+            const btn = document.getElementById('btnRun');
+            const btnText = document.getElementById('btnRunText');
+            if (btn) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-80');
+            }
+            if (btnText) {
+                btnText.textContent = "RUN REAL-TIME DIAGNOSIS";
+            }
+        }
+
+        function closeNonFundusModal() {
+            if (nonFundusModal) {
+                nonFundusModal.classList.add('hidden');
+            }
+        }
+
+        if (btnModalDismissX) {
+            btnModalDismissX.addEventListener('click', closeNonFundusModal);
+        }
+        if (btnModalClose) {
+            btnModalClose.addEventListener('click', closeNonFundusModal);
+        }
+        if (btnModalInsertFundus) {
+            btnModalInsertFundus.addEventListener('click', () => {
+                closeNonFundusModal();
+                clearImage();
+                if (fileInput) fileInput.click();
+            });
+        }
+        if (nonFundusModal) {
+            nonFundusModal.addEventListener('click', (e) => {
+                if (e.target === nonFundusModal) {
+                    closeNonFundusModal();
+                }
+            });
+        }
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && nonFundusModal && !nonFundusModal.classList.contains('hidden')) {
+                closeNonFundusModal();
+            }
+        });
+
+        async function handleFileSelect(file) {
             if (!file) return;
             selectedFile = file;
             activeSampleGrade = null;
@@ -1301,6 +1449,30 @@
                 fileBadge.classList.add('text-sky-600');
             };
             reader.readAsDataURL(file);
+
+            // Instant Background Pre-Validation for Human/Non-Fundus Images
+            try {
+                const checkForm = new FormData();
+                checkForm.append('image', file);
+                const valRes = await fetch(`${BACKEND_URL}/api/validate_image`, {
+                    method: 'POST',
+                    body: checkForm
+                });
+                if (valRes.ok) {
+                    const valData = await valRes.json();
+                    if (valData.is_fundus === false) {
+                        // Immediately abort and show center-screen popup modal!
+                        clearImage();
+                        showNonFundusModal(
+                            valData.message || "Other image detected please insert fundus image",
+                            valData.reason || "The uploaded file is not a genuine retinal fundus photograph."
+                        );
+                        showToast("Other image detected please insert fundus image", "error");
+                    }
+                }
+            } catch (err) {
+                console.warn("[VisionCare] Pre-validation check deferred:", err);
+            }
         }
 
         fileInput.addEventListener('change', function (e) {
@@ -1343,6 +1515,16 @@
             fileBadge.textContent = "No scan chosen";
             fileBadge.classList.remove('text-sky-600');
             clearActiveSampleButtons();
+            const rejAlert = document.getElementById('rejectionAlert');
+            if (rejAlert) rejAlert.classList.add('hidden');
+            const btnSeeReport = document.getElementById('btnSeeReport');
+            const btnSeeReportText = document.getElementById('btnSeeReportText');
+            if (btnSeeReport) {
+                btnSeeReport.classList.remove('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+            }
+            if (btnSeeReportText && btnSeeReportText.textContent.includes("LOCKED")) {
+                btnSeeReportText.textContent = "SEE REPORT →";
+            }
         }
 
         function clearActiveSampleButtons() {
@@ -1540,11 +1722,25 @@
                 const data = await response.json();
 
                 currentImages = data.images;
+                const isRejected = (data.is_valid_fundus === false || (data.pipeline && (data.pipeline.is_valid_fundus === false || (data.pipeline.final_decision && data.pipeline.final_decision.action === "REJECTED"))));
+
+                if (isRejected) {
+                    scanEffect.classList.add('hidden');
+                    btn.disabled = false;
+                    btnText.textContent = "RUN REAL-TIME DIAGNOSIS";
+                    btn.classList.remove('opacity-80');
+                    const rejMsg = data.message || "Other image detected please insert fundus image";
+                    const rejReason = data.pipeline?.final_decision?.reason || data.pipeline?.quality?.reason || "The uploaded image is not a genuine retinal fundus photograph.";
+                    showNonFundusModal(rejMsg, rejReason);
+                    showToast("Other image detected please insert fundus image", "error");
+                    return;
+                }
+
                 renderResults(data.pipeline);
                 showToast("Diagnosis completed successfully!", "success");
 
                 // Save to Firestore
-                if (window.saveDiagnosisToFirestore) {
+                if (window.saveDiagnosisToFirestore && !isRejected) {
                     window.saveDiagnosisToFirestore({
                         age, hba1c, bpSys, bpDia, duration
                     }, data.pipeline);
@@ -1569,14 +1765,6 @@
             const reportReadyBadge = document.getElementById('reportReadyBadge');
             const btnSeeReport = document.getElementById('btnSeeReport');
             const btnSeeReportText = document.getElementById('btnSeeReportText');
-            if (reportReadyBadge) reportReadyBadge.classList.remove('hidden');
-            if (btnSeeReport) {
-                btnSeeReport.classList.add('ring-2', 'ring-cyan-400', 'animate-pulse');
-                setTimeout(() => {
-                    if (btnSeeReport) btnSeeReport.classList.remove('animate-pulse');
-                }, 3000);
-            }
-            if (btnSeeReportText) btnSeeReportText.textContent = "SEE REPORT (READY) →";
 
             const quality = pipeline.quality || {};
             const drResult = pipeline.dr_result || {};
@@ -1585,6 +1773,9 @@
 
             const action = (decision.action || "ROUTINE").toUpperCase();
             const priority = (decision.priority || "LOW").toUpperCase();
+            const isRejected = (pipeline.is_valid_fundus === false || action === "REJECTED" || quality.status === "invalid_image");
+            const isUngradable = (!isRejected && (action === "RECAPTURE" || quality.status === "ungradable"));
+
             const actionBanner = document.getElementById('actionBanner');
             const actionTitle = document.getElementById('actionTitle');
             const actionSubtitle = document.getElementById('actionSubtitle');
@@ -1593,10 +1784,50 @@
             const gradeTitle = document.getElementById('gradeTitle');
             const decisionReason = document.getElementById('decisionReason');
 
-            ruleBadge.textContent = (decision.metadata && decision.metadata.rule_applied) || "DECISION_ENGINE_V1";
+            ruleBadge.textContent = (decision.metadata && decision.metadata.rule_applied) || (isRejected ? "RULE_0_REJECTED_NON_FUNDUS" : "DECISION_ENGINE_V1");
             decisionReason.textContent = decision.reason || "Diagnosis completed based on clinical safety thresholds.";
 
-            if (action === "REFER" || action === "REFERRAL") {
+            // Workspace Dashboard Rejection Alert
+            const rejAlert = document.getElementById('rejectionAlert');
+            const rejAlertMsg = document.getElementById('rejectionAlertMsg');
+            if (isRejected) {
+                if (rejAlert) {
+                    rejAlert.classList.remove('hidden');
+                    if (rejAlertMsg) rejAlertMsg.textContent = decision.reason || quality.reason || "The uploaded image was rejected because it is not a retinal fundus scan.";
+                }
+            } else {
+                if (rejAlert) rejAlert.classList.add('hidden');
+            }
+
+            // Report Button State
+            if (isRejected) {
+                if (reportReadyBadge) reportReadyBadge.classList.add('hidden');
+                if (btnSeeReport) {
+                    btnSeeReport.classList.remove('ring-2', 'ring-cyan-400', 'animate-pulse');
+                    btnSeeReport.classList.add('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+                }
+                if (btnSeeReportText) btnSeeReportText.textContent = "REPORT LOCKED (INVALID SCAN)";
+            } else {
+                if (reportReadyBadge) reportReadyBadge.classList.remove('hidden');
+                if (btnSeeReport) {
+                    btnSeeReport.classList.remove('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+                    btnSeeReport.classList.add('ring-2', 'ring-cyan-400', 'animate-pulse');
+                    setTimeout(() => {
+                        if (btnSeeReport) btnSeeReport.classList.remove('animate-pulse');
+                    }, 3000);
+                }
+                if (btnSeeReportText) btnSeeReportText.textContent = "SEE REPORT (READY) →";
+            }
+
+            // Action Banner Styling
+            if (isRejected) {
+                actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border-2 border-rose-500 bg-gradient-to-br from-rose-100 via-white to-rose-50 dark:from-rose-950/70 dark:via-[#160b0d] dark:to-rose-950/40";
+                actionTitle.textContent = "WRONG IMAGE DETECTED — NOT A RETINAL SCAN";
+                actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-rose-700 dark:text-rose-400";
+                actionSubtitle.textContent = "The uploaded file is not a retinal fundus photograph (e.g. personal photograph, face portrait, everyday scene, or unsupported image). Retinobolic AI diagnostic models are strictly calibrated for retinal fundus photography.";
+                priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-rose-700 text-white shadow-sm";
+                priorityBadge.textContent = "STATUS: REJECTED (NON-RETINA)";
+            } else if (action === "REFER" || action === "REFERRAL") {
                 actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-rose-200 dark:border-rose-900/50 bg-gradient-to-br from-rose-50/90 via-white to-rose-50/40 dark:from-rose-950/40 dark:via-[#081510] dark:to-rose-950/20";
                 actionTitle.textContent = "SPECIALIST REFERRAL REQUIRED";
                 actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-rose-600 dark:text-rose-400";
@@ -1610,13 +1841,13 @@
                 actionSubtitle.textContent = "Safety Engine intercepted high uncertainty / out-of-distribution artifact. Automated triage bypassed.";
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-amber-500 text-white";
                 priorityBadge.textContent = `PRIORITY: ${priority}`;
-            } else if (action === "RECAPTURE") {
+            } else if (isUngradable) {
                 actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-yellow-300 dark:border-yellow-900/50 bg-yellow-50/80 dark:bg-yellow-950/30";
                 actionTitle.textContent = "RECAPTURE FUNDUS IMAGE";
                 actionTitle.className = "text-2xl sm:text-3xl font-black tracking-tight text-yellow-800 dark:text-yellow-400";
                 actionSubtitle.textContent = "Image quality inadequate for reliable clinical grading.";
                 priorityBadge.className = "px-3 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-yellow-500 text-white";
-                priorityBadge.textContent = `STATUS: UNGRADABLE`;
+                priorityBadge.textContent = "STATUS: UNGRADABLE";
             } else {
                 actionBanner.className = "rounded-3xl p-6 sm:p-7 shadow-nuvica-lg border border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/40 dark:from-emerald-950/40 dark:via-[#081510] dark:to-emerald-950/20";
                 actionTitle.textContent = "ROUTINE ANNUAL SCREENING";
@@ -1626,75 +1857,110 @@
                 priorityBadge.textContent = `PRIORITY: LOW`;
             }
 
-            const predGrade = (drResult.grade !== undefined) ? drResult.grade : (decision.dr_grade !== undefined ? decision.dr_grade : 0);
-            const classInfo = CLASS_LABELS[predGrade] || { name: "Unknown", tag: "Grade N/A" };
-            gradeTitle.textContent = `${classInfo.tag} — ${classInfo.name}`;
-            gradeTitle.style.color = classInfo.color;
+            // Severity Grade Title
+            if (isRejected) {
+                gradeTitle.textContent = "N/A — SCAN REJECTED";
+                gradeTitle.style.color = "#dc2626";
+            } else if (isUngradable) {
+                gradeTitle.textContent = "UNGRADABLE — INCONCLUSIVE";
+                gradeTitle.style.color = "#d97706";
+            } else {
+                const predGrade = (drResult.grade !== undefined && drResult.grade !== null) ? drResult.grade : (decision.dr_grade !== undefined && decision.dr_grade !== null ? decision.dr_grade : 0);
+                const classInfo = CLASS_LABELS[predGrade] || { name: "Unknown", tag: "Grade N/A" };
+                gradeTitle.textContent = `${classInfo.tag} — ${classInfo.name}`;
+                gradeTitle.style.color = classInfo.color;
+            }
 
             // 5-Class Probability Bars
             const probsContainer = document.getElementById('probabilityBars');
             probsContainer.innerHTML = "";
-            const probs = drResult.probabilities || { "0": 0.2, "1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2 };
 
-            for (let g = 0; g <= 4; g++) {
-                const pVal = probs[String(g)] !== undefined ? probs[String(g)] : 0;
-                const pct = (pVal * 100).toFixed(1);
-                const isWinner = (g === predGrade);
-                const info = CLASS_LABELS[g];
-
-                const barWrapper = document.createElement('div');
-                barWrapper.className = `p-2.5 rounded-xl transition-all ${isWinner ? 'bg-slate-100/90 border border-slate-200 shadow-sm' : 'opacity-70'}`;
-                barWrapper.innerHTML = `
-                    <div class="flex items-center justify-between text-xs mb-1.5">
-                        <span class="font-bold ${isWinner ? 'text-navy-900 dark:text-darkGreen-text' : 'text-slate-600 dark:text-gray-300'} flex items-center space-x-2">
-                            <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${info.color}"></span>
-                            <span>${info.tag}: ${info.name}</span>
-                            ${isWinner ? '<span class="text-[10px] font-mono font-extrabold text-navy-900 dark:text-darkGreen-text bg-white px-2 py-0.5 rounded-full shadow-xs border border-slate-200">PREDICTED</span>' : ''}
-                        </span>
-                        <span class="font-mono text-xs font-black ${isWinner ? 'text-navy-900 dark:text-darkGreen-text' : 'text-slate-500 dark:text-gray-400'}">${pct}%</span>
-                    </div>
-                    <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-700" style="width: ${pct}%; background-color: ${info.color}"></div>
+            if (isRejected) {
+                probsContainer.innerHTML = `
+                    <div class="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-center space-y-2">
+                        <div class="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 mx-auto flex items-center justify-center font-black text-base">⚠️</div>
+                        <p class="text-xs font-bold text-rose-800 dark:text-rose-200 uppercase tracking-wide">Diabetic Retinopathy Grading Disabled</p>
+                        <p class="text-[11px] text-rose-700 dark:text-rose-300 leading-relaxed">
+                            Diabetic retinopathy grading is only performed on genuine retinal fundus scans. Probabilities and classifications are withheld for non-retinal images to prevent false diagnoses.
+                        </p>
                     </div>
                 `;
-                probsContainer.appendChild(barWrapper);
+            } else if (isUngradable) {
+                probsContainer.innerHTML = `
+                    <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 text-center space-y-2">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-300 mx-auto flex items-center justify-center font-black text-base">📷</div>
+                        <p class="text-xs font-bold text-amber-800 dark:text-amber-200 uppercase tracking-wide">Grading Inconclusive — Recapture Needed</p>
+                        <p class="text-[11px] text-amber-700 dark:text-amber-300 leading-relaxed">
+                            The fundus scan was ungradable due to severe blur, low illumination, or poor field of view. Please capture a clearer scan before diagnostic evaluation.
+                        </p>
+                    </div>
+                `;
+            } else {
+                const predGrade = (drResult.grade !== undefined && drResult.grade !== null) ? drResult.grade : (decision.dr_grade !== undefined && decision.dr_grade !== null ? decision.dr_grade : 0);
+                const probs = drResult.probabilities || { "0": 0.2, "1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2 };
+
+                for (let g = 0; g <= 4; g++) {
+                    const pVal = probs[String(g)] !== undefined ? probs[String(g)] : 0;
+                    const pct = (pVal * 100).toFixed(1);
+                    const isWinner = (g === predGrade);
+                    const info = CLASS_LABELS[g];
+
+                    const barWrapper = document.createElement('div');
+                    barWrapper.className = `p-2.5 rounded-xl transition-all ${isWinner ? 'bg-slate-100/90 border border-slate-200 shadow-sm' : 'opacity-70'}`;
+                    barWrapper.innerHTML = `
+                        <div class="flex items-center justify-between text-xs mb-1.5">
+                            <span class="font-bold ${isWinner ? 'text-navy-900 dark:text-darkGreen-text' : 'text-slate-600 dark:text-gray-300'} flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${info.color}"></span>
+                                <span>${info.tag}: ${info.name}</span>
+                                ${isWinner ? '<span class="text-[10px] font-mono font-extrabold text-navy-900 dark:text-darkGreen-text bg-white px-2 py-0.5 rounded-full shadow-xs border border-slate-200">PREDICTED</span>' : ''}
+                            </span>
+                            <span class="font-mono text-xs font-black ${isWinner ? 'text-navy-900 dark:text-darkGreen-text' : 'text-slate-500 dark:text-gray-400'}">${pct}%</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-700" style="width: ${pct}%; background-color: ${info.color}"></div>
+                        </div>
+                    `;
+                    probsContainer.appendChild(barWrapper);
+                }
             }
 
             // Safety Guardrail Cards
-            const qScore = quality.quality_score !== undefined ? Math.round(quality.quality_score * 100) : 90;
+            const qScore = isRejected ? 0 : (quality.quality_score !== undefined ? Math.round(quality.quality_score * 100) : 90);
             document.getElementById('cardQualityScore').textContent = `${qScore}%`;
-            const qStatus = (quality.status || "GOOD").toUpperCase();
+            const qStatus = isRejected ? "REJECTED" : (quality.status || "GOOD").toUpperCase();
             document.getElementById('cardQualityStatus').textContent = qStatus;
-            document.getElementById('cardQualityStatus').className = qStatus === "GOOD" ? "text-[10px] font-bold text-emerald-600" : "text-[10px] font-bold text-amber-600";
-            document.getElementById('cardQualityDetail').textContent = quality.reason || "Gradable retina focus";
+            document.getElementById('cardQualityStatus').className = isRejected ? "text-[10px] font-bold text-rose-600" : (qStatus === "GOOD" ? "text-[10px] font-bold text-emerald-600" : "text-[10px] font-bold text-amber-600");
+            document.getElementById('cardQualityDetail').textContent = isRejected ? "Non-retinal image rejected" : (quality.reason || "Gradable retina focus");
 
-            const conf = reliability.confidence !== undefined ? Math.round(reliability.confidence * 100) : 80;
+            const conf = isRejected ? 0 : (reliability.confidence !== undefined ? Math.round(reliability.confidence * 100) : 80);
             document.getElementById('cardConfidence').textContent = `${conf}%`;
-            const confLevel = (reliability.confidence_level || "HIGH").toUpperCase();
+            const confLevel = isRejected ? "N/A" : (reliability.confidence_level || "HIGH").toUpperCase();
             document.getElementById('cardConfidenceLevel').textContent = confLevel;
 
-            const entropy = reliability.uncertainty !== undefined ? reliability.uncertainty.toFixed(2) : "0.25";
-            const entropyLevel = (reliability.uncertainty_level || "LOW").toUpperCase();
+            const entropy = isRejected ? "N/A" : (reliability.uncertainty !== undefined ? reliability.uncertainty.toFixed(2) : "0.25");
+            const entropyLevel = isRejected ? "N/A" : (reliability.uncertainty_level || "LOW").toUpperCase();
 
-            const isOod = reliability.ood === true;
+            const isOod = (isRejected || reliability.ood === true);
             document.getElementById('cardOod').textContent = isOod ? "YES" : "NO";
             document.getElementById('cardOod').className = isOod ? "text-base font-black text-rose-600" : "text-base font-black text-emerald-600";
 
             // Multi-Layer Screening Summary Table
             const summaryAction = document.getElementById('summaryReferralAction');
-            if (action === "REFER" || action === "REFERRAL") {
+            if (isRejected) {
+                summaryAction.innerHTML = `<span class="text-rose-600 font-black">❌ REJECTED (NON-RETINAL IMAGE)</span>`;
+            } else if (action === "REFER" || action === "REFERRAL") {
                 summaryAction.innerHTML = `<span class="text-rose-600 font-black">🔴 SPECIALIST REFERRAL REQUIRED (${priority})</span>`;
             } else if (action === "DOCTOR_REVIEW") {
                 summaryAction.innerHTML = `<span class="text-amber-600 font-black">🟡 HUMAN DOCTOR REVIEW REQUIRED</span>`;
-            } else if (action === "RECAPTURE") {
+            } else if (isUngradable) {
                 summaryAction.innerHTML = `<span class="text-yellow-600 font-black">⚠️ RECAPTURE FUNDUS IMAGE</span>`;
             } else {
                 summaryAction.innerHTML = `<span class="text-emerald-600 font-black">🟢 ROUTINE ANNUAL SCREENING</span>`;
             }
 
-            const qualityBadgeClass = qStatus === "GOOD" ? "text-emerald-700 bg-emerald-50" : "text-amber-700 bg-amber-50";
+            const qualityBadgeClass = isRejected ? "text-rose-700 bg-rose-50" : (qStatus === "GOOD" ? "text-emerald-700 bg-emerald-50" : "text-amber-700 bg-amber-50");
             document.getElementById('summaryQualityGate').innerHTML = `
-                ${quality.reason || "Clear macular focus, well-illuminated retina"} 
+                ${quality.reason || (isRejected ? "Non-retinal composition" : "Clear macular focus, well-illuminated retina")} 
                 <span class="text-[10px] font-mono ml-1.5 px-2 py-0.5 rounded-full font-bold ${qualityBadgeClass}">${qStatus} (${qScore}%)</span>
             `;
 
@@ -1710,25 +1976,25 @@
                 `;
             }
 
-            const entropyBadgeClass = (entropyLevel === "LOW" || entropyLevel === "MEDIUM") ? "text-sky-700 bg-sky-50" : "text-amber-700 bg-amber-50";
+            const entropyBadgeClass = (entropyLevel === "LOW" || entropyLevel === "MEDIUM") ? "text-sky-700 bg-sky-50" : (isRejected ? "text-slate-600 bg-slate-100" : "text-amber-700 bg-amber-50");
             document.getElementById('summaryUncertainty').innerHTML = `
-                Standard clinical Shannon entropy 
+                ${isRejected ? "Model evaluation bypassed" : "Standard clinical Shannon entropy"} 
                 <span class="text-[10px] font-mono ml-1.5 px-2 py-0.5 rounded-full font-bold ${entropyBadgeClass}">${entropyLevel} (${entropy})</span>
             `;
 
             const mcdo = drResult.mcdo || { epistemic_variance: 0.0032, epistemic_level: "LOW", num_samples: 10 };
-            const mcdoVar = mcdo.epistemic_variance !== undefined ? mcdo.epistemic_variance.toFixed(4) : "0.0030";
-            const mcdoLevel = (mcdo.epistemic_level || "LOW").toUpperCase();
-            const mcdoBadgeClass = mcdoLevel === "LOW" ? "text-emerald-700 bg-emerald-50" : (mcdoLevel === "MEDIUM" ? "text-sky-700 bg-sky-50" : "text-amber-700 bg-amber-50");
+            const mcdoVar = isRejected ? "N/A" : (mcdo.epistemic_variance !== undefined ? mcdo.epistemic_variance.toFixed(4) : "0.0030");
+            const mcdoLevel = isRejected ? "N/A" : (mcdo.epistemic_level || "LOW").toUpperCase();
+            const mcdoBadgeClass = mcdoLevel === "LOW" ? "text-emerald-700 bg-emerald-50" : (mcdoLevel === "MEDIUM" ? "text-sky-700 bg-sky-50" : "text-slate-700 bg-slate-50");
 
             document.getElementById('summaryMCDO').innerHTML = `
-                ${mcdo.num_samples || 10} Bayesian Monte Carlo Dropout passes 
+                ${isRejected ? "Bayesian evaluation bypassed" : (mcdo.num_samples || 10) + " Bayesian Monte Carlo Dropout passes"} 
                 <span class="text-[10px] font-mono ml-1.5 px-2 py-0.5 rounded-full font-bold ${mcdoBadgeClass}">${mcdoLevel === "LOW" ? "HIGH STABILITY" : mcdoLevel} (${mcdoVar})</span>
             `;
 
             document.getElementById('cardMcdoVar').textContent = mcdoVar;
             document.getElementById('cardMcdoLevel').textContent = mcdoLevel === "LOW" ? "STABLE" : mcdoLevel;
-            document.getElementById('cardMcdoVar').className = mcdoLevel === "LOW" ? "text-base font-black text-emerald-600" : (mcdoLevel === "MEDIUM" ? "text-base font-black text-sky-600" : "text-base font-black text-amber-600");
+            document.getElementById('cardMcdoVar').className = mcdoLevel === "LOW" ? "text-base font-black text-emerald-600" : (mcdoLevel === "MEDIUM" ? "text-base font-black text-sky-600" : "text-base font-black text-slate-500");
 
             // Grad-CAM Initial View
             setGradCamView('overlay');
@@ -1745,16 +2011,25 @@
                 t.className = "px-3 py-1.5 rounded-lg text-slate-600 dark:text-gray-300 hover:text-navy-900 dark:text-darkGreen-text transition-all font-bold";
             });
 
-            if (view === 'heatmap' && currentImages.gradcam_heatmap) {
+            const isRej = (window.latestPipelineData && (window.latestPipelineData.is_valid_fundus === false || (window.latestPipelineData.final_decision && window.latestPipelineData.final_decision.action === "REJECTED")));
+
+            if (isRej) {
+                display.src = (currentImages && currentImages.input) ? currentImages.input : "";
+                badge.textContent = "View: Uploaded Photo (Grad-CAM Disabled — Non-Retinal)";
+                tabOverlay.className = "px-3 py-1.5 rounded-lg bg-rose-700 text-white transition-all font-bold";
+                return;
+            }
+
+            if (view === 'heatmap' && currentImages && currentImages.gradcam_heatmap) {
                 display.src = currentImages.gradcam_heatmap;
                 badge.textContent = "View: Raw Attention Heatmap (Thermal)";
                 tabHeatmap.className = "px-3 py-1.5 rounded-lg bg-navy-900 text-white transition-all font-bold";
-            } else if (view === 'original' && (currentImages.gradcam_original || currentImages.input)) {
+            } else if (view === 'original' && currentImages && (currentImages.gradcam_original || currentImages.input)) {
                 display.src = currentImages.gradcam_original || currentImages.input;
                 badge.textContent = "View: Preprocessed Fundus Retina";
                 tabOriginal.className = "px-3 py-1.5 rounded-lg bg-navy-900 text-white transition-all font-bold";
             } else {
-                display.src = currentImages.gradcam_overlay || currentImages.input;
+                display.src = (currentImages && (currentImages.gradcam_overlay || currentImages.input)) || "";
                 badge.textContent = "View: Diagnostic Lesion Overlay";
                 tabOverlay.className = "px-3 py-1.5 rounded-lg bg-navy-900 text-white transition-all font-bold";
             }
@@ -2663,6 +2938,18 @@
             sessionStorage.setItem('visioncare_active_view', targetName);
         }
 
+        function enterDemoMode() {
+            document.documentElement.classList.add('user-authenticated');
+            sessionStorage.setItem('visioncare_logged_in', 'true');
+            localStorage.setItem('visioncare_logged_in', 'true');
+            const authOverlay = document.getElementById('authOverlay');
+            if (authOverlay) authOverlay.classList.add('hidden');
+            stopLiveAnimation();
+            transitionToView('dashboard');
+            showToast("Welcome, Clinician (Demo Access)", "success");
+        }
+        window.enterDemoMode = enterDemoMode;
+
         function navigateToDashboard() {
             transitionToView('dashboard');
         }
@@ -2675,6 +2962,10 @@
 
             if (!hasReport) {
                 showToast("Please run diagnosis on a retinal scan first!", "error");
+                return;
+            }
+            if (window.latestPipelineData && (window.latestPipelineData.is_valid_fundus === false || (window.latestPipelineData.final_decision && window.latestPipelineData.final_decision.action === "REJECTED"))) {
+                showToast("Cannot open report: Uploaded image was rejected as non-retinal!", "error");
                 return;
             }
             transitionToView('report');

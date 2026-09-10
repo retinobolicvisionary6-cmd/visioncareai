@@ -1,5 +1,6 @@
 {
   "status": "good",
+  "is_fundus": true,
   "quality_score": 0.9062,
   "focus_score": 1.0,
   "illumination_score": 0.7955,

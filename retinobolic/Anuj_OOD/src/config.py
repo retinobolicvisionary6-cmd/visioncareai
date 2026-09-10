@@ -60,10 +60,8 @@ COVARIANCE_REGULARISATION: float = 1e-5
 # ---------------------------------------------------------------------------
 # OOD Threshold
 # ---------------------------------------------------------------------------
-# PROTOTYPE VALUE — requires calibration on real in-distribution + OOD data.
-# For Mahalanobis distance: typical in-distribution scores cluster near 0–1;
-# values >> 1 suggest OOD.  Normalised cosine/euclidean sit in [0, 1].
-OOD_THRESHOLD: float = 12.74
+# Calibrated threshold: Real fundus images range 9.0–26.0; non-retinal images range 60.0–360.0+
+OOD_THRESHOLD: float = 32.0
 
 # Percentile of reference distribution distances to use as auto-threshold
 # when build_reference.py is run (override with --threshold flag).

@@ -87,6 +87,10 @@ def determine_priority(
         Priority labels are workflow routing labels only.
         They are NOT validated clinical triage levels.
     """
+    if action == "rejected":
+        log.debug("Priority for 'rejected': high")
+        return "high"
+
     if action == "recapture":
         priority = policy.priority.recapture
         log.debug("Priority for 'recapture': %s", priority)

@@ -65,6 +65,27 @@ class RuleResult(NamedTuple):
 # Rule implementations
 # ---------------------------------------------------------------------------
 
+def rule_0_image_rejection(
+    quality: QualityResult,
+) -> RuleResult:
+    """
+    RULE 0 — Non-Fundus Image Rejection Gate (ABSOLUTE HIGHEST PRIORITY)
+
+    If the image is not a retinal fundus scan (e.g. personal photograph, face,
+    natural scene, or non-retinal image), reject it immediately.
+    No clinical grading can occur on a non-retinal image.
+    """
+    if quality.is_rejected:
+        log.debug("RULE 0 fired: quality.status='%s'", quality.status)
+        return RuleResult(
+            matched=True,
+            rule_name="RULE_0_REJECTED_NON_FUNDUS",
+            action="rejected",
+            trigger=f"Image rejected as non-retinal scan ({quality.reason}).",
+        )
+    return RuleResult(matched=False, rule_name="RULE_0_REJECTED_NON_FUNDUS", action="", trigger="")
+
+
 def rule_1_image_safety(
     quality: QualityResult,
 ) -> RuleResult:
@@ -275,6 +296,11 @@ def evaluate_decision_rules(
     -------
     RuleResult — the winning rule's matched result
     """
+    # RULE 0: Non-fundus rejection (absolute highest priority)
+    r0 = rule_0_image_rejection(quality)
+    if r0.matched:
+        return r0
+
     # RULE 1: Image safety
     r1 = rule_1_image_safety(quality)
     if r1.matched:

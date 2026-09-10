@@ -117,6 +117,9 @@ def generate_reason(
     -------
     str — A clear, non-diagnostic reason string.
     """
+    if action == "rejected":
+        return f"Image rejected: Not a retinal fundus scan ({quality.reason}). Automated DR screening cannot be performed on non-retinal images."
+
     if action == "recapture":
         return _reason_recapture(quality)
 

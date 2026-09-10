@@ -1,5 +1,6 @@
 {
   "status": "borderline",
+  "is_fundus": true,
   "quality_score": 0.6463,
   "focus_score": 0.512,
   "illumination_score": 0.7841,

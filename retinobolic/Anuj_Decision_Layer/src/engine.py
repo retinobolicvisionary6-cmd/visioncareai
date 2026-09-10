@@ -123,8 +123,8 @@ def _assemble_output(
         "review_required": action == "doctor_review",
     }
 
-    # DR grade — None for recapture (image not gradable)
-    if action == "recapture":
+    # DR grade — None for recapture/rejected (image not gradable or not fundus)
+    if action in ("recapture", "rejected"):
         output["dr_grade"] = None
         output["reliability_status"] = None
     else:

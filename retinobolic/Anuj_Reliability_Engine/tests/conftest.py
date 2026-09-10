@@ -34,7 +34,7 @@ def dr_result_high_confidence():
     """Grade 2 — Moderate DR, high confidence (0.88), low entropy."""
     return {
         "grade": 2,
-        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.97, "3": 0.01},
+        "probabilities": {"0": 0.01, "1": 0.01, "2": 0.97, "3": 0.01, "4": 0.0},
     }
 
 
@@ -43,7 +43,7 @@ def dr_result_high_uncertainty():
     """Nearly uniform distribution → high Shannon entropy."""
     return {
         "grade": 1,
-        "probabilities": {"0": 0.26, "1": 0.28, "2": 0.24, "3": 0.22},
+        "probabilities": {"0": 0.26, "1": 0.28, "2": 0.24, "3": 0.22, "4": 0.0},
     }
 
 
@@ -52,7 +52,7 @@ def dr_result_low_confidence():
     """Grade 0 — max probability 0.35, all classes compete."""
     return {
         "grade": 0,
-        "probabilities": {"0": 0.35, "1": 0.25, "2": 0.20, "3": 0.20},
+        "probabilities": {"0": 0.35, "1": 0.25, "2": 0.20, "3": 0.20, "4": 0.0},
     }
 
 
@@ -61,7 +61,7 @@ def dr_result_medium():
     """Medium confidence (~0.55), medium uncertainty scenario."""
     return {
         "grade": 2,
-        "probabilities": {"0": 0.15, "1": 0.20, "2": 0.55, "3": 0.10},
+        "probabilities": {"0": 0.15, "1": 0.20, "2": 0.55, "3": 0.10, "4": 0.0},
     }
 
 
@@ -70,7 +70,7 @@ def dr_result_all_failures():
     """Nearly uniform: low confidence + high uncertainty."""
     return {
         "grade": 0,
-        "probabilities": {"0": 0.27, "1": 0.24, "2": 0.25, "3": 0.24},
+        "probabilities": {"0": 0.27, "1": 0.24, "2": 0.25, "3": 0.24, "4": 0.0},
     }
 
 

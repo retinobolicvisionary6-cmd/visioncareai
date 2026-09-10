@@ -47,7 +47,7 @@ class TestRunScreeningDecision:
     def test_run_is_alias_of_make(self):
         """run_screening_decision must produce identical output to make_final_decision."""
         q = {"status": "good", "quality_score": 0.88, "action": "continue", "reason": "OK."}
-        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01}}
+        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "Acceptable.", "confidence": 0.92, "confidence_level": "high",
@@ -130,7 +130,7 @@ class TestCustomPolicy:
         policy.referral.referable_grade_threshold = 1
 
         q = {"status": "good", "quality_score": 0.88, "action": "continue", "reason": "OK."}
-        d = {"grade": 1, "probabilities": {"0": 0.02, "1": 0.93, "2": 0.03, "3": 0.02}}
+        d = {"grade": 1, "probabilities": {"0": 0.02, "1": 0.93, "2": 0.03, "3": 0.02, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "Acceptable.", "confidence": 0.93, "confidence_level": "high",
@@ -147,7 +147,7 @@ class TestCustomPolicy:
         policy.referral.urgent_referral_grades = []
 
         q = {"status": "good", "quality_score": 0.88, "action": "continue", "reason": "OK."}
-        d = {"grade": 2, "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06}}
+        d = {"grade": 2, "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "Acceptable.", "confidence": 0.88, "confidence_level": "high",
@@ -163,7 +163,7 @@ class TestCustomPolicy:
         policy.reliability.caution_allows_referral = True
 
         q = {"status": "good", "quality_score": 0.85, "action": "continue", "reason": "OK."}
-        d = {"grade": 2, "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06}}
+        d = {"grade": 2, "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06, "4": 0.0}}
         r = {
             "reliability_status": "caution", "review_required": False,
             "reason": "Medium confidence.", "confidence": 0.65, "confidence_level": "medium",
@@ -182,7 +182,7 @@ class TestPriority:
 
     def test_grade3_urgent_by_default(self):
         q = {"status": "good", "quality_score": 0.88, "action": "continue", "reason": "OK."}
-        d = {"grade": 3, "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97}}
+        d = {"grade": 3, "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "Acceptable.", "confidence": 0.97, "confidence_level": "high",
@@ -195,7 +195,7 @@ class TestPriority:
 
     def test_grade2_high_priority(self):
         q = {"status": "good", "quality_score": 0.88, "action": "continue", "reason": "OK."}
-        d = {"grade": 2, "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06}}
+        d = {"grade": 2, "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "Acceptable.", "confidence": 0.88, "confidence_level": "high",
@@ -207,7 +207,7 @@ class TestPriority:
 
     def test_routine_low_priority(self):
         q = {"status": "good", "quality_score": 0.88, "action": "continue", "reason": "OK."}
-        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01}}
+        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "Acceptable.", "confidence": 0.92, "confidence_level": "high",
@@ -219,7 +219,7 @@ class TestPriority:
 
     def test_recapture_medium_priority(self):
         q = {"status": "ungradable", "quality_score": 0.20, "action": "recapture", "reason": "Blurry."}
-        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01}}
+        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "Acceptable.", "confidence": 0.92, "confidence_level": "high",
@@ -231,7 +231,7 @@ class TestPriority:
 
     def test_doctor_review_high_priority(self):
         q = {"status": "good", "quality_score": 0.85, "action": "continue", "reason": "OK."}
-        d = {"grade": 1, "probabilities": {"0": 0.05, "1": 0.65, "2": 0.20, "3": 0.10}}
+        d = {"grade": 1, "probabilities": {"0": 0.05, "1": 0.65, "2": 0.20, "3": 0.10, "4": 0.0}}
         r = {
             "reliability_status": "review_required", "review_required": True,
             "reason": "OOD.", "confidence": 0.65, "confidence_level": "medium",
@@ -249,7 +249,7 @@ class TestPriority:
 class TestErrorHandling:
 
     def test_missing_quality_raises_validation_error(self):
-        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01}}
+        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "OK.", "confidence": 0.92, "confidence_level": "high",
@@ -272,13 +272,13 @@ class TestErrorHandling:
 
     def test_missing_reliability_raises_validation_error(self):
         q = {"status": "good", "quality_score": 0.88, "action": "continue", "reason": "OK."}
-        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01}}
+        d = {"grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0}}
         with pytest.raises(DecisionValidationError):
             make_final_decision(q, d, None)
 
     def test_invalid_dr_grade_raises(self):
         q = {"status": "good", "quality_score": 0.88, "action": "continue", "reason": "OK."}
-        d = {"grade": 99, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01}}
+        d = {"grade": 99, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0}}
         r = {
             "reliability_status": "acceptable", "review_required": False,
             "reason": "OK.", "confidence": 0.92, "confidence_level": "high",
@@ -328,7 +328,7 @@ class TestEndToEndPipelineSimulation:
         # Mock DR model output (Vinayak — not yet integrated)
         dr_output = {
             "grade": 0,
-            "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01},
+            "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0},
             "gradcam_path": None,  # Grad-CAM not yet available
         }
 
@@ -391,7 +391,7 @@ class TestEndToEndPipelineSimulation:
         }
         dr_output = {
             "grade": 2,
-            "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06},
+            "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06, "4": 0.0},
             "gradcam_path": "outputs/gradcam/patient_003.jpg",
         }
         reliability_output = {
@@ -425,7 +425,7 @@ class TestEndToEndPipelineSimulation:
         }
         dr_output = {
             "grade": 3,
-            "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97},
+            "probabilities": {"0": 0.01, "1": 0.01, "2": 0.01, "3": 0.97, "4": 0.0},
         }
         # Reliability result says OOD=True (which should override)
         reliability_output = {

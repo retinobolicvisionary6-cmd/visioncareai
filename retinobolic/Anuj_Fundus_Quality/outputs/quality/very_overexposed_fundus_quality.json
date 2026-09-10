@@ -1,56 +1,37 @@
 {
-  "status": "ungradable",
-  "quality_score": 0.5659,
-  "focus_score": 0.6685,
-  "illumination_score": 0.3354,
-  "field_of_view_score": 1.0,
+  "status": "invalid_image",
+  "is_fundus": false,
+  "quality_score": 0.0,
+  "focus_score": 0.0,
+  "illumination_score": 0.0,
+  "field_of_view_score": 0.0,
   "retinal_visibility_score": 0.0,
-  "artifact_score": 0.815,
-  "reason": "Critically overexposed image, poor retinal structure visibility \u2014 image is not suitable for reliable screening.",
-  "action": "recapture",
+  "artifact_score": 0.0,
+  "reason": "Image rejected: Image lacks retinal chrominance profile (Red/Blue ratio: 1.11, expected > 2.0); Excessive blue spectrum reflection (Blue mean: 228.7, expected < 70); Non-retinal color distribution (5.3% retinal hue, expected > 75%); Full-frame non-aperture composition detected (Corner brightness: 203.5)",
+  "action": "reject",
   "enhanced": false,
   "enhanced_image_path": null,
-  "error": null,
+  "error": "Image is not a valid retinal fundus photograph.",
   "component_details": {
-    "focus": {
-      "focus_score": 0.6685,
-      "laplacian_var": 83.83,
-      "tenengrad_mean": 6.742,
-      "is_hard_fail": false,
-      "detail": "Image sharpness is acceptable (Laplacian=83.8, Tenengrad=6.74)."
-    },
-    "illumination": {
-      "illumination_score": 0.3354,
-      "mean_brightness": 251.25,
-      "std_brightness": 3.65,
-      "clip_ratio": 0.0136,
-      "uniformity_std": 0.41,
-      "is_hard_fail": true,
-      "conditions": [
-        "critically_bright",
-        "no_contrast"
+    "fundus_check": {
+      "is_fundus": false,
+      "confidence": 0.0,
+      "reasons": [
+        "Image lacks retinal chrominance profile (Red/Blue ratio: 1.11, expected > 2.0)",
+        "Excessive blue spectrum reflection (Blue mean: 228.7, expected < 70)",
+        "Non-retinal color distribution (5.3% retinal hue, expected > 75%)",
+        "Full-frame non-aperture composition detected (Corner brightness: 203.5)"
       ],
-      "detail": "Illumination issues detected: critically bright, no contrast. (mean=251, std=3.7, clip=1.36%)"
-    },
-    "field_of_view": {
-      "field_of_view_score": 1.0,
-      "fundus_area_ratio": 0.6362,
-      "disk_fill_ratio": 1.0,
-      "circle_detected": true,
-      "is_hard_fail": false,
-      "detail": "Adequate field of view (fill=100.0%, area_ratio=63.6%)."
-    },
-    "retinal_visibility": {
-      "retinal_visibility_score": 0.0,
-      "edge_density": 0.006997,
-      "detail": "Very few retinal structures visible (edge density=0.007). Image may be too blurred or obscured."
-    },
-    "artifacts": {
-      "artifact_score": 0.815,
-      "glare_ratio": 0.0122,
-      "noise_level": 0.0839,
-      "artifacts_found": [],
-      "detail": "No significant artifacts detected (glare=0.012, noise=0.084)."
+      "metrics": {
+        "rb_ratio": 1.11,
+        "rg_ratio": 1.0,
+        "b_mean": 228.7,
+        "r_mean": 254.5,
+        "g_mean": 254.0,
+        "corner_brightness": 203.5,
+        "retinal_hue_pct": 5.3,
+        "hue_std": 1.9
+      }
     }
   }
 }

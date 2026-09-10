@@ -50,6 +50,7 @@ from .field_of_view import assess_field_of_view
 from .retinal_visibility import assess_retinal_visibility
 from .artifacts import assess_artifacts
 from .enhancement import enhance
+from .fundus_validator import verify_fundus_image
 
 
 # ---------------------------------------------------------------------------
@@ -188,18 +189,21 @@ def _package_result(
     art_r: dict,
     enhanced: bool = False,
     enhanced_image_path: Optional[str] = None,
+    is_fundus: bool = True,
 ) -> dict:
     """Build the standardised output dictionary."""
     action_map = {
         "good": "continue",
         "borderline": "enhance_and_recheck",
         "ungradable": "recapture",
+        "invalid_image": "reject",
     }
 
     reason = _build_reason(focus_r, illum_r, fov_r, retvis_r, art_r, status)
 
     return {
         "status": status,
+        "is_fundus": is_fundus,
         "quality_score": round(quality_score, 4),
         "focus_score": focus_r["focus_score"],
         "illumination_score": illum_r["illumination_score"],
@@ -207,7 +211,7 @@ def _package_result(
         "retinal_visibility_score": retvis_r["retinal_visibility_score"],
         "artifact_score": art_r["artifact_score"],
         "reason": reason,
-        "action": action_map[status],
+        "action": action_map.get(status, "recapture"),
         "enhanced": enhanced,
         "enhanced_image_path": enhanced_image_path,
         "component_details": {
@@ -296,6 +300,30 @@ def assess_quality(image_path: str) -> dict:
         }
 
     resized = data["resized"]
+
+    # ------------------------------------------------------- fundus domain gate
+    fundus_check = verify_fundus_image(resized)
+    if not fundus_check["is_fundus"]:
+        reason_msg = "Image rejected: " + "; ".join(fundus_check["reasons"])
+        res = {
+            "status": "invalid_image",
+            "is_fundus": False,
+            "is_human_image": fundus_check.get("is_human_image", False),
+            "quality_score": 0.0,
+            "focus_score": 0.0,
+            "illumination_score": 0.0,
+            "field_of_view_score": 0.0,
+            "retinal_visibility_score": 0.0,
+            "artifact_score": 0.0,
+            "reason": reason_msg,
+            "action": "reject",
+            "enhanced": False,
+            "enhanced_image_path": None,
+            "component_details": {"fundus_check": fundus_check},
+            "error": "Image is not a valid retinal fundus photograph.",
+        }
+        _save_json(res, image_path)
+        return res
 
     # ------------------------------------------------------- initial analysis
     raw = _run_analysis(resized)

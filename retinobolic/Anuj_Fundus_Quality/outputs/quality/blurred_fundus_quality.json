@@ -1,5 +1,6 @@
 {
   "status": "ungradable",
+  "is_fundus": true,
   "quality_score": 0.485,
   "focus_score": 0.0,
   "illumination_score": 0.7529,

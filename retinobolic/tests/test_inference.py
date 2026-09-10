@@ -280,7 +280,7 @@ def test_output_keys_exact():
 
 
 def test_probability_keys():
-    """Test that probabilities dict has exactly keys '0', '1', '2', '3', '4'."""
+    """Test that probabilities dict has exactly keys '0', '1', '2', '3', '4', '4'."""
     sample = _ensure_sample_exists()
     _get_or_make_checkpoint()
 

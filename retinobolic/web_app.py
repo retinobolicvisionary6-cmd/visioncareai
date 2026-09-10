@@ -112,6 +112,59 @@ def get_sample(grade):
         "filename": os.path.basename(img_path)
     })
 
+@app.route("/api/validate_image", methods=["POST"])
+def validate_image():
+    """Fast pre-validation of uploaded image before diagnosis or scan."""
+    temp_file = None
+    try:
+        if "image" not in request.files or request.files["image"].filename == "":
+            return jsonify({"is_fundus": False, "message": "Other image detected please insert fundus image"}), 400
+        file = request.files["image"]
+        suffix = Path(file.filename).suffix or ".jpg"
+        fd, temp_file = tempfile.mkstemp(suffix=suffix)
+        os.close(fd)
+        file.save(temp_file)
+
+        import cv2
+        img = cv2.imread(temp_file)
+        if img is None:
+            return jsonify({
+                "is_fundus": False,
+                "is_human_image": False,
+                "message": "Other image detected please insert fundus image"
+            }), 200
+
+        import importlib.util
+        vpath = PROJECT_ROOT / "Anuj_Fundus_Quality" / "src" / "fundus_validator.py"
+        spec = importlib.util.spec_from_file_location("anuj_fundus_validator_api", str(vpath))
+        vmod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(vmod)
+        check = vmod.verify_fundus_image(img)
+
+        is_fundus = bool(check.get("is_fundus", False))
+        is_human = bool(check.get("is_human_image", False))
+        reason = check.get("reasons", ["Other image detected please insert fundus image"])[0]
+
+        return jsonify({
+            "is_fundus": is_fundus,
+            "is_human_image": is_human,
+            "message": "Other image detected please insert fundus image" if not is_fundus else "Genuine retinal fundus scan verified.",
+            "reason": reason
+        })
+    except Exception as e:
+        return jsonify({
+            "is_fundus": False,
+            "is_human_image": False,
+            "message": "Other image detected please insert fundus image",
+            "error": str(e)
+        }), 200
+    finally:
+        if temp_file and os.path.exists(temp_file):
+            try:
+                os.remove(temp_file)
+            except Exception:
+                pass
+
 @app.route("/api/analyze", methods=["POST"])
 def analyze():
     temp_file = None
@@ -127,8 +180,8 @@ def analyze():
             os.close(fd)
             file.save(temp_file)
 
-            # Normalize uploaded image to max 768px upfront so all 8 downstream modules
-            # process 0.5M pixels instead of 12M pixels (18x faster CPU processing)
+            # Normalize uploaded image to max 768px upfront so all downstream modules
+            # process faster
             try:
                 import cv2
                 raw_img = cv2.imread(temp_file)
@@ -183,30 +236,39 @@ def analyze():
             target_grade=target_grade
         )
 
-        # Encode Grad-CAM outputs (already resized to 384x384 for ultra-fast payload delivery)
+        is_valid = bool(result.get("is_valid_fundus", True))
+        is_human = bool(result.get("is_human_image", False))
+        non_fundus_msg = "Other image detected please insert fundus image"
+
+        # Encode Grad-CAM outputs (only if valid fundus image)
         gradcam_overlay_b64 = ""
         gradcam_heatmap_b64 = ""
         gradcam_orig_b64 = ""
         
-        dr_res = result.get("dr_result") or {}
-        gc_path = dr_res.get("gradcam_path")
-        if gc_path and os.path.exists(gc_path):
-            gradcam_overlay_b64 = img_to_base64(gc_path)
-            # Check sibling heatmap and original
-            p = Path(gc_path)
-            stem = p.name.replace("_overlay.jpg", "")
-            heatmap_p = p.parent / f"{stem}_heatmap.jpg"
-            orig_p = p.parent / f"{stem}_original.jpg"
-            if heatmap_p.exists():
-                gradcam_heatmap_b64 = img_to_base64(str(heatmap_p))
-            if orig_p.exists():
-                gradcam_orig_b64 = img_to_base64(str(orig_p))
+        if is_valid:
+            dr_res = result.get("dr_result") or {}
+            gc_path = dr_res.get("gradcam_path")
+            if gc_path and os.path.exists(gc_path):
+                gradcam_overlay_b64 = img_to_base64(gc_path)
+                # Check sibling heatmap and original
+                p = Path(gc_path)
+                stem = p.name.replace("_overlay.jpg", "")
+                heatmap_p = p.parent / f"{stem}_heatmap.jpg"
+                orig_p = p.parent / f"{stem}_original.jpg"
+                if heatmap_p.exists():
+                    gradcam_heatmap_b64 = img_to_base64(str(heatmap_p))
+                if orig_p.exists():
+                    gradcam_orig_b64 = img_to_base64(str(orig_p))
 
         # Use preprocessed 384x384 thumbnail instead of massive multi-MB raw file
         input_b64 = gradcam_orig_b64 or img_to_base64(image_path)
 
         response_payload = {
-            "success": True,
+            "success": is_valid,
+            "is_valid_fundus": is_valid,
+            "is_human_image": is_human,
+            "message": "" if is_valid else non_fundus_msg,
+            "error": None if is_valid else non_fundus_msg,
             "images": {
                 "input": input_b64,
                 "gradcam_overlay": gradcam_overlay_b64,

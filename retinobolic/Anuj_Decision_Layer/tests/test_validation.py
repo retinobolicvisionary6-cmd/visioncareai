@@ -120,7 +120,7 @@ class TestValidateDRResult:
     def test_valid_grade_0_dict_probs(self):
         data = {
             "grade": 0,
-            "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01},
+            "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0},
         }
         result = validate_dr_result(data)
         assert isinstance(result, DRResult)
@@ -140,7 +140,7 @@ class TestValidateDRResult:
     def test_gradcam_path_preserved(self):
         data = {
             "grade": 2,
-            "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06},
+            "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06, "4": 0.0},
             "gradcam_path": "outputs/gradcam/image.jpg",
         }
         result = validate_dr_result(data)
@@ -152,20 +152,20 @@ class TestValidateDRResult:
 
     def test_missing_grade_raises(self):
         with pytest.raises(DecisionValidationError, match="'grade' is missing"):
-            validate_dr_result({"probabilities": {"0": 0.9, "1": 0.05, "2": 0.03, "3": 0.02}})
+            validate_dr_result({"probabilities": {"0": 0.9, "1": 0.05, "2": 0.03, "3": 0.02, "4": 0.0}})
 
     def test_invalid_grade_minus_1(self):
         with pytest.raises(DecisionValidationError, match="not a valid DR grade"):
             validate_dr_result({
                 "grade": -1,
-                "probabilities": {"0": 0.9, "1": 0.05, "2": 0.03, "3": 0.02},
+                "probabilities": {"0": 0.9, "1": 0.05, "2": 0.03, "3": 0.02, "4": 0.0},
             })
 
     def test_invalid_grade_5(self):
         with pytest.raises(DecisionValidationError, match="not a valid DR grade"):
             validate_dr_result({
                 "grade": 5,
-                "probabilities": {"0": 0.9, "1": 0.05, "2": 0.03, "3": 0.02},
+                "probabilities": {"0": 0.9, "1": 0.05, "2": 0.03, "3": 0.02, "4": 0.0},
             })
 
     def test_missing_probabilities_raises(self):
@@ -180,7 +180,7 @@ class TestValidateDRResult:
         with pytest.raises(DecisionValidationError, match="sum"):
             validate_dr_result({
                 "grade": 1,
-                "probabilities": {"0": 0.5, "1": 0.5, "2": 0.5, "3": 0.5},
+                "probabilities": {"0": 0.5, "1": 0.5, "2": 0.5, "3": 0.5, "4": 0.0},
             })
 
     def test_prob_negative_value(self):
@@ -194,7 +194,7 @@ class TestValidateDRResult:
         """The validator must NOT modify the DR grade."""
         data = {
             "grade": 2,
-            "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06},
+            "probabilities": {"0": 0.02, "1": 0.04, "2": 0.88, "3": 0.06, "4": 0.0},
         }
         result = validate_dr_result(data)
         assert result.grade == 2  # unchanged
@@ -420,7 +420,7 @@ class TestValidateAllInputs:
             "action": "continue", "reason": "OK.", "error": None,
         }
         dr = {
-            "grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01},
+            "grade": 0, "probabilities": {"0": 0.92, "1": 0.05, "2": 0.02, "3": 0.01, "4": 0.0},
         }
         rel = {
             "reliability_status": "acceptable", "review_required": False,

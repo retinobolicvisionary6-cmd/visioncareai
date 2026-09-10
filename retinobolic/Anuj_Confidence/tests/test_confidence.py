@@ -36,7 +36,7 @@ class TestNormalPrediction:
 
     def setup_method(self):
         self.result = calculate_confidence(
-            {"grade": 2, "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08}}
+            {"grade": 2, "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08, "4": 0.0}}
         )
 
     def test_predicted_grade(self):
@@ -69,7 +69,7 @@ class TestStrongConfidence:
 
     def setup_method(self):
         self.result = calculate_confidence(
-            _make_dr_result({"0": 0.02, "1": 0.03, "2": 0.92, "3": 0.03})
+            _make_dr_result({"0": 0.02, "1": 0.03, "2": 0.92, "3": 0.03, "4": 0.0})
         )
 
     def test_confidence_value(self):
@@ -92,11 +92,11 @@ class TestStrongConfidence:
 
 
 class TestUniformProbabilities:
-    """Test case 3: [0.25, 0.25, 0.25, 0.25]"""
+    """Test case 3: [0.2, 0.2, 0.2, 0.2, 0.2]"""
 
     def setup_method(self):
         self.result = calculate_confidence(
-            _make_dr_result({"0": 0.25, "1": 0.25, "2": 0.25, "3": 0.25})
+            _make_dr_result({"0": 0.25, "1": 0.25, "2": 0.25, "3": 0.25, "4": 0.0})
         )
 
     def test_confidence_value(self):
@@ -121,12 +121,12 @@ class TestUniformProbabilities:
 
 
 class TestInvalidProbabilitySum:
-    """Test case 4: [0.4, 0.4, 0.4, 0.1] — sum = 1.3 → validation error."""
+    """Test case 4: [0.4, 0.4, 0.4, 0.1, 0.0] — sum = 1.3 → validation error."""
 
     def test_raises_invalid_probability_error(self):
         with pytest.raises(InvalidProbabilityError, match="sums to"):
             calculate_confidence(
-                _make_dr_result({"0": 0.4, "1": 0.4, "2": 0.4, "3": 0.1})
+                _make_dr_result({"0": 0.4, "1": 0.4, "2": 0.4, "3": 0.1, "4": 0.0})
             )
 
 
@@ -197,7 +197,7 @@ class TestMediumConfidence:
 
     def setup_method(self):
         self.result = calculate_confidence(
-            _make_dr_result({"0": 0.10, "1": 0.15, "2": 0.60, "3": 0.15})
+            _make_dr_result({"0": 0.10, "1": 0.15, "2": 0.60, "3": 0.15, "4": 0.0})
         )
 
     def test_confidence_value(self):
@@ -220,7 +220,7 @@ class TestLowConfidenceMargin:
 
     def setup_method(self):
         self.result = calculate_confidence(
-            _make_dr_result({"0": 0.24, "1": 0.27, "2": 0.25, "3": 0.24})
+            _make_dr_result({"0": 0.24, "1": 0.27, "2": 0.25, "3": 0.24, "4": 0.0})
         )
 
     def test_predicted_grade(self):
@@ -252,7 +252,7 @@ class TestClassNameMapping:
         (3, "Severe/PDR"),
     ])
     def test_class_names(self, grade, expected_name):
-        probs = [0.0, 0.0, 0.0, 0.0]
+        probs = [0.0, 0.0, 0.0, 0.0, 0.0]
         probs[grade] = 1.0
         result = calculate_confidence(_make_dr_result(
             {str(i): p for i, p in enumerate(probs)}
@@ -271,7 +271,7 @@ class TestInputNonMutation:
     def test_original_dict_unchanged(self):
         original = {
             "grade": 2,
-            "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08},
+            "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08, "4": 0.0},
             "gradcam_path": "outputs/gradcam/image_001.jpg",
         }
         original_copy = {
@@ -295,14 +295,14 @@ class TestTop2Fields:
 
     def test_top2_present_by_default(self):
         result = calculate_confidence(
-            _make_dr_result({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08})
+            _make_dr_result({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08, "4": 0.0})
         )
         for key in self.TOP2_KEYS:
             assert key in result, f"Expected key '{key}' in result"
 
     def test_top2_absent_when_disabled(self):
         result = calculate_confidence(
-            _make_dr_result({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08}),
+            _make_dr_result({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08, "4": 0.0}),
             include_top2=False,
         )
         for key in self.TOP2_KEYS:
@@ -310,7 +310,7 @@ class TestTop2Fields:
 
     def test_top2_margin_correctness(self):
         result = calculate_confidence(
-            _make_dr_result({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08})
+            _make_dr_result({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08, "4": 0.0})
         )
         expected_margin = 0.81 - 0.08
         assert math.isclose(result["margin"], expected_margin, rel_tol=1e-9)
@@ -336,7 +336,7 @@ class TestDrResultFormat:
         """gradcam_path in dr_result should not cause errors."""
         result = calculate_confidence({
             "grade": 2,
-            "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08},
+            "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08, "4": 0.0},
             "gradcam_path": "outputs/gradcam/image_001.jpg",
         })
         assert result["predicted_grade"] == 2

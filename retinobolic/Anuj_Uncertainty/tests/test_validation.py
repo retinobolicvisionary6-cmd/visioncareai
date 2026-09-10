@@ -25,7 +25,7 @@ from src.config import UncertaintyConfig, DEFAULT_CONFIG
 # Helper
 # ===========================================================================
 
-VALID_DICT = {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08}
+VALID_DICT = {"0": 0.03, "1": 0.08, "2": 0.71, "3": 0.08, "4": 0.10}
 VALID_LIST = [0.03, 0.08, 0.81, 0.08]
 
 
@@ -36,22 +36,22 @@ VALID_LIST = [0.03, 0.08, 0.81, 0.08]
 class TestValidInputFormats:
 
     def test_dict_string_keys(self):
-        probs = validate_probabilities({"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08})
-        assert probs.shape == (4,)
+        probs = validate_probabilities({"0": 0.03, "1": 0.08, "2": 0.71, "3": 0.08, "4": 0.10})
+        assert probs.shape == (5,)
         assert isinstance(probs, np.ndarray)
         assert probs.dtype == np.float64
 
     def test_dict_integer_keys(self):
-        probs = validate_probabilities({0: 0.03, 1: 0.08, 2: 0.81, 3: 0.08})
+        probs = validate_probabilities({0: 0.03, 1: 0.08, 2: 0.81, 3: 0.08, 4: 0.0})
         np.testing.assert_allclose(probs, [0.03, 0.08, 0.81, 0.08])
 
     def test_list_input(self):
         probs = validate_probabilities([0.03, 0.08, 0.81, 0.08])
-        assert probs.shape == (4,)
+        assert probs.shape == (5,)
 
     def test_tuple_input(self):
         probs = validate_probabilities((0.25, 0.25, 0.25, 0.25))
-        assert probs.shape == (4,)
+        assert probs.shape == (5,)
 
     def test_numpy_array_input(self):
         arr = np.array([0.03, 0.08, 0.81, 0.08])
@@ -60,19 +60,19 @@ class TestValidInputFormats:
 
     def test_sum_tolerance_accepted(self):
         # 0.9999 is within the default tolerance of 1e-3
-        probs = validate_probabilities([0.9999, 0.0, 0.0, 0.0])
+        probs = validate_probabilities([0.9999, 0.0, 0.0, 0.0, 0.0])
         assert probs is not None
 
     def test_sum_very_close_to_1(self):
         # Floating-point accumulation: values sum to 1.0000000000000002
-        vals = [0.25, 0.25, 0.25, 0.25]
+        vals = [0.2, 0.2, 0.2, 0.2, 0.1, 0.1]
         # numpy sum may produce tiny rounding
         probs = validate_probabilities(vals)
         assert probs is not None
 
     def test_integer_probabilities_cast(self):
         # 0 and 1 are valid probabilities
-        probs = validate_probabilities([1, 0, 0, 0])
+        probs = validate_probabilities([1, 0, 0, 0, 0])
         assert probs[0] == pytest.approx(1.0)
 
 
@@ -88,7 +88,7 @@ class TestWrongClassCount:
 
     def test_too_many_list(self):
         with pytest.raises(InvalidProbabilityError, match="Expected 4"):
-            validate_probabilities([0.2, 0.2, 0.2, 0.2, 0.2])
+            validate_probabilities([0.2, 0.2, 0.2, 0.2, 0.1, 0.1])
 
     def test_dict_missing_key(self):
         with pytest.raises(InvalidProbabilityError, match="Missing class key"):
@@ -166,29 +166,29 @@ class TestInvalidValues:
 class TestSumMismatch:
 
     def test_sum_too_high(self):
-        # [0.4, 0.4, 0.4, 0.1] sums to 1.3
+        # [0.4, 0.4, 0.4, 0.1, 0.0] sums to 1.3
         with pytest.raises(InvalidProbabilityError, match="sum"):
-            validate_probabilities([0.4, 0.4, 0.4, 0.1])
+            validate_probabilities([0.4, 0.4, 0.4, 0.1, 0.0])
 
     def test_sum_too_low(self):
         with pytest.raises(InvalidProbabilityError, match="sum"):
-            validate_probabilities([0.1, 0.1, 0.1, 0.1])
+            validate_probabilities([0.1, 0.1, 0.1, 0.1, 0.0])
 
     def test_all_zeros(self):
         with pytest.raises(InvalidProbabilityError, match="sum"):
-            validate_probabilities([0.0, 0.0, 0.0, 0.0])
+            validate_probabilities([0.0, 0.0, 0.0, 0.0, 0.0])
 
     def test_custom_tolerance_tighter(self):
         """With a tighter tolerance, even small deviations should fail."""
         tight_config = UncertaintyConfig(PROB_SUM_TOLERANCE=1e-6)
         with pytest.raises(InvalidProbabilityError, match="sum"):
-            validate_probabilities([0.9999, 0.0, 0.0, 0.0], config=tight_config)
+            validate_probabilities([0.9999, 0.0, 0.0, 0.0, 0.0], config=tight_config)
 
     def test_custom_tolerance_looser(self):
         """With a looser tolerance, a slightly wrong sum should pass."""
         loose_config = UncertaintyConfig(PROB_SUM_TOLERANCE=0.05)
         # Sum = 0.98, deviation = 0.02 < 0.05
-        probs = validate_probabilities([0.90, 0.04, 0.02, 0.02], config=loose_config)
+        probs = validate_probabilities([0.90, 0.04, 0.02, 0.02, 0.02], config=loose_config)
         assert probs is not None
 
 
@@ -201,12 +201,12 @@ class TestValidateDrInput:
     def test_full_valid_input(self):
         dr_result = {
             "grade": 2,
-            "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08},
+            "probabilities": {"0": 0.03, "1": 0.08, "2": 0.71, "3": 0.08, "4": 0.10},
             "gradcam_path": "outputs/gradcam/image_001.jpg",
         }
         probs, grade = validate_dr_input(dr_result)
         assert grade == 2
-        assert probs.shape == (4,)
+        assert probs.shape == (5,)
 
     def test_missing_probabilities_key(self):
         with pytest.raises(ValidationError, match="probabilities"):
@@ -214,15 +214,15 @@ class TestValidateDrInput:
 
     def test_not_a_dict(self):
         with pytest.raises(ValidationError):
-            validate_dr_input([0.25, 0.25, 0.25, 0.25])
+            validate_dr_input([0.2, 0.2, 0.2, 0.2, 0.1, 0.1])
 
     def test_grade_optional(self):
-        dr_result = {"probabilities": {"0": 0.1, "1": 0.2, "2": 0.6, "3": 0.1}}
+        dr_result = {"probabilities": {"0": 0.1, "1": 0.2, "2": 0.5, "3": 0.1, "4": 0.1}}
         probs, grade = validate_dr_input(dr_result)
         assert grade is None
 
     def test_float_grade_converted(self):
-        dr_result = {"grade": 2.0, "probabilities": {"0": 0.1, "1": 0.2, "2": 0.6, "3": 0.1}}
+        dr_result = {"grade": 2.0, "probabilities": {"0": 0.1, "1": 0.2, "2": 0.5, "3": 0.1, "4": 0.1}}
         _, grade = validate_dr_input(dr_result)
         assert grade == 2
         assert isinstance(grade, int)

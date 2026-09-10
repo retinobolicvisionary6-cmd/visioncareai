@@ -36,7 +36,7 @@ from src.common.validation import (
 
 class TestValidateDRInput:
     def test_valid_dr_result(self):
-        dr = {"grade": 2, "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08}}
+        dr = {"grade": 2, "probabilities": {"0": 0.03, "1": 0.08, "2": 0.81, "3": 0.08, "4": 0.0}}
         result = validate_dr_input(dr)
         assert result is dr  # returned unchanged
 
